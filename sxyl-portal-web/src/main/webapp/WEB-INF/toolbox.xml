@@ -1,0 +1,12 @@
+<toolbox>
+    <tool>
+        <key>stringEscapeUtils</key>
+        <scope>application</scope>
+        <class>org.apache.commons.lang.StringEscapeUtils</class>
+    </tool>
+    <tool>
+        <key>stringUtils</key>
+        <scope>application</scope>
+        <class>org.apache.commons.lang.StringUtils</class>
+    </tool>
+</toolbox>
