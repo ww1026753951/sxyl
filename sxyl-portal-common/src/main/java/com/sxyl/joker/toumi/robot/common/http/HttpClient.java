@@ -204,5 +204,9 @@ public class HttpClient {
         }
         // 新建一个Cookie
     }
+	
+	public static void main(String[] args){
+	   System.out.println("dfdfdfdf");
+	}
 
 }
