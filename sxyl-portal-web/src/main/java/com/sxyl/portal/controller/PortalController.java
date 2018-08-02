@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Created by wangweiyf on 2017/11/2.
+ *
  */
 @Controller
 public class PortalController extends BaseController {
@@ -16,7 +17,30 @@ public class PortalController extends BaseController {
      * @throws Exception
      */
     @RequestMapping("portal")
-    public String toCart() throws Exception{
-        return "/screen/portal";
+    public String portal() throws Exception{
+        return "/screen/portal-demo";
     }
+
+
+
+    /***
+     * 冒泡
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("sort")
+    public String sort() throws Exception{
+        return "/screen/algorithm/sort";
+    }
+
+
+//    /***
+//     * im
+//     * @return
+//     * @throws Exception
+//     */
+//    @RequestMapping("im")
+//    public String im() throws Exception{
+//        return "/screen/sort/im";
+//    }
 }

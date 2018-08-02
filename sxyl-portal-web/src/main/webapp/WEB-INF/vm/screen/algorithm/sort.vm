@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>思想摇篮</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="keywords" content="冒泡排序"/>
+    <meta name="description" content="冒泡排序"/>
+    <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/d3/d3.min.js"></script>
+    <script src="/js/sxyl.js"></script>
+</head>
+<script>
+    var int ;
+</script>
+<body>
+<button onclick="int = setInterval(bubbleSort,500)">冒泡排序</button>
+<button onclick="int = setInterval(selectionSort,500)">选择排序</button>
+<button onclick="int = setInterval(insertionSort,500)">插入排序</button>
+<script>
+    var arrayLength = 10;
+    //起始位置,距屏幕左侧距离
+    var circleLeft = 100 ;
+
+    var x = new Array();
+    var uuidArray = new Array() ;
+    for (var i =0 ; i<arrayLength; i++ ){
+        x.push(randomFrom(3,40)) ;
+        uuidArray.push(SXYL.base.uuid()) ;
+    }
+    //画布大小
+    var width = 2000, height = 2000;
+    // 在body里添加一个SVG画布
+    var svg = d3.select("body")
+            .append("svg")
+            .attr("width",width)
+            .attr("height",height);
+
+    for (var i=0 ;i< x.length ; i++) {
+        if(i > 0){
+            circleLeft = circleLeft + 40 ;
+        }
+        var tarG = svg.append("g")
+                .attr("id", uuidArray[i])
+                .attr("transform", "translate("+circleLeft+","+(300 - x[i]*5)+")");
+        tarG.append("rect")
+                .attr("width", 30)
+                .attr("height", x[i]*5)
+                .style("fill","red");
+        tarG.append("text")
+                .attr("x", 6)
+                .attr("y", -5)
+                .text(x[i]);
+    }
+    function randomFrom(lowerValue,upperValue){
+        return Math.floor(Math.random() * (upperValue - lowerValue + 1) + lowerValue);
+    }
+</script>
+
+<script type="text/javascript">
+    /***
+     * 冒泡排序算法
+     */
+    function bubbleSort() {
+        console.log(1)
+        for (var i =0;i< x.length ; i++) {
+            for(var j=0;j< x.length ; j++){
+                if(x[j] > x[j+1]){
+                    //元素交换位置
+                    SXYL.d3.changeElementTransformX(uuidArray[j] , uuidArray[j+1]);
+                    //uuid的数组进行交换
+                    SXYL.base.changeArrayElement(uuidArray , j , j+1);
+                    //数组的内容进行交换
+                    SXYL.base.changeArrayElement(x,j , j+1);
+                    return
+                }
+            }
+        }
+        window.clearInterval(int);
+    }
+
+    /***
+     * 选择排序算法
+     */
+    function selectionSort() {
+        var len= x.length, minIndex ;
+        var changeFlag = false ;
+        for(var i = 0; i < len-1; i++){
+            minIndex = i;//记录每次循环的第一个数为该次循环的最小值索引
+            //循环剩余的数组
+            for(var j = i+1; j < len; j++){
+                if(x[j]<x[minIndex]){
+                    minIndex = j;//找到每次循环到的最小值，
+                    changeFlag = true ;
+                }
+            }
+            if(changeFlag){
+                //交换位置
+                SXYL.d3.changeElementTransformX(uuidArray[i] , uuidArray[minIndex]);
+                //uuid的数组进行交换
+                SXYL.base.changeArrayElement(uuidArray , minIndex , i);
+                //数组的内容进行交换
+                SXYL.base.changeArrayElement(x,minIndex , i);
+                return ;
+            }
+        }
+        window.clearInterval(int);
+    }
+
+    /****
+     * 插入排序
+     */
+    function insertionSort() {
+        var i,j;
+        var changeFlag = false ;
+        for(i=1;i<x.length;i++){
+            var targetElement = x[i];
+            var targetElementId = uuidArray[i];
+
+            debugger
+            /***
+             * 目标标签挪y坐标
+             * **/
+            var rectTarget = d3.select("#" + uuidArray[i]) ;
+            var rectTargetMatrix = SXYL.d3.getTranslation(rectTarget.attr("transform"));
+            var y = parseInt(rectTargetMatrix[1])+200;
+            rectTarget.transition().duration(50).attr("transform", "translate("+rectTargetMatrix[0]+","+y+")");
+
+            for(j = i-1 ;j >= 0;j--){
+                if(x[j] > targetElement){
+                    // var rectLeft = d3.select("#" + uuidArray[j+1]) ;
+                    // var rectLeftMatrix = SXYL.d3.getTranslation(rectLeft.attr("transform"));
+                    // var leftx = parseInt(rectLeftMatrix[0]) + 40;
+                    // rectLeft.transition().duration(50).attr("transform", "translate("+ leftx +","+rectLeftMatrix[1]+")");
+
+                    uuidArray[j+1] = uuidArray[j];
+                    x[j+1]=x[j];
+                    changeFlag = true ;
+                }else {
+                    break;
+                }
+            }
+            if(changeFlag){
+                uuidArray[j+1] = targetElementId;
+                x[j+1] = targetElement;
+                return ;
+            }
+        }
+        debugger
+        window.clearInterval(int);
+    }
+
+
+</script>
+</body>
+</html>
