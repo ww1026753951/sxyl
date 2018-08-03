@@ -1,4 +1,6 @@
 SXYL={
+    i:0,
+    j:0,
     base:{},
     d3:{}
 }
@@ -85,4 +87,31 @@ SXYL.d3.changeElementTransformX = function (idA , idB) {
     var rectRightMatrix = SXYL.d3.getTranslation(rectRight.attr("transform"));
     rectLeft.transition().duration(50).attr("transform", "translate("+rectRightMatrix[0]+","+rectLeftMatrix[1]+")");
     rectRight.transition().duration(50).attr("transform", "translate("+rectLeftMatrix[0]+","+rectRightMatrix[1]+")");
+}
+
+
+
+/***
+ * 变更颜色
+ * @param idA 元素id
+ * @param color 颜色
+ * @return true 替换成功   false 替换失败,组件为原有颜色
+ */
+SXYL.d3.changeElementColor = function (id , color) {
+    var element = d3.select("#" + id).select("rect") ;
+    var elementColor = element.style("fill") ;
+
+    if(elementColor === color){
+        return false ;
+    }else{
+        element.style("fill",color);
+        return true;
+    }
+
+
+    // var rectRight = d3.select("#" + idB) ;
+    // var rectLeftMatrix = SXYL.d3.getTranslation(rectLeft.attr("transform"));
+    // var rectRightMatrix = SXYL.d3.getTranslation(rectRight.attr("transform"));
+    // rectLeft.transition().duration(50).attr("transform", "translate("+rectRightMatrix[0]+","+rectLeftMatrix[1]+")");
+    // rectRight.transition().duration(50).attr("transform", "translate("+rectLeftMatrix[0]+","+rectRightMatrix[1]+")");
 }
