@@ -14,10 +14,20 @@
     var int  ;
 </script>
 <body>
-<button onclick="init()">重置</button>
-<button onclick="int = setInterval(bubbleSort,200)">冒泡排序</button>
-<button onclick="int = setInterval(selectionSort,500)">选择排序</button>
-<button onclick="int = setInterval(insertionSort,500)">插入排序</button>
+<div>
+
+##    <button onclick="init()">重置</button>
+
+##    <button onclick="init()">重置</button>
+
+    <button onclick="init()">重置</button>
+
+</div>
+<div>
+    <button onclick="int = setInterval(bubbleSort,200)">冒泡排序</button>
+    <button onclick="int = setInterval(selectionSort,200)">选择排序</button>
+    <button onclick="int = setInterval(insertionSort,500)">插入排序</button>
+</div>
 <script>
 
     var x = new Array();
@@ -33,7 +43,9 @@
             .attr("height",height);
 
     function init() {
-        // $("#sortAlg").delete();
+        SXYL.i=0;
+        SXYL.j=0
+
         svg.selectAll("g").remove();
         x = new Array();
         uuidArray = new Array() ;
@@ -45,7 +57,6 @@
             x.push(randomFrom(3,40)) ;
             uuidArray.push(SXYL.base.uuid()) ;
         }
-
 
         for (var i=0 ;i< x.length ; i++) {
             if(i > 0){
@@ -67,8 +78,6 @@
             return Math.floor(Math.random() * (upperValue - lowerValue + 1) + lowerValue);
         }
     }
-
-
 
     init();
 </script>
@@ -137,29 +146,94 @@
 
     /***
      * 选择排序算法
+     *
+     * 遍历数组
+     * 取值第一个为最小值， 用蓝色表示。
+     *
+     * 遍历剩余数组,
+     * 取每个元素(用黄色表示)的值与最小元素进行比较。
+     * 如果最小值大于遍历的当前的值，则将最小值的标志(蓝色)赋予当前值。
+     * 遍历剩余数组end
+     *
+     * 如果最小元素
      */
     function selectionSort() {
-        var len= x.length, minIndex ;
-        var changeFlag = false ;
-        for(var i = 0; i < len-1; i++){
-            minIndex = i;//记录每次循环的第一个数为该次循环的最小值索引
-            //循环剩余的数组
-            for(var j = i+1; j < len; j++){
-                if(x[j]<x[minIndex]){
-                    minIndex = j;//找到每次循环到的最小值，
-                    changeFlag = true ;
+        var  minIndex ;
+        console.log("sort start");
+        var indexI = SXYL.i;
+        for(var i = indexI ; i < x.length-1; i++){
+            if(SXYL.selectMinIndex ==0){
+                minIndex = i;//记录每次循环的第一个数为该次循环的最小值索引
+            }else{
+                minIndex = SXYL.selectMinIndex;
+            }
+            console.log("minInit start,minIndex =" + minIndex +", minContent=" +x[minIndex]);
+            if(SXYL.j ==0){
+                var minColor =SXYL.d3.changeElementColor(uuidArray[i], "blue") ;
+                if(minColor){
+                    return ;
                 }
             }
-            if(changeFlag){
+            var indexJ = 0 ;
+            if(SXYL.j ==0){
+                indexJ = i+1;
+                SXYL.j = indexJ;
+            }else{
+                indexJ = SXYL.j ;
+            }
+            //循环剩余的数组
+            for(var j = indexJ ; j < x.length ; j++){
+                console.log("compare start j=" + j +",minIndex = " + minIndex+", left =" + x[j] + ",right="+x[minIndex])
+                var compareColor =SXYL.d3.changeElementColor(uuidArray[j], "yellow") ;
+                if(compareColor){
+                    return ;
+                }
+                if(x[j]<x[minIndex]){
+                    var betweenMinColor =SXYL.d3.changeElementColor(uuidArray[minIndex], "red") ;
+                    var afterMinColor =SXYL.d3.changeElementColor(uuidArray[j], "blue") ;
+                    if(betweenMinColor && afterMinColor){
+                        // debugger
+                        // minIndex = j;//找到每次循环到的最小值，
+                        SXYL.selectMinIndex = j ;
+                        SXYL.j++ ;
+                        return ;
+                    }
+                }else{
+                    //将比较的颜色切换回来
+                    var compareColor =SXYL.d3.changeElementColor(uuidArray[j], "red") ;
+                    if(compareColor){
+                        SXYL.j++ ;
+                        return ;
+                    }
+                }
+            }
+            console.log("compare end , minIndex = " + minIndex + ",minContent=" + x[minIndex]);
+            debugger;
+            if(!(i == minIndex)){
+
+                SXYL.d3.changeElementColor(uuidArray[minIndex], "green");
                 //交换位置
                 SXYL.d3.changeElementTransformX(uuidArray[i] , uuidArray[minIndex]);
                 //uuid的数组进行交换
                 SXYL.base.changeArrayElement(uuidArray , minIndex , i);
                 //数组的内容进行交换
                 SXYL.base.changeArrayElement(x,minIndex , i);
+
+                SXYL.j =0 ;
+                SXYL.i++;
+                SXYL.selectMinIndex =0 ;
+                return ;
+            }else{
+                SXYL.d3.changeElementColor(uuidArray[minIndex], "green");
+                SXYL.j =0 ;
+                SXYL.i++;
+                SXYL.selectMinIndex =0 ;
                 return ;
             }
         }
+
+        console.log("sort end")
+        SXYL.d3.changeElementColor(uuidArray[x.length-1], "green");
         window.clearInterval(int);
     }
 

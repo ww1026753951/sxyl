@@ -1,6 +1,7 @@
 SXYL={
     i:0,
     j:0,
+    selectMinIndex:0,
     base:{},
     d3:{}
 }
