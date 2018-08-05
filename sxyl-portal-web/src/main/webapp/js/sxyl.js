@@ -2,7 +2,11 @@ SXYL={
     i:0,
     j:0,
     selectMinIndex:0,
-    insertSortConfig:{},
+    insertSortConfig:{
+        index:false,//插入排序配置项,等待排序元素内容数组 的下标
+        idIndex:false, //插入排序配置项,等待排序元素id数组 的下标
+        changeFlag:false //等待排序元素是否需要变化位置的标志位
+    },
     base:{},
     d3:{}
 }

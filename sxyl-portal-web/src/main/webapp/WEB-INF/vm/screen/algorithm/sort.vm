@@ -241,11 +241,22 @@
      */
     function insertionSort() {
         console.log("sort start , loop array start:");
-        var i,j;
+        var iIndex = SXYL.i ,j = SXYL.j;
+        if(iIndex ==0){
+            iIndex = 1; // mo ren cong 1 kai shi
+        }
+
+
         // var changeFlag = false ;
-        for(i=1;i<x.length;i++){
-            var targetElement = x[i];
-            var targetElementId = uuidArray[i];
+        for(i = iIndex;i<x.length;i++){
+            if(!(SXYL.insertSortConfig.index)){
+                SXYL.insertSortConfig.index = x[i];
+            }
+            if(!(SXYL.insertSortConfig.idIndex)){
+                SXYL.insertSortConfig.idIndex = uuidArray[i];
+            }
+            // var targetElement = ;
+            // var targetElementId = uuidArray[i];
             console.log("选出循环的待排序元素, i = " + i  + ", content = " + x[i]);
             /***
              * 目标标签挪y坐标
@@ -256,10 +267,11 @@
             // rectTarget.transition().duration(50).attr("transform", "translate("+rectTargetMatrix[0]+","+y+")");
 
             console.log("根据已排序好的数组进行循环,start");
+
             for(j = i-1 ;j >= 0;j--){
                 console.log("compare start ,比较等待排序和已排好的元素进行比较, targetI = " + i +",targetContent="+x[i]
                         + ",已排序下标j="+j+",已排序内容,content="+x[j]);
-                if(x[j] > targetElement){
+                if(x[j] > SXYL.insertSortConfig.index){
                     // var rectLeft = d3.select("#" + uuidArray[j+1]) ;
                     // var rectLeftMatrix = SXYL.d3.getTranslation(rectLeft.attr("transform"));
                     // var leftx = parseInt(rectLeftMatrix[0]) + 40;
@@ -267,7 +279,7 @@
                     uuidArray[j+1] = uuidArray[j];
                     x[j+1]=x[j];
                     console.log("compare end,need swap , 需要目标的下标=" + j + ",移动过后下标="+ (j+1));
-                    SXYL.selectMinIndex = true ;
+                    SXYL.insertSortConfig.changeFlag = true ;
                     // changeFlag = true ;
                 }else {
                     break;
@@ -275,17 +287,25 @@
             }
             console.log("根据已排序好的数组进行循环,end , j = " + j );
 
-            if(SXYL.selectMinIndex){
+            if(SXYL.insertSortConfig.changeFlag){
                 console.log("插入目标元素,changeFlag=true，targetElement="
-                        + x[i] + ",位置是="+(j+1))
-                uuidArray[j+1] = targetElementId;
-                x[j+1] = targetElement;
-                SXYL.selectMinIndex = false ;
+                        + SXYL.insertSortConfig.index + ",位置是="+(j+1))
+                uuidArray[j+1] = SXYL.insertSortConfig.idIndex;
+                x[j+1] = SXYL.insertSortConfig.index;
+
+                SXYL.insertSortConfig.idIndex=false;
+                SXYL.insertSortConfig.index=false;
+                SXYL.insertSortConfig.changeFlag = false ;
+                SXYL.i++;
                 return ;
             }else {
-                SXYL.selectMinIndex = false ;
+                SXYL.insertSortConfig.idIndex=false;
+                SXYL.insertSortConfig.index=false;
+                SXYL.insertSortConfig.changeFlag = false ;
                 console.log("插入目标元素，changeFlag=false，targetElement="
-                        + x[i] + " ,不需要变化,x=" + x)
+                        + x[i] + " ,不需要变化,x=" + x);
+                SXYL.i++;
+                return;
             }
         }
 
