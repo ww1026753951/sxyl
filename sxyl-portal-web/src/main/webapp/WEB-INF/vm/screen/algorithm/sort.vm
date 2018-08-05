@@ -240,12 +240,13 @@
      * 插入排序
      */
     function insertionSort() {
+        console.log("sort start , loop array start:");
         var i,j;
-        var changeFlag = false ;
+        // var changeFlag = false ;
         for(i=1;i<x.length;i++){
             var targetElement = x[i];
             var targetElementId = uuidArray[i];
-
+            console.log("选出循环的待排序元素, i = " + i  + ", content = " + x[i]);
             /***
              * 目标标签挪y坐标
              * **/
@@ -254,27 +255,42 @@
             // var y = parseInt(rectTargetMatrix[1])+200;
             // rectTarget.transition().duration(50).attr("transform", "translate("+rectTargetMatrix[0]+","+y+")");
 
+            console.log("根据已排序好的数组进行循环,start");
             for(j = i-1 ;j >= 0;j--){
+                console.log("compare start ,比较等待排序和已排好的元素进行比较, targetI = " + i +",targetContent="+x[i]
+                        + ",已排序下标j="+j+",已排序内容,content="+x[j]);
                 if(x[j] > targetElement){
                     // var rectLeft = d3.select("#" + uuidArray[j+1]) ;
                     // var rectLeftMatrix = SXYL.d3.getTranslation(rectLeft.attr("transform"));
                     // var leftx = parseInt(rectLeftMatrix[0]) + 40;
                     // rectLeft.transition().duration(50).attr("transform", "translate("+ leftx +","+rectLeftMatrix[1]+")");
-
                     uuidArray[j+1] = uuidArray[j];
                     x[j+1]=x[j];
-                    changeFlag = true ;
+                    console.log("compare end,need swap , 需要目标的下标=" + j + ",移动过后下标="+ (j+1));
+                    SXYL.selectMinIndex = true ;
+                    // changeFlag = true ;
                 }else {
                     break;
                 }
             }
-            if(changeFlag){
+            console.log("根据已排序好的数组进行循环,end , j = " + j );
+
+            if(SXYL.selectMinIndex){
+                console.log("插入目标元素,changeFlag=true，targetElement="
+                        + x[i] + ",位置是="+(j+1))
                 uuidArray[j+1] = targetElementId;
                 x[j+1] = targetElement;
+                SXYL.selectMinIndex = false ;
                 return ;
+            }else {
+                SXYL.selectMinIndex = false ;
+                console.log("插入目标元素，changeFlag=false，targetElement="
+                        + x[i] + " ,不需要变化,x=" + x)
             }
         }
+
         debugger
+        console.log("sort end");
         window.clearInterval(int);
     }
 
