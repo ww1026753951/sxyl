@@ -20,7 +20,7 @@ public class PortalController extends BaseController {
      */
     @RequestMapping("portal")
     public String portal() throws Exception{
-        return "/screen/portal-demo";
+        return "/screen/portal-org";
     }
 
 

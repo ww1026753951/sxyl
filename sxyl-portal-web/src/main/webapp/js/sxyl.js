@@ -1,11 +1,22 @@
 SXYL={
-    i:0,
-    j:0,
+    i:undefined,
+    j:undefined,
     selectMinIndex:0,
     insertSortConfig:{
-        index:false,//插入排序配置项,等待排序元素内容数组 的下标
-        idIndex:false, //插入排序配置项,等待排序元素id数组 的下标
-        changeFlag:false //等待排序元素是否需要变化位置的标志位
+        index:0,//目标等待排序的下标
+        indexContent:false,//插入排序配置项,等待排序元素内容数组 的下标
+        idIndexContent:false, //插入排序配置项,等待排序元素id数组 的下标
+        // indexContent:false,//插入排序配置项,等待排序元素内容数组 的内容
+        // idIndexContent:false, //插入排序配置项,等待排序元素id数组 的内容
+
+        indexFlag:false //等待排序元素的下标位置
+    },
+    quickSortConfig:{
+        // left:undefined,
+        // right:undefined,
+        partitionIndex : undefined, //
+        partitionFinishFlag : false,// default false， 默认为false，意识是未完成,需要进行比较找位置 ,  true为比较结束,由比较循环结束后置换为true
+        recursiveStack:[] //快速排序递归的栈结构
     },
     base:{},
     d3:{}

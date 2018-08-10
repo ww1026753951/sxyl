@@ -16,17 +16,22 @@
 <body>
 <div>
 
-##    <button onclick="init()">重置</button>
+    <button onclick="pause()" style="color: red">暂停</button>
 
-##    <button onclick="init()">重置</button>
+    <button onclick="play()" style="color: red">继续</button>
 
     <button onclick="init()">重置</button>
 
 </div>
 <div>
-    <button onclick="int = setInterval(bubbleSort,200)">冒泡排序</button>
-    <button onclick="int = setInterval(selectionSort,200)">选择排序</button>
-    <button onclick="int = setInterval(insertionSort,500)">插入排序</button>
+    <button onclick="int = setInterval(bubbleSort, 200)">冒泡排序</button>
+    <button onclick="int = setInterval(selectionSort, 200)">选择排序</button>
+    <button onclick="int = setInterval(insertionSort, 200)">插入排序</button>
+    <button onclick="int = setInterval(quickSort, 200)">快速排序</button>
+    <button onclick="int = setInterval(mergeSort, 200)">归并排序</button>
+</div>
+<div>
+    <button onclick="int = setInterval(bubbleSort,200)" style="color: red">鸡尾酒排序</button>
 </div>
 <script>
 
@@ -43,14 +48,13 @@
             .attr("height",height);
 
     function init() {
-        SXYL.i=0;
-        SXYL.j=0
-
+        SXYL.i = undefined ;
+        SXYL.j = undefined ;
         svg.selectAll("g").remove();
         x = new Array();
         uuidArray = new Array() ;
 
-        var arrayLength = 10;
+        var arrayLength = 12;
         //起始位置,距屏幕左侧距离
         var circleLeft = 100 ;
         for (var i =0 ; i<arrayLength; i++ ){
@@ -78,7 +82,6 @@
             return Math.floor(Math.random() * (upperValue - lowerValue + 1) + lowerValue);
         }
     }
-
     init();
 </script>
 
@@ -89,8 +92,16 @@
     function bubbleSort() {
         console.log("start");
         var iIndex = SXYL.i ;
+        if(iIndex == undefined){
+            iIndex = 0 ;
+            SXYL.i = 0
+        }
         for (var i = iIndex ; i < x.length ; i++) {
             var jIndex = SXYL.j ;
+            if(jIndex == undefined) {
+                jIndex = 0 ;
+                SXYL.j = 0 ;
+            }
             for(var j = jIndex ; j < x.length - 1 -i ; j++){
                 console.log("compare index,i="+i+",j="+j+" , a = " + x[j] + ", b = " + x[j+1]);
                 //变换颜色
@@ -113,7 +124,7 @@
 
                     if(j == x.length - 2 - i){//如果是最后一位
                         SXYL.d3.changeElementColor(uuidArray[j+1], "green");
-                        SXYL.j = 0;
+                        SXYL.j = undefined;
                         SXYL.i++;
                     }else{
                         SXYL.j++ ;
@@ -126,7 +137,7 @@
                     console.log("compare end  no change , a = " + x[j] + ",b = " + x[j+1])
                     if(j == x.length - 2 - i){
                         SXYL.d3.changeElementColor(uuidArray[j+1], "green");
-                        SXYL.j = 0;
+                        SXYL.j = undefined;
                         SXYL.i++;
                     }else{
                         SXYL.j++;
@@ -161,6 +172,10 @@
         var  minIndex ;
         console.log("sort start");
         var indexI = SXYL.i;
+        if(indexI == undefined){
+            indexI = 0 ;
+            SXYL.i = 0 ;
+        }
         for(var i = indexI ; i < x.length-1; i++){
             if(SXYL.selectMinIndex ==0){
                 minIndex = i;//记录每次循环的第一个数为该次循环的最小值索引
@@ -168,14 +183,14 @@
                 minIndex = SXYL.selectMinIndex;
             }
             console.log("minInit start,minIndex =" + minIndex +", minContent=" +x[minIndex]);
-            if(SXYL.j ==0){
+            if(SXYL.j == undefined){
                 var minColor =SXYL.d3.changeElementColor(uuidArray[i], "blue") ;
                 if(minColor){
                     return ;
                 }
             }
             var indexJ = 0 ;
-            if(SXYL.j ==0){
+            if(SXYL.j == undefined){
                 indexJ = i+1;
                 SXYL.j = indexJ;
             }else{
@@ -218,13 +233,13 @@
                 //数组的内容进行交换
                 SXYL.base.changeArrayElement(x,minIndex , i);
 
-                SXYL.j =0 ;
+                SXYL.j = undefined ;
                 SXYL.i++;
                 SXYL.selectMinIndex =0 ;
                 return ;
             }else{
                 SXYL.d3.changeElementColor(uuidArray[minIndex], "green");
-                SXYL.j =0 ;
+                SXYL.j = undefined ;
                 SXYL.i++;
                 SXYL.selectMinIndex =0 ;
                 return ;
@@ -240,80 +255,363 @@
      * 插入排序
      */
     function insertionSort() {
-        console.log("sort start , loop array start:");
-        var iIndex = SXYL.i ,j = SXYL.j;
-        if(iIndex ==0){
-            iIndex = 1; // mo ren cong 1 kai shi
+        /**
+         * 初始化第一个柱子为绿色
+         * *
+         **/
+        if(SXYL.i == undefined){
+            SXYL.d3.changeElementColor(uuidArray[0], "green") ;
         }
 
+        console.log("sort start , loop array start:x="+x);
+        var iIndex = SXYL.i ,jIndex = SXYL.j;
+        if(iIndex == undefined){
+            SXYL.i = 1; // 默认从1开始
+            iIndex = 1; // 默认从1 开始
+        }
+        if(jIndex == undefined) {
+            jIndex = 0;
+        }
+        if(jIndex == x.length){
+            jIndex = iIndex - 1 ;
+            SXYL.j = iIndex - 1;
+        }
 
         // var changeFlag = false ;
-        for(i = iIndex;i<x.length;i++){
-            if(!(SXYL.insertSortConfig.index)){
-                SXYL.insertSortConfig.index = x[i];
+        for(var i = iIndex;i<x.length;i++){
+            if(!(SXYL.insertSortConfig.indexContent)){
+                SXYL.insertSortConfig.index = i ;
+                SXYL.insertSortConfig.indexContent = x[i];
             }
-            if(!(SXYL.insertSortConfig.idIndex)){
-                SXYL.insertSortConfig.idIndex = uuidArray[i];
+            if(!(SXYL.insertSortConfig.idIndexContent)){
+                SXYL.insertSortConfig.idIndexContent = uuidArray[i];
             }
-            // var targetElement = ;
-            // var targetElementId = uuidArray[i];
-            console.log("选出循环的待排序元素, i = " + i  + ", content = " + x[i]);
+            if( SXYL.insertSortConfig.indexFlag == -1){
+                SXYL.insertSortConfig.indexFlag = iIndex -1 ;
+            }
+            console.log("选出循环的待排序元素, i = " + i  + ", content = " + SXYL.insertSortConfig.indexContent);
             /***
              * 目标标签挪y坐标
              * **/
-            // var rectTarget = d3.select("#" + uuidArray[i]) ;
-            // var rectTargetMatrix = SXYL.d3.getTranslation(rectTarget.attr("transform"));
-            // var y = parseInt(rectTargetMatrix[1])+200;
-            // rectTarget.transition().duration(50).attr("transform", "translate("+rectTargetMatrix[0]+","+y+")");
+            console.log("SXYL.insertSortConfig.index = "+ SXYL.insertSortConfig.index);
+            var targetColor =SXYL.d3.changeElementColor(SXYL.insertSortConfig.idIndexContent, "blue") ;
+            if(targetColor){
+                var rectTarget = d3.select("#" + SXYL.insertSortConfig.idIndexContent) ;
+                var rectTargetMatrix = SXYL.d3.getTranslation(rectTarget.attr("transform"));
+                var y = parseInt(rectTargetMatrix[1]) + 240;
+                rectTarget.transition().duration(50).attr("transform", "translate("+rectTargetMatrix[0]+","+y+")");
+                return;
+            }
 
             console.log("根据已排序好的数组进行循环,start");
 
-            for(j = i-1 ;j >= 0;j--){
-                console.log("compare start ,比较等待排序和已排好的元素进行比较, targetI = " + i +",targetContent="+x[i]
+            for(var j = jIndex ;j >= 0;j--){
+                console.log("compare start ,比较等待排序和已排好的元素进行比较, targetI = " + i +",targetContent="+ SXYL.insertSortConfig.indexContent
                         + ",已排序下标j="+j+",已排序内容,content="+x[j]);
-                if(x[j] > SXYL.insertSortConfig.index){
-                    // var rectLeft = d3.select("#" + uuidArray[j+1]) ;
-                    // var rectLeftMatrix = SXYL.d3.getTranslation(rectLeft.attr("transform"));
-                    // var leftx = parseInt(rectLeftMatrix[0]) + 40;
-                    // rectLeft.transition().duration(50).attr("transform", "translate("+ leftx +","+rectLeftMatrix[1]+")");
+                if(x[j] > SXYL.insertSortConfig.indexContent){
+                    ///向右移动40个像素
+                    var rectLeft = d3.select("#" + uuidArray[j]) ;
+                    var rectLeftMatrix = SXYL.d3.getTranslation(rectLeft.attr("transform"));
+                    var leftx = parseInt(rectLeftMatrix[0]) + 40;
+                    rectLeft.transition().duration(50).attr("transform", "translate("+ leftx +","+rectLeftMatrix[1]+")");
+                    //移动结束
                     uuidArray[j+1] = uuidArray[j];
                     x[j+1]=x[j];
                     console.log("compare end,need swap , 需要目标的下标=" + j + ",移动过后下标="+ (j+1));
-                    SXYL.insertSortConfig.changeFlag = true ;
-                    // changeFlag = true ;
+                    SXYL.j--;
+                    SXYL.insertSortConfig.indexFlag = j;
+                    return ;
                 }else {
-                    break;
+                    SXYL.insertSortConfig.indexFlag = j +1;
+                    SXYL.j =-1;
+                    return ;
                 }
             }
-            console.log("根据已排序好的数组进行循环,end , j = " + j );
+            console.log("根据已排序好的数组进行循环,end , SXYL.insertSortConfig.indexFlag = " + SXYL.insertSortConfig.indexFlag+", iIndex = " +iIndex );
 
-            if(SXYL.insertSortConfig.changeFlag){
+            if(SXYL.insertSortConfig.indexFlag >= 0 ){
                 console.log("插入目标元素,changeFlag=true，targetElement="
-                        + SXYL.insertSortConfig.index + ",位置是="+(j+1))
-                uuidArray[j+1] = SXYL.insertSortConfig.idIndex;
-                x[j+1] = SXYL.insertSortConfig.index;
+                        + SXYL.insertSortConfig.indexContent + ",位置是="+(SXYL.insertSortConfig.indexFlag));
+                //上次循环的值
+                uuidArray[SXYL.insertSortConfig.indexFlag] = SXYL.insertSortConfig.idIndexContent;
+                x[SXYL.insertSortConfig.indexFlag] = SXYL.insertSortConfig.indexContent;
 
-                SXYL.insertSortConfig.idIndex=false;
-                SXYL.insertSortConfig.index=false;
-                SXYL.insertSortConfig.changeFlag = false ;
+                //目标向左移动40个像素,
+                var rectLeft = d3.select("#" + SXYL.insertSortConfig.idIndexContent) ;
+                var rectLeftMatrix = SXYL.d3.getTranslation(rectLeft.attr("transform"));
+                var leftx = parseInt(rectLeftMatrix[0]) - (SXYL.insertSortConfig.index - SXYL.insertSortConfig.indexFlag)*40;
+                var y = parseInt(rectLeftMatrix[1]) - 240;
+                rectLeft.transition().duration(50).attr("transform", "translate("+ leftx +","+ y +")");
+                SXYL.d3.changeElementColor(SXYL.insertSortConfig.idIndexContent, "green");
+
+
+                SXYL.insertSortConfig.idIndexContent = false;
+                SXYL.insertSortConfig.indexContent = false;
+                SXYL.insertSortConfig.indexFlag = -1 ;
                 SXYL.i++;
+                SXYL.j = x.length;//j的值通过x的长度进行处理
                 return ;
             }else {
-                SXYL.insertSortConfig.idIndex=false;
-                SXYL.insertSortConfig.index=false;
-                SXYL.insertSortConfig.changeFlag = false ;
                 console.log("插入目标元素，changeFlag=false，targetElement="
-                        + x[i] + " ,不需要变化,x=" + x);
+                        + SXYL.insertSortConfig.indexContent + " ,不需要变化,下标=" + SXYL.insertSortConfig.indexFlag);
+
+                uuidArray[SXYL.insertSortConfig.indexFlag] = SXYL.insertSortConfig.idIndexContent;
+                x[SXYL.insertSortConfig.indexFlag] = SXYL.insertSortConfig.indexContent;
+
+                SXYL.insertSortConfig.idIndexContent = false;
+                SXYL.insertSortConfig.indexContent = false;
+                SXYL.insertSortConfig.indexFlag = -1 ;
                 SXYL.i++;
+                SXYL.j = x.length;//j的值通过x的长度进行处理
                 return;
             }
         }
 
-        debugger
-        console.log("sort end");
+        console.log("sort end,x="+x);
         window.clearInterval(int);
     }
+    
+    /*******
+     *
+     * 快速排序
+     *
+     * */
+    function quickSort() {
+        var stack = getStackTop();
+        var left , right ;
+        if(stack == undefined){
+            left = 0 ;
+            right = x.length -1;
+        }else {
+            left = stack[0];
+            right = stack[1];
+        }
+        var result = quickSortStart(x , left , right);
+        if(result == undefined){
+            //靠递归栈来判断是否都处理完成
+            if(SXYL.quickSortConfig.recursiveStack.length == 0){
+                window.clearInterval(int);
+            }
+            return ;
+        }
+        debugger
+        /***
+         * 数组，左侧下标，右侧下标
+         * @param arr
+         * @param left
+         * @param right
+         * @return {*}
+         */
+        function quickSortStart(arr, left, right){
+            putStack(left , right) ;
+            var pivot, partitionIndex;
+            if(left < right){
+                pivot = right;
+                //分割位置
+                partitionIndex = partition( pivot, left, right);
+                //通过返回标志位判断是否为子方法结束
+                if(partitionIndex == undefined){
+                    return;
+                }else{
+                    SXYL.quickSortConfig.partitionIndex = undefined ;//方法出来后将 全局的位置标识 置为undified
+                }
+                debugger
+                popStack();
+                //先放置右侧再放置左侧
+                putStack(partitionIndex + 1, right);
+                putStack(left , partitionIndex - 1);
+                return ;
+                //sort left and right
+                // quickSortStart(arr, left, partitionIndex - 1);
+                // quickSortStart(arr, partitionIndex + 1, right);
+            }else{
+                var compareColor = SXYL.d3.changeElementColor(uuidArray[left], "green") ;
+                if(compareColor){
+                    return ;
+                }
+            }
+            //方法结束后将递归栈的第一个内容弹出。
+            popStack();
+            return ;
+        }
 
+        function partition( pivot, left, right){
+            if(SXYL.quickSortConfig.partitionFinishFlag){
+                SXYL.quickSortConfig.partitionFinishFlag = false ;
+                return SXYL.quickSortConfig.partitionIndex;
+            }
+            var pivotValue = x[pivot];
+
+            //将比较元素置换成为蓝色
+            if(SXYL.d3.changeElementColor(uuidArray[pivot], "blue")){
+                return ;
+            }
+
+            //todo 注:这里有坑,后期有时间优化,建议统一用undified做标识
+            var iIndex = SXYL.i;
+            if(iIndex == undefined){
+                iIndex = left;
+                SXYL.i = left;
+            }
+            if(SXYL.quickSortConfig.partitionIndex == undefined){
+                SXYL.quickSortConfig.partitionIndex = left;
+            }
+
+            for(var i = iIndex; i < right; i++){
+
+                //将比较的颜色置换为黄色
+                if(SXYL.d3.changeElementColor(uuidArray[i], "yellow")){
+                    return ;
+                }
+                if(x[i] < pivotValue){
+                    //变换颜色,将颜色换成红色,后期考虑换成别的颜色
+                    SXYL.d3.changeElementColor(uuidArray[i], "purple");
+
+                    //比较数组内容进行交换
+                    SXYL.base.changeArrayElement(x, i, SXYL.quickSortConfig.partitionIndex);
+                    //元素交换位置
+                    SXYL.d3.changeElementTransformX(uuidArray[i] , uuidArray[SXYL.quickSortConfig.partitionIndex]);
+                    //uuid的数组进行交换
+                    SXYL.base.changeArrayElement(uuidArray, i, SXYL.quickSortConfig.partitionIndex);
+                    SXYL.quickSortConfig.partitionIndex++;
+                    SXYL.i++;
+                    //将比较的颜色置换回红色
+                    // SXYL.d3.changeElementColor(uuidArray[i], "red")
+                    //     return ;
+                    // }
+                    return ;
+                }else {
+                    SXYL.i++;
+                    //将比较的颜色置换回红色
+                    SXYL.d3.changeElementColor(uuidArray[i], "purple") //){
+                    //     return ;
+                    // }
+                    return;
+                }
+            }
+            SXYL.i = undefined ;//循环后将循环标志位置成undified
+            var finishColor = SXYL.d3.changeElementColor(uuidArray[right], "green") ;
+            if(finishColor){
+                //比较数组内容进行交换
+                SXYL.base.changeArrayElement(x, right, SXYL.quickSortConfig.partitionIndex);
+                //元素交换位置,调试使用,之后去掉
+                // if(SXYL.quickSortConfig.partitionIndex == undefined){
+                //     debugger
+                // }
+                SXYL.d3.changeElementTransformX(uuidArray[right], uuidArray[SXYL.quickSortConfig.partitionIndex]);
+                //uuid的数组进行交换
+                SXYL.base.changeArrayElement(uuidArray, right, SXYL.quickSortConfig.partitionIndex);
+                // return SXYL.quickSortConfig.partitionIndex;
+                resetColor();
+            }else {
+                console("compare error ,pivot="+pivot + " , left = " + left+",right = " + right);
+            }
+            //将获取位置的标志位置换成为true
+            SXYL.quickSortConfig.partitionFinishFlag = true;
+            return ;
+        }
+
+
+
+        /***
+         * 压栈处理
+         * @param left
+         * @param right
+         */
+        function putStack(left,right) {
+            var topStack = getStackTop();
+            if(topStack == undefined) {
+                var stack=new Array();
+                stack.push(left) ;
+                stack.push(right) ;
+                SXYL.quickSortConfig.recursiveStack.push(stack);
+                return ;
+            }
+            if(topStack[0] != left || topStack[1] != right){
+                var stack=new Array();
+                stack.push(left) ;
+                stack.push(right) ;
+                SXYL.quickSortConfig.recursiveStack.push(stack);
+                return ;
+            }
+        }
+
+
+        function getStackTop() {
+            if(SXYL.quickSortConfig.recursiveStack.length>0) {
+                var topStack = SXYL.quickSortConfig.recursiveStack[SXYL.quickSortConfig.recursiveStack.length - 1];
+                return topStack ;
+            }
+            return ;
+        }
+
+        function popStack() {
+            if(SXYL.quickSortConfig.recursiveStack.length>0) {
+                SXYL.quickSortConfig.recursiveStack.pop();
+            }
+            return ;
+        }
+
+        function resetColor(){
+            var array = SXYL.quickSortConfig.recursiveStack;
+            for (var i = 0 ; i <array.length ; i++){
+                var stack = SXYL.quickSortConfig.recursiveStack[i];
+                for (var j = stack[0] ; j < stack[1] - stack[0] ; j++){
+                   //靠绿色判断是否已经排好序,后期可以优化
+                    if(SXYL.d3.changeElementColor(uuidArray[j], "green")){
+                        SXYL.d3.changeElementColor(uuidArray[j], "red");
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+    /*******
+     *
+     * 归并排序
+     *
+     * */
+    function mergeSort() {
+        debugger
+        mergeSortArray(x)
+
+        function mergeSortArray(arr){
+            var len = arr.length;
+            if(len <2){
+                return arr;
+            }
+            var mid = Math.floor(len/2),
+                    left = arr.slice(0,mid),
+                    right =arr.slice(mid);
+            //send left and right to the mergeSort to broke it down into pieces
+            //then merge those
+            var r = merge(mergeSortArray(left),mergeSortArray(right)) ;
+            debugger
+            return r;
+        }
+
+        function merge(left, right){
+            var result = [],
+                    lLen = left.length,
+                    rLen = right.length,
+                    l = 0,
+                    r = 0;
+            while(l < lLen && r < rLen){
+                if(left[l] < right[r]){
+                    result.push(left[l++]);
+                }
+                else{
+                    result.push(right[r++]);
+                }
+            }
+            return result.concat(left.slice(l)).concat(right.slice(r));
+        }
+
+
+    }
 
 </script>
 </body>
