@@ -403,6 +403,7 @@
          * @return {*}
          */
         function quickSortStart(arr, left, right){
+            //步骤a
             putStack(left , right) ;
             var pivot, partitionIndex;
             if(left < right){
@@ -415,7 +416,8 @@
                 }else{
                     SXYL.quickSortConfig.partitionIndex = undefined ;//方法出来后将 全局的位置标识 置为undified
                 }
-                debugger
+                debugger;
+                //可能有错误，有点忘记了, 将步骤a的压栈操作进行出栈
                 popStack();
                 //先放置右侧再放置左侧
                 putStack(partitionIndex + 1, right);
@@ -464,7 +466,7 @@
                     return ;
                 }
                 if(x[i] < pivotValue){
-                    //变换颜色,将颜色换成红色,后期考虑换成别的颜色
+                    //变换颜色,将颜色换成紫色,后期考虑换成别的颜色
                     SXYL.d3.changeElementColor(uuidArray[i], "purple");
 
                     //比较数组内容进行交换
@@ -475,17 +477,11 @@
                     SXYL.base.changeArrayElement(uuidArray, i, SXYL.quickSortConfig.partitionIndex);
                     SXYL.quickSortConfig.partitionIndex++;
                     SXYL.i++;
-                    //将比较的颜色置换回红色
-                    // SXYL.d3.changeElementColor(uuidArray[i], "red")
-                    //     return ;
-                    // }
                     return ;
                 }else {
                     SXYL.i++;
-                    //将比较的颜色置换回红色
-                    SXYL.d3.changeElementColor(uuidArray[i], "purple") //){
-                    //     return ;
-                    // }
+                    //将比较的颜色置换回紫色
+                    SXYL.d3.changeElementColor(uuidArray[i], "purple")
                     return;
                 }
             }
@@ -494,10 +490,6 @@
             if(finishColor){
                 //比较数组内容进行交换
                 SXYL.base.changeArrayElement(x, right, SXYL.quickSortConfig.partitionIndex);
-                //元素交换位置,调试使用,之后去掉
-                // if(SXYL.quickSortConfig.partitionIndex == undefined){
-                //     debugger
-                // }
                 SXYL.d3.changeElementTransformX(uuidArray[right], uuidArray[SXYL.quickSortConfig.partitionIndex]);
                 //uuid的数组进行交换
                 SXYL.base.changeArrayElement(uuidArray, right, SXYL.quickSortConfig.partitionIndex);
@@ -573,32 +565,95 @@
      *
      * 归并排序
      *
+     * todo  如何构建递归结构 ,将每次打散拆分的结构放入数组中
+     *
      * */
     function mergeSort() {
         debugger
-        mergeSortArray(x)
+        //从堆栈数组里获取数据,如果为undified 则将数组赋值为全局变量
+        // var array = getStackTop() ;
+        if( SXYL.mergeSortConfig.recursiveStack.length == 0 ){
+            //将数组的各个元素打散
+            var result = mergeSortArray(0 , x.length, x) ;
+        }
+        //循环栈内各个元素 , 进行合并操作
 
-        function mergeSortArray(arr){
-            var len = arr.length;
-            if(len <2){
-                return arr;
-            }
-            var mid = Math.floor(len/2),
-                    left = arr.slice(0,mid),
-                    right =arr.slice(mid);
-            //send left and right to the mergeSort to broke it down into pieces
-            //then merge those
-            var r = merge(mergeSortArray(left),mergeSortArray(right)) ;
-            debugger
-            return r;
+        debugger
+        for (var i = 0 ; i < SXYL.mergeSortConfig.recursiveStack.length ; i++ ){
+            var stackContent = SXYL.mergeSortConfig.recursiveStack[i] ;
+
+
+
         }
 
-        function merge(left, right){
-            var result = [],
-                    lLen = left.length,
-                    rLen = right.length,
-                    l = 0,
-                    r = 0;
+
+
+        var r = merge(leftArray, rightArray) ;
+        if(result == undefined){
+            return ;
+        }else{
+            window.clearInterval(int);
+        }
+
+
+
+
+        debugger
+
+        // if(result == undefined){
+        //     return ;
+        // }else{
+        //     window.clearInterval(int);
+        // }
+
+        function mergeSortArray(leftIndex , rightIndex , arr){
+            putStack(leftIndex , rightIndex , arr);
+
+            debugger
+            var len = arr.length;
+            if(len <2){//说明只剩下一个元素
+                return arr;
+            }
+
+            var mid = Math.floor(len/2);//截取数组的下标记
+            var left = arr.slice(0, mid ) ;//左侧下标截取后的数组
+            var right =arr.slice(mid, len );//右侧下表截取后的数组
+
+            debugger
+            //send left and right to the mergeSort to broke it down into pieces
+            //then merge those
+            var leftArray = mergeSortArray(leftIndex , leftIndex + mid - 1 , left);
+            ///如果undified , 说明刚执行完动画,需要退出
+            // if(leftArray == undefined) {
+            //     return ;
+            // }
+            var rightArray = mergeSortArray(leftIndex + mid ,  leftIndex + len - 1 , right);
+
+
+            var groupArray = new Array() ;
+            groupArray.push(leftIndex) ;
+            groupArray.push(leftIndex + mid - 1) ;
+            groupArray.push(leftIndex + mid) ;
+            groupArray.push(leftIndex + len - 1 ) ;
+            groupArray.push(leftArray) ;
+            groupArray.push(rightArray) ;
+            SXYL.mergeSortConfig.recursiveGroupStack.push(groupArray);
+            ///如果undified , 说明刚执行完动画,需要退出
+            // if(rightArray == undefined) {
+            //     return ;
+            // }
+
+            // var r = merge(leftArray, rightArray) ;
+            // debugger;
+            // return r;
+        }
+
+        function merge(leftStart , leftEnd , rightStart , rightEnd , left, right){
+            var result = [];
+            var lLen = left.length;//左侧数组长度
+            var rLen = right.length;//右侧数组长度
+            var l = 0;//左侧数组下标
+            var r = 0;//右侧数组下标
             while(l < lLen && r < rLen){
                 if(left[l] < right[r]){
                     result.push(left[l++]);
@@ -611,6 +666,53 @@
         }
 
 
+
+
+
+        /*****
+         * 压栈操作
+         * @param left
+         * @param right
+         */
+        function putStack(left, right, arr) {
+            var topStack = getStackTop();
+            if(topStack == undefined) {
+                var stack=new Array();
+                stack.push(left) ;
+                stack.push(right) ;
+                stack.push(arr) ;
+                SXYL.mergeSortConfig.recursiveStack.push(stack);
+                return ;
+            }
+            if(topStack[0] != left || topStack[1] != right){
+                var stack=new Array();
+                stack.push(left) ;
+                stack.push(right) ;
+                stack.push(arr) ;
+                SXYL.mergeSortConfig.recursiveStack.push(stack);
+                return ;
+            }
+        }
+        /*****
+         * 获取第一层栈信息
+         * @returns {*}
+         */
+        function getStackTop() {
+            if(SXYL.mergeSortConfig.recursiveStack.length>0) {
+                var topStack = SXYL.mergeSortConfig.recursiveStack[SXYL.mergeSortConfig.recursiveStack.length - 1];
+                return topStack ;
+            }
+            return ;
+        }
+        /*****
+         * 出栈操作
+         */
+        function popStack() {
+            if(SXYL.mergeSortConfig.recursiveStack.length>0) {
+                SXYL.mergeSortConfig.recursiveStack.pop();
+            }
+            return ;
+        }
     }
 
 </script>

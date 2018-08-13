@@ -12,14 +12,19 @@ SXYL={
         indexFlag:false //等待排序元素的下标位置
     },
     quickSortConfig:{
-        // left:undefined,
-        // right:undefined,
         partitionIndex : undefined, //
         partitionFinishFlag : false,// default false， 默认为false，意识是未完成,需要进行比较找位置 ,  true为比较结束,由比较循环结束后置换为true
         recursiveStack:[] //快速排序递归的栈结构
     },
+    //归并排序的全局变量
+    mergeSortConfig:{
+        recursiveStack:[] , //归并排序的递归栈结构,里面存储三个元素,数组左下标,数组右下标,分割后的数组内容
+        recursiveGroupStack:[] //归并排序的分组 结构
+    },
     base:{},
-    d3:{}
+    d3:{
+        defaultY: 240//默认y轴坐标
+    }
 }
 
 /***
@@ -124,11 +129,23 @@ SXYL.d3.changeElementColor = function (id , color) {
         element.style("fill",color);
         return true;
     }
+}
 
 
-    // var rectRight = d3.select("#" + idB) ;
-    // var rectLeftMatrix = SXYL.d3.getTranslation(rectLeft.attr("transform"));
-    // var rectRightMatrix = SXYL.d3.getTranslation(rectRight.attr("transform"));
-    // rectLeft.transition().duration(50).attr("transform", "translate("+rectRightMatrix[0]+","+rectLeftMatrix[1]+")");
-    // rectRight.transition().duration(50).attr("transform", "translate("+rectLeftMatrix[0]+","+rectRightMatrix[1]+")");
+
+/***
+ * 变更颜色
+ * @param idA 元素id
+ * @param color 颜色
+ * @return true 替换成功   false 替换失败,组件为原有颜色
+ */
+SXYL.d3.changeElementY = function (id , y) {
+    var rectTarget = d3.select("#" + id) ;
+    var rectTargetMatrix = SXYL.d3.getTranslation(rectTarget.attr("transform"));
+    debugger
+    if(!y){
+        y = SXYL.d3.defaultY ;
+    }
+    y = parseInt(rectTargetMatrix[1]) + y;
+    rectTarget.transition().duration(50).attr("transform", "translate("+rectTargetMatrix[0]+","+y+")");
 }
