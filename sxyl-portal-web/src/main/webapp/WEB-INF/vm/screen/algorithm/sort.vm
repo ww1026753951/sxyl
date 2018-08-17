@@ -24,11 +24,11 @@
 
 </div>
 <div>
-    <button onclick="int = setInterval(bubbleSort, 200)">冒泡排序</button>
-    <button onclick="int = setInterval(selectionSort, 200)">选择排序</button>
-    <button onclick="int = setInterval(insertionSort, 200)">插入排序</button>
-    <button onclick="int = setInterval(quickSort, 200)">快速排序</button>
-    <button onclick="int = setInterval(mergeSort, 200)">归并排序</button>
+    <button onclick="int = setInterval(bubbleSort, 500)">冒泡排序</button>
+    <button onclick="int = setInterval(selectionSort, 500)">选择排序</button>
+    <button onclick="int = setInterval(insertionSort, 500)">插入排序</button>
+    <button onclick="int = setInterval(quickSort, 500)">快速排序</button>
+    <button onclick="int = setInterval(mergeSort, 500)">归并排序</button>
 </div>
 <div>
     <button onclick="int = setInterval(bubbleSort,200)" style="color: red">鸡尾酒排序</button>
@@ -39,7 +39,7 @@
     var uuidArray = new Array() ;
 
     //画布大小
-    var width = 2000, height = 2000;
+    var width = 1800, height = 700;
     // 在body里添加一个SVG画布
     var svg = d3.select("body")
             .append("svg")
@@ -48,13 +48,16 @@
             .attr("height",height);
 
     function init() {
-        SXYL.i = undefined ;
-        SXYL.j = undefined ;
+
+        sortInit();
+
+        window.clearInterval(int);
+
         svg.selectAll("g").remove();
         x = new Array();
         uuidArray = new Array() ;
 
-        var arrayLength = 12;
+        var arrayLength = 8;
         //起始位置,距屏幕左侧距离
         var circleLeft = 100 ;
         for (var i =0 ; i<arrayLength; i++ ){
@@ -64,22 +67,45 @@
 
         for (var i=0 ;i< x.length ; i++) {
             if(i > 0){
-                circleLeft = circleLeft + 40 ;
+                circleLeft = circleLeft + SXYL.DOM.defaultSpaceX ;
             }
             var tarG = svg.append("g")
                     .attr("id", uuidArray[i])
                     .attr("transform", "translate("+circleLeft+","+(300 - x[i]*5)+")");
             tarG.append("rect")
-                    .attr("width", 30)
+                    .attr("width", 40)
                     .attr("height", x[i]*5)
                     .style("fill","red");
+            var y = x[i]*5 - 5 ;
+            // var y = -5
+
             tarG.append("text")
-                    .attr("x", 6)
-                    .attr("y", -5)
+                    .attr("x", 13)
+                    .attr("y", y)
                     .text(x[i]);
         }
         function randomFrom(lowerValue,upperValue){
             return Math.floor(Math.random() * (upperValue - lowerValue + 1) + lowerValue);
+        }
+
+        function sortInit() {
+            SXYL.i = undefined ;
+            SXYL.j = undefined ;
+            SXYL.selectMinIndex=0;
+            SXYL.insertSortConfig.index = 0 ;
+            SXYL.insertSortConfig.indexContent = false ;
+            SXYL.insertSortConfig.idIndexContent = false ;
+            SXYL.insertSortConfig.indexFlag = false ;
+            SXYL.quickSortConfig.partitionIndex = undefined ;
+            SXYL.quickSortConfig.partitionFinishFlag = false ;
+            SXYL.quickSortConfig.recursiveStack = [] ;
+            SXYL.mergeSortConfig.recursiveGroupStack=[];
+            SXYL.mergeSortConfig.recursiveMergeResult=undefined;
+            SXYL.mergeSortConfig.recursiveMergeUuidResult=undefined;
+            SXYL.mergeSortConfig.recursiveMergeLeftIndex=undefined;
+            SXYL.mergeSortConfig.recursiveMergeRightIndex=undefined;
+            SXYL.mergeSortConfig.recursiveMergeWidth=undefined;
+
         }
     }
     init();
@@ -312,7 +338,7 @@
                     ///向右移动40个像素
                     var rectLeft = d3.select("#" + uuidArray[j]) ;
                     var rectLeftMatrix = SXYL.d3.getTranslation(rectLeft.attr("transform"));
-                    var leftx = parseInt(rectLeftMatrix[0]) + 40;
+                    var leftx = parseInt(rectLeftMatrix[0]) + SXYL.DOM.defaultSpaceX;
                     rectLeft.transition().duration(50).attr("transform", "translate("+ leftx +","+rectLeftMatrix[1]+")");
                     //移动结束
                     uuidArray[j+1] = uuidArray[j];
@@ -339,7 +365,7 @@
                 //目标向左移动40个像素,
                 var rectLeft = d3.select("#" + SXYL.insertSortConfig.idIndexContent) ;
                 var rectLeftMatrix = SXYL.d3.getTranslation(rectLeft.attr("transform"));
-                var leftx = parseInt(rectLeftMatrix[0]) - (SXYL.insertSortConfig.index - SXYL.insertSortConfig.indexFlag)*40;
+                var leftx = parseInt(rectLeftMatrix[0]) - (SXYL.insertSortConfig.index - SXYL.insertSortConfig.indexFlag)*SXYL.DOM.defaultSpaceX;
                 var y = parseInt(rectLeftMatrix[1]) - 240;
                 rectLeft.transition().duration(50).attr("transform", "translate("+ leftx +","+ y +")");
                 SXYL.d3.changeElementColor(SXYL.insertSortConfig.idIndexContent, "green");
@@ -394,7 +420,6 @@
             }
             return ;
         }
-        debugger
         /***
          * 数组，左侧下标，右侧下标
          * @param arr
@@ -416,7 +441,6 @@
                 }else{
                     SXYL.quickSortConfig.partitionIndex = undefined ;//方法出来后将 全局的位置标识 置为undified
                 }
-                debugger;
                 //可能有错误，有点忘记了, 将步骤a的压栈操作进行出栈
                 popStack();
                 //先放置右侧再放置左侧
@@ -569,150 +593,183 @@
      *
      * */
     function mergeSort() {
-        debugger
         //从堆栈数组里获取数据,如果为undified 则将数组赋值为全局变量
-        // var array = getStackTop() ;
-        if( SXYL.mergeSortConfig.recursiveStack.length == 0 ){
+        if( SXYL.mergeSortConfig.recursiveGroupStack.length == 0 ) {
             //将数组的各个元素打散
             var result = mergeSortArray(0 , x.length, x) ;
         }
         //循环栈内各个元素 , 进行合并操作
+        for (var i = 0 ;  i< SXYL.mergeSortConfig.recursiveGroupStack.length ; i++) {
+            var r = merge(SXYL.mergeSortConfig.recursiveGroupStack[i]) ;
+            if(r == undefined){
+                return ;
+            }else{
+                SXYL.mergeSortConfig.recursiveGroupStack = SXYL.mergeSortConfig.recursiveGroupStack.slice(  1 ,SXYL.mergeSortConfig.recursiveGroupStack.length );
+                if( SXYL.mergeSortConfig.recursiveGroupStack.length == 0 ){//下面合并时会将各个元素剔除
+                    window.clearInterval(int);
+                }
 
-        debugger
-        for (var i = 0 ; i < SXYL.mergeSortConfig.recursiveStack.length ; i++ ){
-            var stackContent = SXYL.mergeSortConfig.recursiveStack[i] ;
-
-
-
+                return ;
+            }
         }
 
 
 
-        var r = merge(leftArray, rightArray) ;
-        if(result == undefined){
-            return ;
-        }else{
-            window.clearInterval(int);
-        }
-
-
-
-
-        debugger
-
-        // if(result == undefined){
-        //     return ;
-        // }else{
-        //     window.clearInterval(int);
-        // }
 
         function mergeSortArray(leftIndex , rightIndex , arr){
-            putStack(leftIndex , rightIndex , arr);
-
-            debugger
             var len = arr.length;
             if(len <2){//说明只剩下一个元素
                 return arr;
             }
 
-            var mid = Math.floor(len/2);//截取数组的下标记
+            var mid = Math.ceil(len/2);//截取数组的下标记
+            // var mid = Math.floor(len/2);//截取数组的下标记
             var left = arr.slice(0, mid ) ;//左侧下标截取后的数组
             var right =arr.slice(mid, len );//右侧下表截取后的数组
 
             debugger
-            //send left and right to the mergeSort to broke it down into pieces
-            //then merge those
+
             var leftArray = mergeSortArray(leftIndex , leftIndex + mid - 1 , left);
-            ///如果undified , 说明刚执行完动画,需要退出
-            // if(leftArray == undefined) {
-            //     return ;
-            // }
             var rightArray = mergeSortArray(leftIndex + mid ,  leftIndex + len - 1 , right);
 
-
+            //赋值堆栈数组
             var groupArray = new Array() ;
             groupArray.push(leftIndex) ;
             groupArray.push(leftIndex + mid - 1) ;
             groupArray.push(leftIndex + mid) ;
             groupArray.push(leftIndex + len - 1 ) ;
-            groupArray.push(leftArray) ;
-            groupArray.push(rightArray) ;
+            groupArray.push(left) ;
+            groupArray.push(right) ;
             SXYL.mergeSortConfig.recursiveGroupStack.push(groupArray);
-            ///如果undified , 说明刚执行完动画,需要退出
-            // if(rightArray == undefined) {
-            //     return ;
-            // }
-
-            // var r = merge(leftArray, rightArray) ;
-            // debugger;
-            // return r;
         }
 
-        function merge(leftStart , leftEnd , rightStart , rightEnd , left, right){
-            var result = [];
-            var lLen = left.length;//左侧数组长度
-            var rLen = right.length;//右侧数组长度
-            var l = 0;//左侧数组下标
-            var r = 0;//右侧数组下标
-            while(l < lLen && r < rLen){
-                if(left[l] < right[r]){
-                    result.push(left[l++]);
+        /***
+         * 合并数组
+         * @param stackContent
+         * @return {number}
+         */
+        function merge(stackContent){
+            var leftStart = stackContent[0]  , leftEnd = stackContent[1] , rightStart = stackContent[2]
+                    , rightEnd =stackContent[3]   ; //, left = stackContent[4] , right =stackContent[5]
+            var lLen = leftEnd - leftStart + 1;//左侧数组长度
+            var rLen = rightEnd - rightStart + 1;//右侧数组长度
+
+            if(SXYL.mergeSortConfig.recursiveMergeResult == undefined) {//合并的数组结果初始化
+                SXYL.mergeSortConfig.recursiveMergeResult = [] ;
+            }
+            if(SXYL.mergeSortConfig.recursiveMergeUuidResult == undefined) {//合并的数组结果初始化
+                SXYL.mergeSortConfig.recursiveMergeUuidResult = [] ;
+            }
+
+            if(SXYL.mergeSortConfig.recursiveMergeLeftIndex == undefined) {//左侧数据全局下标初始化
+                SXYL.mergeSortConfig.recursiveMergeLeftIndex = 0 ;
+            }
+            if(SXYL.mergeSortConfig.recursiveMergeRightIndex == undefined) {//右侧数据全局下标初始化
+                SXYL.mergeSortConfig.recursiveMergeRightIndex = 0 ;
+            }
+
+
+            //如果为undified,则说明为每个小数组的第一个次合并.将本次需要处理的宽和高放入一个数组中
+            if(SXYL.mergeSortConfig.recursiveMergeWidth == undefined){
+                SXYL.mergeSortConfig.recursiveMergeWidth = [];
+                //放入方式为从后到前,方便计算
+                for (var j = rightEnd ; j>= leftStart  ; j--){
+                    var o =SXYL.DOM.getDomXY(uuidArray[j]);
+                    o.my = SXYL.DOM.defaultY;
+                    o.mx = 0 ;
+                    SXYL.mergeSortConfig.recursiveMergeWidth.push(o);
+                }
+            }
+
+
+            while(SXYL.mergeSortConfig.recursiveMergeLeftIndex < lLen && SXYL.mergeSortConfig.recursiveMergeRightIndex < rLen){
+                if(x[SXYL.mergeSortConfig.recursiveMergeLeftIndex + leftStart] < x[SXYL.mergeSortConfig.recursiveMergeRightIndex  + rightStart]){
+                    SXYL.mergeSortConfig.recursiveMergeResult.push(x[SXYL.mergeSortConfig.recursiveMergeLeftIndex + leftStart]);
+                    SXYL.mergeSortConfig.recursiveMergeUuidResult.push(uuidArray[SXYL.mergeSortConfig.recursiveMergeLeftIndex + leftStart]);
+
+
+                    var moveFlag = mergeObjectMove(SXYL.mergeSortConfig.recursiveMergeLeftIndex + leftStart);
+                    if(moveFlag){
+                        SXYL.mergeSortConfig.recursiveMergeLeftIndex++;
+                        return ;
+                    }
                 }
                 else{
-                    result.push(right[r++]);
+                    SXYL.mergeSortConfig.recursiveMergeResult.push(x[SXYL.mergeSortConfig.recursiveMergeRightIndex + rightStart]);
+                    SXYL.mergeSortConfig.recursiveMergeUuidResult.push(uuidArray[SXYL.mergeSortConfig.recursiveMergeRightIndex + rightStart]);
+                    //将比较后的值,放入到下方位置
+                    var moveFlag = mergeObjectMove(SXYL.mergeSortConfig.recursiveMergeRightIndex + rightStart);
+                    if(moveFlag){
+                        SXYL.mergeSortConfig.recursiveMergeRightIndex++;
+                        return ;
+                    }
                 }
             }
-            return result.concat(left.slice(l)).concat(right.slice(r));
+            //如果左侧还有剩余元素
+            if(SXYL.mergeSortConfig.recursiveMergeLeftIndex < lLen){
+                SXYL.mergeSortConfig.recursiveMergeResult.push(x[SXYL.mergeSortConfig.recursiveMergeLeftIndex + leftStart]);
+                SXYL.mergeSortConfig.recursiveMergeUuidResult.push(uuidArray[SXYL.mergeSortConfig.recursiveMergeLeftIndex + leftStart]);
+                //将比较后的值,放入到下方位置
+                var moveFlag = mergeObjectMove(SXYL.mergeSortConfig.recursiveMergeLeftIndex + leftStart);
+                if(moveFlag){
+                    SXYL.mergeSortConfig.recursiveMergeLeftIndex++;
+                    return ;
+                }
+            }
+
+            //如果右侧还有剩余元素
+            if(SXYL.mergeSortConfig.recursiveMergeRightIndex < rLen){
+                SXYL.mergeSortConfig.recursiveMergeResult.push(x[SXYL.mergeSortConfig.recursiveMergeRightIndex + rightStart]);
+                SXYL.mergeSortConfig.recursiveMergeUuidResult.push(uuidArray[SXYL.mergeSortConfig.recursiveMergeRightIndex + rightStart]);
+
+                var moveFlag = mergeObjectMove(SXYL.mergeSortConfig.recursiveMergeRightIndex + rightStart);
+                if(moveFlag){
+                    SXYL.mergeSortConfig.recursiveMergeRightIndex++;
+                    return ;
+                }
+
+            }
+
+
+            //执行到这步骤 ,说明 结果数组结果集和  分隔的结果集数量相等
+            if(SXYL.mergeSortConfig.recursiveMergeResult.length == rightEnd - leftStart +1){
+                for (var i =0 ; i < SXYL.mergeSortConfig.recursiveMergeUuidResult.length ; i++){
+                    if(SXYL.mergeSortConfig.recursiveMergeUuidResult.length == uuidArray.length){
+                        var targetColor =SXYL.d3.changeElementColor(SXYL.mergeSortConfig.recursiveMergeUuidResult[i], "green") ;
+                    }else {
+                        var targetColor =SXYL.d3.changeElementColor(SXYL.mergeSortConfig.recursiveMergeUuidResult[i], "red") ;
+                    }
+                    SXYL.DOM.changeElementY(SXYL.mergeSortConfig.recursiveMergeUuidResult[i] , -SXYL.DOM.defaultY  );//todo ,y值使用 目标位置的y值即可
+                }
+                x = SXYL.base.changeChildrenArray(x , SXYL.mergeSortConfig.recursiveMergeResult , leftStart , rightEnd) ;
+                uuidArray = SXYL.base.changeChildrenArray(uuidArray , SXYL.mergeSortConfig.recursiveMergeUuidResult , leftStart , rightEnd) ;
+
+                SXYL.mergeSortConfig.recursiveMergeResult = undefined ;
+                SXYL.mergeSortConfig.recursiveMergeUuidResult = undefined ;
+                SXYL.mergeSortConfig.recursiveMergeLeftIndex = undefined ;
+                SXYL.mergeSortConfig.recursiveMergeRightIndex = undefined ;
+                SXYL.mergeSortConfig.recursiveMergeWidth = undefined ;
+                return 1 ;
+            }
+            console.log("error, 不可能会到这一步骤")
+            return  ;
         }
 
 
+        function mergeObjectMove(index) {
+            var targetColor =SXYL.d3.changeElementColor(uuidArray[index], "blue") ;
+            //获取当前merger分组的第一个元素
+            var target = SXYL.mergeSortConfig.recursiveMergeWidth.pop();
+            var y = SXYL.DOM.getDomXY(uuidArray[index]).y;
+            target.y = y;
+            if(targetColor){
+                SXYL.DOM.changeElementXYByObject(uuidArray[index] ,target );//todo ,y值使用 目标位置的y值即可
+                return true ;
+            }
+            return false;
+        }
 
 
-
-        /*****
-         * 压栈操作
-         * @param left
-         * @param right
-         */
-        function putStack(left, right, arr) {
-            var topStack = getStackTop();
-            if(topStack == undefined) {
-                var stack=new Array();
-                stack.push(left) ;
-                stack.push(right) ;
-                stack.push(arr) ;
-                SXYL.mergeSortConfig.recursiveStack.push(stack);
-                return ;
-            }
-            if(topStack[0] != left || topStack[1] != right){
-                var stack=new Array();
-                stack.push(left) ;
-                stack.push(right) ;
-                stack.push(arr) ;
-                SXYL.mergeSortConfig.recursiveStack.push(stack);
-                return ;
-            }
-        }
-        /*****
-         * 获取第一层栈信息
-         * @returns {*}
-         */
-        function getStackTop() {
-            if(SXYL.mergeSortConfig.recursiveStack.length>0) {
-                var topStack = SXYL.mergeSortConfig.recursiveStack[SXYL.mergeSortConfig.recursiveStack.length - 1];
-                return topStack ;
-            }
-            return ;
-        }
-        /*****
-         * 出栈操作
-         */
-        function popStack() {
-            if(SXYL.mergeSortConfig.recursiveStack.length>0) {
-                SXYL.mergeSortConfig.recursiveStack.pop();
-            }
-            return ;
-        }
     }
 
 </script>

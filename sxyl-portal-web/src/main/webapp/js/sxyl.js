@@ -18,12 +18,19 @@ SXYL={
     },
     //归并排序的全局变量
     mergeSortConfig:{
-        recursiveStack:[] , //归并排序的递归栈结构,里面存储三个元素,数组左下标,数组右下标,分割后的数组内容
-        recursiveGroupStack:[] //归并排序的分组 结构
+        // recursiveStack:[] , //归并排序的递归栈结构,里面存储三个元素,数组左下标,数组右下标,分割后的数组内容
+        recursiveGroupStack: [], //归并排序的分组 结构 , leftStart, leftEnd , rightStart , rightEnd, leftArray, rightArray
+        recursiveMergeResult: undefined, //归并排序的合并时的处理
+        recursiveMergeUuidResult: undefined, //归并排序的合并时的处理
+        recursiveMergeLeftIndex:undefined , //左侧下标
+        recursiveMergeRightIndex:undefined,  //右侧下标
+        recursiveMergeWidth:undefined  //合并元素的x,y信息 , ,不用每次都计算
     },
     base:{},
-    d3:{
-        defaultY: 240//默认y轴坐标
+    d3:{},
+    DOM:{
+        defaultY: 240 , //默认y轴坐标
+        defaultSpaceX: 50//默认y轴坐标
     }
 }
 
@@ -53,25 +60,13 @@ SXYL.base.changeArrayElement = function (array,indexA,indexB) {
     array[indexB] = tmpElement;
 }
 
+SXYL.base.changeChildrenArray = function (array , child,start,end) {
+    debugger
+    var left = array.slice(0,start) ;
+    var right = array.slice(end+1,array.length);
+    return left.concat(child).concat(right) ;
+}
 
-//
-// SXYL.d3.createDom = function (transform) {
-//     // Create a dummy g for calculation purposes only. This will never
-//     // be appended to the DOM and will be discarded once this function
-//     // returns.
-//     var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-//
-//     // Set the transform attribute to the provided string value.
-//     g.setAttributeNS(null, "transform", transform);
-//
-//     // consolidate the SVGTransformList containing all transformations
-//     // to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
-//     // its SVGMatrix.
-//     var matrix = g.transform.baseVal.consolidate().matrix;
-//
-//     // As per definition values e and f are the ones for the translation.
-//     return [matrix.e, matrix.f];
-// }
 
 /****
  * d3的一个作废方法， 获取 transform属性的  宽和高
@@ -134,18 +129,57 @@ SXYL.d3.changeElementColor = function (id , color) {
 
 
 /***
- * 变更颜色
+ * 变更元素的y值
  * @param idA 元素id
  * @param color 颜色
  * @return true 替换成功   false 替换失败,组件为原有颜色
  */
-SXYL.d3.changeElementY = function (id , y) {
+SXYL.DOM.changeElementY = function (id , y) {
     var rectTarget = d3.select("#" + id) ;
     var rectTargetMatrix = SXYL.d3.getTranslation(rectTarget.attr("transform"));
-    debugger
     if(!y){
-        y = SXYL.d3.defaultY ;
+        y = SXYL.DOM.defaultY ;
     }
     y = parseInt(rectTargetMatrix[1]) + y;
     rectTarget.transition().duration(50).attr("transform", "translate("+rectTargetMatrix[0]+","+y+")");
+}
+
+/***
+ *
+ * @param id
+ * @param x
+ * @param y
+ */
+SXYL.DOM.changeElementXY = function (id , x , y) {
+    var rectTarget = d3.select("#" + id) ;
+    rectTarget.transition().duration(50).attr("transform", "translate("+x+","+y+")");
+}
+
+/***
+ *
+ * @param id
+ * @param o ,   x = o.x  , y = o.y  modifiedX = o.mx, modifiedY = o.my
+ */
+SXYL.DOM.changeElementXYByObject = function (id , o) {
+    var rectTarget = d3.select("#" + id) ;
+    var mx = o.mx;
+    var my = o.my;
+    if(!mx){mx = 0 ;}
+    if(!my){my = 0 ;}
+    var x = parseInt(mx) + parseInt(o.x);
+    var y = parseInt(my) + parseInt(o.y);
+    rectTarget.transition().duration(50).attr("transform", "translate("+x+","+y+")");
+}
+
+
+
+/*****
+ * 获取元素的  xy值
+ * @param id
+ * @return {{x: number, y: number}}
+ */
+SXYL.DOM.getDomXY = function (id) {
+    var rectTarget = d3.select("#" + id) ;
+    var rectTargetMatrix = SXYL.d3.getTranslation(rectTarget.attr("transform"));
+    return {x:parseInt(rectTargetMatrix[0]) , y:parseInt(rectTargetMatrix[1])}
 }
