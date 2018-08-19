@@ -26,8 +26,15 @@ SXYL={
         recursiveMergeRightIndex:undefined,  //右侧下标
         recursiveMergeWidth:undefined  //合并元素的x,y信息 , ,不用每次都计算
     },
+
+    //鸡尾酒排序的全局变量信息
+    cocktailShakerSortConfig:{
+        swap: true, //正向或者逆向的标志位, true为正向处理,false为逆向处理
+        swapJ: undefined  //合并元素的x,y信息 , ,不用每次都计算
+    },
+
     base:{},
-    d3:{},
+    // d3:{},
     DOM:{
         defaultY: 240 , //默认y轴坐标
         defaultSpaceX: 50//默认y轴坐标
@@ -61,7 +68,6 @@ SXYL.base.changeArrayElement = function (array,indexA,indexB) {
 }
 
 SXYL.base.changeChildrenArray = function (array , child,start,end) {
-    debugger
     var left = array.slice(0,start) ;
     var right = array.slice(end+1,array.length);
     return left.concat(child).concat(right) ;
@@ -73,7 +79,7 @@ SXYL.base.changeChildrenArray = function (array , child,start,end) {
  * @param transform
  * @returns {*[]}
  */
-SXYL.d3.getTranslation = function (transform) {
+SXYL.DOM.getTranslation = function (transform) {
     // Create a dummy g for calculation purposes only. This will never
     // be appended to the DOM and will be discarded once this function
     // returns.
@@ -97,11 +103,11 @@ SXYL.d3.getTranslation = function (transform) {
  * @param idA 元素id
  * @param idB 元素id
  */
-SXYL.d3.changeElementTransformX = function (idA , idB) {
+SXYL.DOM.changeElementTransformX = function (idA , idB) {
     var rectLeft = d3.select("#" + idA) ;
     var rectRight = d3.select("#" + idB) ;
-    var rectLeftMatrix = SXYL.d3.getTranslation(rectLeft.attr("transform"));
-    var rectRightMatrix = SXYL.d3.getTranslation(rectRight.attr("transform"));
+    var rectLeftMatrix = SXYL.DOM.getTranslation(rectLeft.attr("transform"));
+    var rectRightMatrix = SXYL.DOM.getTranslation(rectRight.attr("transform"));
     rectLeft.transition().duration(50).attr("transform", "translate("+rectRightMatrix[0]+","+rectLeftMatrix[1]+")");
     rectRight.transition().duration(50).attr("transform", "translate("+rectLeftMatrix[0]+","+rectRightMatrix[1]+")");
 }
@@ -114,7 +120,7 @@ SXYL.d3.changeElementTransformX = function (idA , idB) {
  * @param color 颜色
  * @return true 替换成功   false 替换失败,组件为原有颜色
  */
-SXYL.d3.changeElementColor = function (id , color) {
+SXYL.DOM.changeElementColor = function (id , color) {
     var element = d3.select("#" + id).select("rect") ;
     var elementColor = element.style("fill") ;
 
@@ -136,7 +142,7 @@ SXYL.d3.changeElementColor = function (id , color) {
  */
 SXYL.DOM.changeElementY = function (id , y) {
     var rectTarget = d3.select("#" + id) ;
-    var rectTargetMatrix = SXYL.d3.getTranslation(rectTarget.attr("transform"));
+    var rectTargetMatrix = SXYL.DOM.getTranslation(rectTarget.attr("transform"));
     if(!y){
         y = SXYL.DOM.defaultY ;
     }
@@ -180,6 +186,6 @@ SXYL.DOM.changeElementXYByObject = function (id , o) {
  */
 SXYL.DOM.getDomXY = function (id) {
     var rectTarget = d3.select("#" + id) ;
-    var rectTargetMatrix = SXYL.d3.getTranslation(rectTarget.attr("transform"));
+    var rectTargetMatrix = SXYL.DOM.getTranslation(rectTarget.attr("transform"));
     return {x:parseInt(rectTargetMatrix[0]) , y:parseInt(rectTargetMatrix[1])}
 }
