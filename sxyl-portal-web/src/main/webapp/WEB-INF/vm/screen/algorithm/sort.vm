@@ -32,7 +32,7 @@
     <button onclick="int = setInterval(mergeSort, 500)">归并排序</button>
 </div>
 <div>
-    <button onclick="int = setInterval(cocktailShakerSort,200)">鸡尾酒排序</button>
+    <button onclick="int = setInterval(cocktailShakerSort,500)">鸡尾酒排序</button>
 </div>
 <script>
 
@@ -120,18 +120,14 @@
      */
     function bubbleSort() {
         console.log("start");
-        var iIndex = SXYL.i ;
-        if(iIndex == undefined){
-            iIndex = 0 ;
+        if(SXYL.i == undefined){
             SXYL.i = 0
         }
-        for (var i = iIndex ; i < x.length ; i++) {
-            var jIndex = SXYL.j ;
-            if(jIndex == undefined) {
-                jIndex = 0 ;
+        for (var i = SXYL.i ; i < x.length ; i++) {
+            if(SXYL.j == undefined) {
                 SXYL.j = 0 ;
             }
-            for(var j = jIndex ; j < x.length - 1 -i ; j++){
+            for(var j = SXYL.j ; j < x.length - 1 -i ; j++){
                 console.log("compare index,i="+i+",j="+j+" , a = " + x[j] + ", b = " + x[j+1]);
                 //变换颜色
                 var leftColor =SXYL.DOM.changeElementColor(uuidArray[j], "yellow") ;
@@ -139,9 +135,9 @@
                 if(leftColor && rightColor){
                     return ;
                 }
+                var leftColor =SXYL.DOM.changeElementColor(uuidArray[j], "red") ;
+                var rightColor =SXYL.DOM.changeElementColor(uuidArray[j+1], "red") ;
                 if(x[j] > x[j+1]){//比较大小 , 说明需要换位置
-                    var leftColor =SXYL.DOM.changeElementColor(uuidArray[j], "red") ;
-                    var rightColor =SXYL.DOM.changeElementColor(uuidArray[j+1], "red") ;
                     //元素交换位置
                     SXYL.DOM.changeElementTransformX(uuidArray[j] , uuidArray[j+1]);
                     //uuid的数组进行交换
@@ -149,36 +145,24 @@
                     //数组的内容进行交换
                     SXYL.base.changeArrayElement(x,j , j+1);
                     console.log("compare end  need change , a = " + x[j] + ",b = " + x[j+1]);
-
-                    if(j == x.length - 2 - i){//如果是最后一位
-                        SXYL.DOM.changeElementColor(uuidArray[j+1], "green");
-                        SXYL.j = undefined;
-                        SXYL.i++;
-                    }else{
-                        SXYL.j++ ;
-                    }
-                    return
                 }else{//比较大小,说明不需要换位置
                     //颜色变换回来
-                    var leftColor =SXYL.DOM.changeElementColor(uuidArray[j], "red") ;
-                    var rightColor =SXYL.DOM.changeElementColor(uuidArray[j+1], "red") ;
                     console.log("compare end  no change , a = " + x[j] + ",b = " + x[j+1])
-                    if(j == x.length - 2 - i){
-                        SXYL.DOM.changeElementColor(uuidArray[j+1], "green");
-                        SXYL.j = undefined;
-                        SXYL.i++;
-                    }else{
-                        SXYL.j++;
-                    }
-                    return;
                 }
+                if(j == x.length - 2 - i){//如果是最后一位
+                    SXYL.DOM.changeElementColor(uuidArray[j+1], "green");
+                    SXYL.j = undefined;
+                    SXYL.i++;
+                }else{
+                    SXYL.j++ ;
+                }
+                return
             }
             if(i == x.length -1){
                 //需要判断是升序还是降序? 可放在嵌套循环里， 但是做的判断更多一些
                 SXYL.DOM.changeElementColor(uuidArray[0], "green");
             }
         }
-
         console.log("end");
         window.clearInterval(int);
     }
