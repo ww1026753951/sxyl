@@ -14,12 +14,6 @@
                                 expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
     </context:component-scan>
 
-    <!--<mvc:interceptors>-->
-        <!--<mvc:interceptor>-->
-            <!--<mvc:mapping path="/**"/>-->
-            <!--<bean class="com.jd.huishou.mobile.controller.interceptor.CacheInterceptor"></bean>-->
-        <!--</mvc:interceptor>-->
-    <!--</mvc:interceptors>-->
 
     <mvc:annotation-driven>
         <mvc:message-converters register-defaults="true">
@@ -48,6 +42,7 @@
             </props>
         </property>
         <property name="configLocation" value="classpath:/velocity.properties"/>
+
     </bean>
     <bean id="velocityViewResolver" class="org.springframework.web.servlet.view.velocity.VelocityLayoutViewResolver">
         <property name="layoutUrl" value="/layout/default.vm"/>

@@ -18,10 +18,36 @@
 
 </script>
 <body>
-<svg width="100%" height="100%" version="1.1"
-     xmlns="http://www.w3.org/2000/svg">
+<svg width="1200" height="1200">
 
-    <circle id="testCircle" cx="100" cy="50" r="40" stroke="black" stroke-width="2" fill="red"/>
+
+##    z = 半径除以 10    cx - z - 文本的宽度计算     cy + z
+
+    <g id="g1">
+        <circle id="testCircle" cx="100" cy="50" r="40" stroke="black" fill="white"/>
+        <text x="96" y="54" fill="red">S</text>
+    </g>
+
+##    当起点和终点分别为  圆时
+##    线的起点和终点  为  圆的  (x ,y) + 半径 + 斜率计算，
+##    当为平行时  , 可直接对横坐标进行加减操作
+##    当为垂直时， 可直接对纵坐标进行加减操作
+    <line x1="128" y1="78" x2="300" y2="200" style="stroke:rgb(99,99,99);stroke-width:2"/>
+
+##    292
+    <g id="g2">
+        <circle id="testCircle2" cx="300" cy="200" r="80" stroke="black" fill="white"/>
+        <text id="d2" x="252" y="208" fill="red">llllllllllll</text>
+    </g>
+
+
+
+    <g id="g3">
+        <circle id="testCircle3" cx="600" cy="200" r="30" stroke="black" fill="white"/>
+        <text id="d3" x="596" y="204" fill="red">3</text>
+    </g>
+
+    <line x1="380" y1="200" x2="570" y2="200" style="stroke:rgb(99,99,99);stroke-width:2"/>
 
 </svg>
 
@@ -30,28 +56,30 @@
 <script src="/js/jquery/jquery-3.2.1.min.js" ></script>
 <script>
 
-    debugger
-    f();
-    sleep(5000)
-    $("#testCircle").addClass('animated bounceOutLeft');
-    // d3.select("body").transition()
-    //         .duration(5000)
-    //         .style("background", "red");
-    // flushAnimationFrames();
-    // debugger
+    var val = $("#d2").text().length  ;
 
+    var width = $("#d2").width()
+    var width1 = $("#d2").innerWidth()
+    var width2 = $("#d2").outerWidth()
+    var width3 = $("#d2").outerWidth(true)
 
-    function f() {
-        $("#testCircle").addClass('animated bounceOutRight');
-    }
-
-    function sleep(numberMillis) {
-        var now = new Date();
-        var exitTime = now.getTime() + numberMillis;
-        while (true) {
-            now = new Date();
-            if (now.getTime() > exitTime)
-                return;
-        }
-    }
+    // f();
+    // sleep(5000)
+    // $("#testCircle").addClass('animated bounceOutLeft');
+    // // debugger
+    //
+    //
+    // function f() {
+    //     $("#testCircle").addClass('animated bounceOutRight');
+    // }
+    //
+    // function sleep(numberMillis) {
+    //     var now = new Date();
+    //     var exitTime = now.getTime() + numberMillis;
+    //     while (true) {
+    //         now = new Date();
+    //         if (now.getTime() > exitTime)
+    //             return;
+    //     }
+    // }
 </script>

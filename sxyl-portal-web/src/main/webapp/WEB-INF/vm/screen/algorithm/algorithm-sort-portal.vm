@@ -1,54 +1,168 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>思想摇篮</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-    <meta name="keywords" content="冒泡排序"/>
-    <meta name="description" content="冒泡排序"/>
-    <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>排序</title>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" >
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- Font Awesome JS -->
+    <script defer src="/css/fontawesome/js/solid.js" ></script>
+    <script defer src="/css/fontawesome/js/fontawesome.js" ></script>
     <script src="/js/d3/d3.min.js"></script>
     <script src="/js/sxyl.js"></script>
-##    <script src="/js/pck/sxyl.min.js"></script>
 </head>
-<script>
-</script>
+
 <body>
-<div>
-    <button onclick="pause()" style="color: red">暂停</button>
-    <button onclick="play()" style="color: red">继续</button>
-    <button onclick="init()">重置</button>
+<div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>company</h3>
+        </div>
+
+        <ul class="list-unstyled components">
+            <p>sort</p>
+            <li class="active">
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li>
+                        <a href="#">Home 1</a>
+                    </li>
+                    <li>
+                        <a href="#">Home 2</a>
+                    </li>
+                    <li>
+                        <a href="#">Home 3</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">About</a>
+            </li>
+            <li>
+                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
+                <ul class="collapse list-unstyled" id="pageSubmenu">
+                    <li>
+                        <a href="#">Page 1</a>
+                    </li>
+                    <li>
+                        <a href="#">Page 2</a>
+                    </li>
+                    <li>
+                        <a href="#">Page 3</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Portfolio</a>
+            </li>
+            <li>
+                <a href="#">Contact</a>
+            </li>
+        </ul>
+
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-6 col-sm-6 ">
+            <!-- Page Content  -->
+            <div id="content">
+                <div>
+                    <button onclick="pause()" style="color: red">暂停</button>
+                    <button onclick="play()" style="color: red">继续</button>
+                    <button onclick="init()">重置</button>
+                </div>
+                <div>
+                    <button onclick="SXYL.execute_i = setInterval(bubbleSort, 500)">冒泡排序</button>
+                    <button onclick="SXYL.execute_i = setInterval(selectionSort, 500)">选择排序</button>
+                    <button onclick="SXYL.execute_i = setInterval(insertionSort, 500)">插入排序</button>
+                    <button onclick="SXYL.execute_i = setInterval(quickSort, 500)">快速排序</button>
+                    <button onclick="SXYL.execute_i = setInterval(mergeSort, 500)">归并排序</button>
+                </div>
+                <div>
+                    <button onclick="SXYL.execute_i = setInterval(cocktailShakerSort,500)">鸡尾酒排序</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-6 col-sm-6 ">
+            执行步骤
+        </div>
+    </div>
+
+##    <div class="row">
+##        <div class="col-lg-12 col-sm-12">
+##            <table>
+##                <tr>
+##                    <td>
+##                        时间复杂度
+##                    </td>
+##                    <td>
+##                        空间复杂度
+##                    </td>
+##                    <td>
+##                        平均情况
+##                    </td>
+##                    <td>
+##                        最好情况
+##                    </td>
+##                    <td>
+##                        最坏情况
+##                    </td>
+##                    <td>
+##                         稳定性
+##                    </td>
+##                </tr>
+##                <tr>
+##                    <td>
+##                        N<sup>2</sup>
+##                    </td>
+##                    <td>
+##
+##                    </td>
+##                </tr>
+##            </table>
+##        </div>
+##    </div>
+
 </div>
-<div>
-    <button onclick="SXYL.execute_i = setInterval(bubbleSort, 500)">冒泡排序</button>
-    <button onclick="SXYL.execute_i = setInterval(selectionSort, 500)">选择排序</button>
-    <button onclick="SXYL.execute_i = setInterval(insertionSort, 500)">插入排序</button>
-    <button onclick="SXYL.execute_i = setInterval(quickSort, 500)">快速排序</button>
-    <button onclick="SXYL.execute_i = setInterval(mergeSort, 500)">归并排序</button>
-</div>
-<div>
-    <button onclick="SXYL.execute_i = setInterval(cocktailShakerSort,500)">鸡尾酒排序</button>
-</div>
+
+<!-- jQuery CDN - Slim version (=without AJAX) -->
+##<script src="/js/vendor/jquery-slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="/js/vendor/jquery-slim.min.js" ></script>
+<!-- Popper.JS -->
+<script src="/js/vendor/popper.min.js" ></script>
+<!-- Bootstrap JS -->
+<script src="/js/bootstrap/bootstrap.min.js" ></script>
+
 <script>
 
     var x = new Array();
     var uuidArray = new Array() ;
 
     //画布大小
-    var width = 1400, height = 650;
+    var width = 800, height = 650;
     // 在body里添加一个SVG画布
-    var svg = d3.select("body")
+    var svg = d3.select("#content")
             .append("svg")
             .attr("id","sortAlg")
             .attr("width",width)
             .attr("height",height);
 
     function init() {
+
         sortInit();
+
         window.clearInterval(SXYL.execute_i);
+
         svg.selectAll("g").remove();
         x = new Array();
         uuidArray = new Array() ;
+
         var arrayLength = 8;
         //起始位置,距屏幕左侧距离
         var circleLeft = 100 ;
@@ -69,6 +183,8 @@
                     .attr("height", x[i]*5)
                     .style("fill","red");
             var y = x[i]*5 - 5 ;
+            // var y = -5
+
             tarG.append("text")
                     .attr("x", 13)
                     .attr("y", y)
@@ -547,7 +663,7 @@
             for (var i = 0 ; i <array.length ; i++){
                 var stack = SXYL.quickSortConfig.recursiveStack[i];
                 for (var j = stack[0] ; j < stack[1] - stack[0] ; j++){
-                   //靠绿色判断是否已经排好序,后期可以优化
+                    //靠绿色判断是否已经排好序,后期可以优化
                     if(SXYL.DOM.changeElementColor(uuidArray[j], "green")){
                         SXYL.DOM.changeElementColor(uuidArray[j], "red");
                     }
@@ -835,7 +951,6 @@
 
 
 </script>
-
-##<script src="/js/pck/sort-all.min.js"></script>
 </body>
+
 </html>

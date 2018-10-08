@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+
+    <title>动效算法,排序</title>
+
+    <!-- Bootstrap core CSS -->
+
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" >
+    <link rel="stylesheet" href="/css/bootstrap/dashboard.css" >
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap-reboot.min.css" >
+    <script src="/js/d3/d3.min.js"></script>
+    <script src="/js/sxyl.js"></script>
+
+
+<body>
+<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">动效算法-排序</a>
+    <input id="array-content" class="form-control form-control-dark w-40" type="text" placeholder="自定义排序数组,逗号分隔。为空时使用随机数" aria-label="Search">
+    <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" href="#">确认</a>
+        </li>
+    </ul>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            冒泡排序 <span class="sr-only">(current)</span>
+                        </a>
+                    </li>   
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Products
+                        </a>
+                    </li>
+                </ul>
+
+##                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+##                    <span>Saved reports</span>
+##                    <a class="d-flex align-items-center text-muted" href="#">
+##                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+##                    </a>
+##                </h6>
+##                <ul class="nav flex-column mb-2">
+##                    <li class="nav-item">
+##                        <a class="nav-link" href="#">
+##                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+##                            Current month
+##                        </a>
+##                    </li>
+##                    <li class="nav-item">
+##                        <a class="nav-link" href="#">
+##                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+##                            Last quarter
+##                        </a>
+##                    </li>
+##                    <li class="nav-item">
+##                        <a class="nav-link" href="#">
+##                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+##                            Social engagement
+##                        </a>
+##                    </li>
+##                    <li class="nav-item">
+##                        <a class="nav-link" href="#">
+##                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+##                            Year-end sale
+##                        </a>
+##                    </li>
+##                </ul>
+            </div>
+        </nav>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">动效算法</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group mr-2">
+                        速度
+                        <label class="radio-inline">
+                            <input type="radio" name="speedRadioOptions" id="speed0.5" value="0.5"> 0.5
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="speedRadioOptions" id="speed1" value="1" checked="checked"> 1
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="speedRadioOptions" id="speed2" value="2"> 2
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="speedRadioOptions" id="speed5" value="5"> 5
+                        </label>
+                    </div>
+                </div>
+
+
+
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group mr-2">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="SXYL.execute_i = setInterval(bubbleSort, SXYL.SORT.getSpeed())">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                            开始/继续
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="clearInterval(SXYL.execute_i)">暂停</button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="init()">重置</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="algorithm-content" class="row">
+                <div id="graph-content" class="col-lg-9 col-sm-9 ">
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    <div><p>执行步骤</p></div>
+                    <div id="step-content">
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+##<script src="/js/vendor/jquery-slim.min.js" ></script>
+<script src="/js/jquery/jquery-3.2.1.min.js" ></script>
+<!-- Popper.JS -->
+<script src="/js/vendor/popper.min.js" ></script>
+<!-- Bootstrap JS -->
+<script src="/js/bootstrap/bootstrap.min.js" ></script>
+<!-- Icons -->
+<script src="/js/sort/sort-common.js"></script>
+
+
+<script>
+    SXYL.SORT.getStep('/sort/bubbleStep');
+</script>
+
+
+
+<script>
+
+    var x = new Array();
+    var uuidArray = new Array() ;
+
+    var contentWidth = $('#graph-content').width()
+
+    //画布大小
+    var width = contentWidth, height = 650;
+    // 在body里添加一个SVG画布
+    var svg = d3.select("#graph-content")
+            .append("svg")
+            .attr("id","sortAlg")
+            .attr("width",width)
+            .attr("height",height);
+
+    function init() {
+        sortInit();
+        window.clearInterval(SXYL.execute_i);
+        svg.selectAll("g").remove();
+        x = new Array();
+        uuidArray = new Array() ;
+        var arrayLength = 10;
+        //起始位置,距屏幕左侧距离
+        var circleLeft = 100 ;
+
+        debugger
+        var arrayContent = $("#array-content").val()
+        if(arrayContent){
+            var content_array = arrayContent.split(",");
+
+
+            for (var i =0 ; i<content_array.length; i++ ){
+                if(!isNaN(content_array[i])){
+                    x.push(parseInt(content_array[i])) ;
+                    uuidArray.push(SXYL.base.uuid()) ;
+                }else{
+                    x = new Array();
+                    uuidArray = new Array();
+                    break;
+                }
+            }
+        }
+
+        if(x.length == 0 && uuidArray.length == 0 ){
+            for (var i =0 ; i<arrayLength; i++ ){
+                x.push(randomFrom(3,40)) ;
+                uuidArray.push(SXYL.base.uuid()) ;
+            }
+        }
+
+        for (var i=0 ;i< x.length ; i++) {
+            if(i > 0){
+                circleLeft = circleLeft + SXYL.DOM.defaultSpaceX ;
+            }
+            var tarG = svg.append("g")
+                    .attr("id", uuidArray[i])
+                    .attr("transform", "translate("+circleLeft+","+(300 - x[i]*5)+")");
+            tarG.append("rect")
+                    .attr("width", 40)
+                    .attr("height", x[i]*5)
+                    .style("fill","red");
+            var y = x[i]*5 - 5 ;
+            tarG.append("text")
+                    .attr("x", 13)
+                    .attr("y", y)
+                    .text(x[i]);
+        }
+        function randomFrom(lowerValue,upperValue){
+            return Math.floor(Math.random() * (upperValue - lowerValue + 1) + lowerValue);
+        }
+
+        function sortInit() {
+            SXYL.i = undefined ;
+            SXYL.j = undefined ;
+            SXYL.selectMinIndex=0;
+            SXYL.insertSortConfig.index = 0 ;
+            SXYL.insertSortConfig.indexContent = false ;
+            SXYL.insertSortConfig.idIndexContent = false ;
+            SXYL.insertSortConfig.indexFlag = false ;
+            SXYL.quickSortConfig.partitionIndex = undefined ;
+            SXYL.quickSortConfig.partitionFinishFlag = false ;
+            SXYL.quickSortConfig.recursiveStack = [] ;
+            SXYL.mergeSortConfig.recursiveGroupStack=[];
+            SXYL.mergeSortConfig.recursiveMergeResult=undefined;
+            SXYL.mergeSortConfig.recursiveMergeUuidResult=undefined;
+            SXYL.mergeSortConfig.recursiveMergeLeftIndex=undefined;
+            SXYL.mergeSortConfig.recursiveMergeRightIndex=undefined;
+            SXYL.mergeSortConfig.recursiveMergeWidth=undefined;
+        }
+    }
+    init();
+</script>
+
+<script>
+    function bubbleSort() {
+        console.log("start");
+        if(SXYL.i == undefined){
+            SXYL.i = 0
+        }
+        for (var i = SXYL.i ; i < x.length ; i++) {
+            if(SXYL.j == undefined) {
+                SXYL.j = 0 ;
+            }
+            for(var j = SXYL.j ; j < x.length - 1 -i ; j++){
+                console.log("compare index,i="+i+",j="+j+" , a = " + x[j] + ", b = " + x[j+1]);
+                //变换颜色
+                var leftColor =SXYL.DOM.changeElementColor(uuidArray[j], "yellow") ;
+                var rightColor =SXYL.DOM.changeElementColor(uuidArray[j+1], "yellow") ;
+                if(leftColor && rightColor){
+                    //执行步骤变色
+                    SXYL.SORT.executeStep("A1");
+                    return ;
+                }
+                var leftColor =SXYL.DOM.changeElementColor(uuidArray[j], "red") ;
+                var rightColor =SXYL.DOM.changeElementColor(uuidArray[j+1], "red") ;
+
+
+                if(x[j] > x[j+1]){//比较大小 , 说明需要换位置
+                    //元素交换位置
+                    SXYL.DOM.changeElementTransformX(uuidArray[j] , uuidArray[j+1]);
+                    //uuid的数组进行交换
+                    SXYL.base.changeArrayElement(uuidArray , j , j+1);
+                    //数组的内容进行交换
+                    SXYL.base.changeArrayElement(x,j , j+1);
+                    //执行步骤变色
+                    SXYL.SORT.executeStep("A2");
+                    console.log("compare end  need change , a = " + x[j] + ",b = " + x[j+1]);
+                }else{//比较大小,说明不需要换位置
+                    //颜色变换回来
+                    console.log("compare end  no change , a = " + x[j] + ",b = " + x[j+1]);
+
+                    //执行步骤变色
+                    SXYL.SORT.executeStep("A3");
+                }
+                if(j == x.length - 2 - i){//如果是最后一位
+                    SXYL.DOM.changeElementColor(uuidArray[j+1], "green");
+                    SXYL.j = undefined;
+                    SXYL.i++;
+
+                    //执行步骤变色
+                    SXYL.SORT.executeStep("A4");
+                }else{
+                    SXYL.j++ ;
+                }
+                return
+            }
+            if(i == x.length -1){
+                //需要判断是升序还是降序? 可放在嵌套循环里， 但是做的判断更多一些
+                SXYL.DOM.changeElementColor(uuidArray[0], "green");
+                //执行步骤变色
+                SXYL.SORT.executeStep("A-END");
+            }
+        }
+        console.log("end");
+        window.clearInterval(SXYL.execute_i);
+    }
+
+</script>
+
+</html>

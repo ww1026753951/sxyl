@@ -18,31 +18,45 @@ public class PortalController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("portal")
+    @RequestMapping("/portal")
     public String portal() throws Exception{
         return "/screen/portal-org";
     }
 
 
-
+    @RequestMapping("/sortOld")
+    public String sortOld() throws Exception{
+        return "/screen/algorithm/sort";
+    }
     /***
      * 冒泡
      * @return
      * @throws Exception
      */
-    @RequestMapping("sort")
+    @RequestMapping("/sort")
     public String sort() throws Exception{
+//        return "/screen/algorithm/algorithm-sort-portal";
         return "/screen/algorithm/sort";
     }
 
+    /***
+     * im
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("im")
+    public String im() throws Exception{
+        return "/screen/algorithm/im";
+    }
 
-//    /***
-//     * im
-//     * @return
-//     * @throws Exception
-//     */
-//    @RequestMapping("im")
-//    public String im() throws Exception{
-//        return "/screen/sort/im";
-//    }
+
+    /***
+     * dashboard
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("dashboard")
+    public String dashboard() throws Exception{
+        return "/screen/dashboard";
+    }
 }

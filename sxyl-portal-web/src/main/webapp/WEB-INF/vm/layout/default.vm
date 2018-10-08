@@ -5,11 +5,11 @@
 *##*	#parse("/common/globalShortcut.html")
 	#parse("/common/globalHeader.html")*##*
 	*#
-	$screen_content
-	
+$screen_content
+
 #*	#parse("/common/globalService.html")
 	#parse("/common/globalFooter.html")*#
-	
+
 #*
 	﻿<script type="text/javascript" src="http://wl.jd.com/wl.js"></script>
     <script type="text/javascript" src="http://misc.360buyimg.com/lib/js/2012/lib-v1.js" charset="gb2312"></script>
