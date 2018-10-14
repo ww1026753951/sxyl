@@ -38,7 +38,7 @@
                         <a class="nav-link active" href="#">
                             冒泡排序 <span class="sr-only">(current)</span>
                         </a>
-                    </li>   
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">
                             Orders
@@ -88,35 +88,39 @@
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">动效算法</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
+                <h1 class="h2 col-md-7">动效算法</h1>
+                <div class="btn-toolbar mb-2 mb-md-0  col-md-3">
                     <div class="btn-group mr-2">
-                        速度
-                        <label class="radio-inline">
+                        <p class="m-2"><b>速度:</b></p>
+                        <label class="radio-inline m-2" >
                             <input type="radio" name="speedRadioOptions" id="speed0.5" value="0.5"> 0.5
                         </label>
-                        <label class="radio-inline">
+                        <label class="radio-inline m-2" >
                             <input type="radio" name="speedRadioOptions" id="speed1" value="1" checked="checked"> 1
                         </label>
-                        <label class="radio-inline">
+                        <label class="radio-inline m-2" >
                             <input type="radio" name="speedRadioOptions" id="speed2" value="2"> 2
                         </label>
-                        <label class="radio-inline">
+                        <label class="radio-inline  m-2">
                             <input type="radio" name="speedRadioOptions" id="speed5" value="5"> 5
                         </label>
                     </div>
                 </div>
 
-
-
-                <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-toolbar mb-2 mb-md-0  col-md-2">
                     <div class="btn-group mr-2">
-                        <button class="btn btn-sm btn-outline-secondary" onclick="SXYL.execute_i = setInterval(bubbleSort, SXYL.SORT.getSpeed())">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-                            开始/继续
+                        <button class="btn btn-sm btn-outline-secondary" onclick="SXYL.execute_i = SXYL.SORT.run(bubbleSort, SXYL.SORT.getSpeed())">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
+                                <path id="play-path" d="M0 0v6l6-3-6-3z" transform="translate(1 1)" />
+                            </svg>
+                            <span id="run-pause" run-type="0">播放</span>
                         </button>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="clearInterval(SXYL.execute_i)">暂停</button>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="init()">重置</button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="init()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 8 8">
+                                <path d="M4 0c-2.2 0-4 1.8-4 4s1.8 4 4 4c1.1 0 2.12-.43 2.84-1.16l-.72-.72c-.54.54-1.29.88-2.13.88-1.66 0-3-1.34-3-3s1.34-3 3-3c.83 0 1.55.36 2.09.91l-1.09 1.09h3v-3l-1.19 1.19c-.72-.72-1.71-1.19-2.81-1.19z" />
+                            </svg>
+                            重置
+                        </button>
                     </div>
                 </div>
             </div>
@@ -125,8 +129,13 @@
                 <div id="graph-content" class="col-lg-9 col-sm-9 ">
                 </div>
                 <div class="col-lg-3 col-sm-3">
-                    <div><p>执行步骤</p></div>
+                    <div><p><b>执行步骤</b></p></div>
                     <div id="step-content">
+
+                    </div>
+
+                    <div><p><b>伪代码</b></p></div>
+                    <div id="pseudo-code">
 
                     </div>
                 </div>
@@ -172,7 +181,12 @@
 
     function init() {
         sortInit();
-        window.clearInterval(SXYL.execute_i);
+        // window.clearInterval(SXYL.execute_i);
+        SXYL.SORT.changeToStart();
+
+        //重置播放
+        SXYL.execute_i=undefined;
+
         svg.selectAll("g").remove();
         x = new Array();
         uuidArray = new Array() ;
@@ -180,7 +194,6 @@
         //起始位置,距屏幕左侧距离
         var circleLeft = 100 ;
 
-        debugger
         var arrayContent = $("#array-content").val()
         if(arrayContent){
             var content_array = arrayContent.split(",");
@@ -258,8 +271,10 @@
             if(SXYL.j == undefined) {
                 SXYL.j = 0 ;
             }
+            SXYL.SORT.executeStep("background1",[["{SIZE}",x.length - 1],["{INDEX}",i]] , "silver");
             for(var j = SXYL.j ; j < x.length - 1 -i ; j++){
-                console.log("compare index,i="+i+",j="+j+" , a = " + x[j] + ", b = " + x[j+1]);
+                // console.log("compare index,i="+i+",j="+j+" , a = " + x[j] + ", b = " + x[j+1]);
+                SXYL.SORT.executeStep("background2",[["{SIZE}",x.length - 2 -i],["{INDEX}",j]] , "silver");
                 //变换颜色
                 var leftColor =SXYL.DOM.changeElementColor(uuidArray[j], "yellow") ;
                 var rightColor =SXYL.DOM.changeElementColor(uuidArray[j+1], "yellow") ;
