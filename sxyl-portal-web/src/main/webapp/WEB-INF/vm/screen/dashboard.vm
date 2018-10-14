@@ -24,7 +24,7 @@
     <input id="array-content" class="form-control form-control-dark w-40" type="text" placeholder="自定义排序数组,逗号分隔。为空时使用随机数" aria-label="Search">
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-            <a class="nav-link" href="#">确认</a>
+            <a class="nav-link" href="javascript:void(0)" onclick="init()">确认</a>
         </li>
     </ul>
 </nav>
@@ -88,28 +88,11 @@
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 col-md-7">动效算法</h1>
-                <div class="btn-toolbar mb-2 mb-md-0  col-md-3">
-                    <div class="btn-group mr-2">
-                        <p class="m-2"><b>速度:</b></p>
-                        <label class="radio-inline m-2" >
-                            <input type="radio" name="speedRadioOptions" id="speed0.5" value="0.5"> 0.5
-                        </label>
-                        <label class="radio-inline m-2" >
-                            <input type="radio" name="speedRadioOptions" id="speed1" value="1" checked="checked"> 1
-                        </label>
-                        <label class="radio-inline m-2" >
-                            <input type="radio" name="speedRadioOptions" id="speed2" value="2"> 2
-                        </label>
-                        <label class="radio-inline  m-2">
-                            <input type="radio" name="speedRadioOptions" id="speed5" value="5"> 5
-                        </label>
-                    </div>
-                </div>
+##                <h1 class="h2 col-md-2">动效算法:</h1>
 
                 <div class="btn-toolbar mb-2 mb-md-0  col-md-2">
                     <div class="btn-group mr-2">
-                        <button class="btn btn-sm btn-outline-secondary" onclick="SXYL.execute_i = SXYL.SORT.run(bubbleSort, SXYL.SORT.getSpeed())">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="SXYL.SORT.run(bubbleSort, SXYL.SORT.getSpeed())">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
                                 <path id="play-path" d="M0 0v6l6-3-6-3z" transform="translate(1 1)" />
                             </svg>
@@ -123,6 +106,25 @@
                         </button>
                     </div>
                 </div>
+
+                <div class="btn-toolbar mb-2 mb-md-0  col-md-10">
+                    <div class="btn-group mr-2">
+                        <p class="m-2"><b>速度:</b></p>
+                        <label class="radio-inline m-2" >
+                            <input type="radio" name="speedRadioOptions" id="speed0.5" value="0.5" onclick="SXYL.SORT.changeSpeed(bubbleSort)"> 0.5
+                        </label>
+                        <label class="radio-inline m-2" >
+                            <input type="radio" name="speedRadioOptions" id="speed1" value="1" checked="checked" onclick="SXYL.SORT.changeSpeed(bubbleSort)"> 1
+                        </label>
+                        <label class="radio-inline m-2" >
+                            <input type="radio" name="speedRadioOptions" id="speed2" value="2" onclick="SXYL.SORT.changeSpeed(bubbleSort)"> 2
+                        </label>
+                        <label class="radio-inline  m-2">
+                            <input type="radio" name="speedRadioOptions" id="speed5" value="5" onclick="SXYL.SORT.changeSpeed(bubbleSort)"> 5
+                        </label>
+                    </div>
+                </div>
+
             </div>
 
             <div id="algorithm-content" class="row">
@@ -131,12 +133,10 @@
                 <div class="col-lg-3 col-sm-3">
                     <div><p><b>执行步骤</b></p></div>
                     <div id="step-content">
-
                     </div>
 
                     <div><p><b>伪代码</b></p></div>
                     <div id="pseudo-code">
-
                     </div>
                 </div>
             </div>
@@ -164,12 +164,9 @@
 
 
 <script>
-
     var x = new Array();
     var uuidArray = new Array() ;
-
     var contentWidth = $('#graph-content').width()
-
     //画布大小
     var width = contentWidth, height = 650;
     // 在body里添加一个SVG画布
@@ -181,11 +178,8 @@
 
     function init() {
         sortInit();
-        // window.clearInterval(SXYL.execute_i);
         SXYL.SORT.changeToStart();
 
-        //重置播放
-        SXYL.execute_i=undefined;
 
         svg.selectAll("g").remove();
         x = new Array();
@@ -197,8 +191,6 @@
         var arrayContent = $("#array-content").val()
         if(arrayContent){
             var content_array = arrayContent.split(",");
-
-
             for (var i =0 ; i<content_array.length; i++ ){
                 if(!isNaN(content_array[i])){
                     x.push(parseInt(content_array[i])) ;

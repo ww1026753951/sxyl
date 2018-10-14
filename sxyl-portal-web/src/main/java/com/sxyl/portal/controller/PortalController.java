@@ -55,7 +55,7 @@ public class PortalController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("dashboard")
+    @RequestMapping("/test")
     public String dashboard() throws Exception{
         return "/screen/dashboard";
     }

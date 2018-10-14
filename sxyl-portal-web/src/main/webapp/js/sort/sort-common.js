@@ -1,5 +1,6 @@
 SXYL.SORT = {
-
+    array:[],//排序数组的全局变量
+    uuidArray:[],//排序数组对应的dom唯一标识id
     stepHtml:"<p id='{stepCode}' group='{group}' t='{stepDesc}'>{stepDesc}</p>" ,
     getStep:function (url) {
         $.ajax({
@@ -20,7 +21,6 @@ SXYL.SORT = {
     // ,groupCode,group
         var codeOb = $("#"+code);
         var group = codeOb.attr("group");
-        debugger ;
         $("#"+code).parent().children("p[group='"+group+"']").css("background-color","");
         if(color){
             $("#" + code).css("background-color",color);
@@ -44,17 +44,12 @@ SXYL.SORT = {
      * @returns {number}
      */
     getSpeed:function () {
-        debugger ;
-
         var speed = 600;
-
         var a = $("input[name='speedRadioOptions']:checked").val();
-
         if(a && !isNaN(a) ){
             speed = speed / a;
         }
         return speed;
-
     },
 
     //runType  0:开始  1:暂停  2:继续
@@ -64,12 +59,10 @@ SXYL.SORT = {
             $("#run-pause").attr("run-type" , 1) ;
             $("#run-pause").text("暂停") ;
             $("#play-path").attr("d","M0 0v6h2v-6h-2zm4 0v6h2v-6h-2z");
-            return setInterval(f, speed);
-
+            SXYL.execute_i = setInterval(f, speed);
         }else {
             SXYL.SORT.changeToStart();
         }
-
     },
     //runType  0:开始  1:暂停  2:继续
     changeToStart:function () {
@@ -77,6 +70,14 @@ SXYL.SORT = {
         $("#run-pause").text("播放") ;
         $("#play-path").attr("d","M0 0v6l6-3-6-3z");
         clearInterval(SXYL.execute_i);
-    }
+    },
+    changeSpeed:function (f) {
+        debugger
+        var runType = $("#run-pause").attr("run-type");
+        if(runType==1){
+            clearInterval(SXYL.execute_i);
+            SXYL.execute_i = setInterval(f, SXYL.SORT.getSpeed());
+        }
+    },
 
 }
