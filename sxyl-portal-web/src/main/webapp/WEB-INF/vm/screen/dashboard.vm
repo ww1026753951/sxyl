@@ -41,12 +41,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">
-                            Orders
+                            鸡尾酒排序(稍后)
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">
-                            Products
+                            xxxx排序(稍后)
                         </a>
                     </li>
                 </ul>
@@ -164,8 +164,8 @@
 
 
 <script>
-    var x = new Array();
-    var uuidArray = new Array() ;
+    // var x = new Array();
+    // var uuidArray = new Array() ;
     var contentWidth = $('#graph-content').width()
     //画布大小
     var width = contentWidth, height = 650;
@@ -182,8 +182,8 @@
 
 
         svg.selectAll("g").remove();
-        x = new Array();
-        uuidArray = new Array() ;
+        SXYL.SORT.array = new Array();
+        SXYL.SORT.uuidArray = new Array() ;
         var arrayLength = 10;
         //起始位置,距屏幕左侧距离
         var circleLeft = 100 ;
@@ -193,39 +193,39 @@
             var content_array = arrayContent.split(",");
             for (var i =0 ; i<content_array.length; i++ ){
                 if(!isNaN(content_array[i])){
-                    x.push(parseInt(content_array[i])) ;
-                    uuidArray.push(SXYL.base.uuid()) ;
+                    SXYL.SORT.array.push(parseInt(content_array[i])) ;
+                    SXYL.SORT.uuidArray.push(SXYL.base.uuid()) ;
                 }else{
-                    x = new Array();
-                    uuidArray = new Array();
+                    SXYL.SORT.array = new Array();
+                    SXYL.SORT.uuidArray = new Array();
                     break;
                 }
             }
         }
 
-        if(x.length == 0 && uuidArray.length == 0 ){
+        if(SXYL.SORT.array.length == 0 && SXYL.SORT.uuidArray.length == 0 ){
             for (var i =0 ; i<arrayLength; i++ ){
-                x.push(randomFrom(3,40)) ;
-                uuidArray.push(SXYL.base.uuid()) ;
+                SXYL.SORT.array.push(randomFrom(3,40)) ;
+                SXYL.SORT.uuidArray.push(SXYL.base.uuid()) ;
             }
         }
 
-        for (var i=0 ;i< x.length ; i++) {
+        for (var i=0 ;i< SXYL.SORT.array.length ; i++) {
             if(i > 0){
                 circleLeft = circleLeft + SXYL.DOM.defaultSpaceX ;
             }
             var tarG = svg.append("g")
-                    .attr("id", uuidArray[i])
-                    .attr("transform", "translate("+circleLeft+","+(300 - x[i]*5)+")");
+                    .attr("id", SXYL.SORT.uuidArray[i])
+                    .attr("transform", "translate("+circleLeft+","+(300 - SXYL.SORT.array[i]*5)+")");
             tarG.append("rect")
                     .attr("width", 40)
-                    .attr("height", x[i]*5)
+                    .attr("height", SXYL.SORT.array[i]*5)
                     .style("fill","red");
-            var y = x[i]*5 - 5 ;
+            var y = SXYL.SORT.array[i]*5 - 5 ;
             tarG.append("text")
                     .attr("x", 13)
                     .attr("y", y)
-                    .text(x[i]);
+                    .text(SXYL.SORT.array[i]);
         }
         function randomFrom(lowerValue,upperValue){
             return Math.floor(Math.random() * (upperValue - lowerValue + 1) + lowerValue);
@@ -259,45 +259,45 @@
         if(SXYL.i == undefined){
             SXYL.i = 0
         }
-        for (var i = SXYL.i ; i < x.length ; i++) {
+        for (var i = SXYL.i ; i < SXYL.SORT.array.length ; i++) {
             if(SXYL.j == undefined) {
                 SXYL.j = 0 ;
             }
-            SXYL.SORT.executeStep("background1",[["{SIZE}",x.length - 1],["{INDEX}",i]] , "silver");
-            for(var j = SXYL.j ; j < x.length - 1 -i ; j++){
+            SXYL.SORT.executeStep("background1",[["{SIZE}",SXYL.SORT.array.length - 1],["{INDEX}",i]] , "silver");
+            for(var j = SXYL.j ; j < SXYL.SORT.array.length - 1 -i ; j++){
                 // console.log("compare index,i="+i+",j="+j+" , a = " + x[j] + ", b = " + x[j+1]);
-                SXYL.SORT.executeStep("background2",[["{SIZE}",x.length - 2 -i],["{INDEX}",j]] , "silver");
+                SXYL.SORT.executeStep("background2",[["{SIZE}",SXYL.SORT.array.length - 2 -i],["{INDEX}",j]] , "silver");
                 //变换颜色
-                var leftColor =SXYL.DOM.changeElementColor(uuidArray[j], "yellow") ;
-                var rightColor =SXYL.DOM.changeElementColor(uuidArray[j+1], "yellow") ;
+                var leftColor =SXYL.DOM.changeElementColor(SXYL.SORT.uuidArray[j], "yellow") ;
+                var rightColor =SXYL.DOM.changeElementColor(SXYL.SORT.uuidArray[j+1], "yellow") ;
                 if(leftColor && rightColor){
                     //执行步骤变色
                     SXYL.SORT.executeStep("A1");
                     return ;
                 }
-                var leftColor =SXYL.DOM.changeElementColor(uuidArray[j], "red") ;
-                var rightColor =SXYL.DOM.changeElementColor(uuidArray[j+1], "red") ;
+                var leftColor =SXYL.DOM.changeElementColor(SXYL.SORT.uuidArray[j], "red") ;
+                var rightColor =SXYL.DOM.changeElementColor(SXYL.SORT.uuidArray[j+1], "red") ;
 
 
-                if(x[j] > x[j+1]){//比较大小 , 说明需要换位置
+                if(SXYL.SORT.array[j] > SXYL.SORT.array[j+1]){//比较大小 , 说明需要换位置
                     //元素交换位置
-                    SXYL.DOM.changeElementTransformX(uuidArray[j] , uuidArray[j+1]);
+                    SXYL.DOM.changeElementTransformX(SXYL.SORT.uuidArray[j] , SXYL.SORT.uuidArray[j+1]);
                     //uuid的数组进行交换
-                    SXYL.base.changeArrayElement(uuidArray , j , j+1);
+                    SXYL.base.changeArrayElement(SXYL.SORT.uuidArray , j , j+1);
                     //数组的内容进行交换
-                    SXYL.base.changeArrayElement(x,j , j+1);
+                    SXYL.base.changeArrayElement(SXYL.SORT.array ,j , j+1);
                     //执行步骤变色
                     SXYL.SORT.executeStep("A2");
-                    console.log("compare end  need change , a = " + x[j] + ",b = " + x[j+1]);
+                    console.log("compare end  need change , a = " + SXYL.SORT.array[j] + ",b = " + SXYL.SORT.array[j+1]);
                 }else{//比较大小,说明不需要换位置
                     //颜色变换回来
-                    console.log("compare end  no change , a = " + x[j] + ",b = " + x[j+1]);
+                    console.log("compare end  no change , a = " + SXYL.SORT.array[j] + ",b = " + SXYL.SORT.array[j+1]);
 
                     //执行步骤变色
                     SXYL.SORT.executeStep("A3");
                 }
-                if(j == x.length - 2 - i){//如果是最后一位
-                    SXYL.DOM.changeElementColor(uuidArray[j+1], "green");
+                if(j == SXYL.SORT.array.length - 2 - i){//如果是最后一位
+                    SXYL.DOM.changeElementColor(SXYL.SORT.uuidArray[j+1], "green");
                     SXYL.j = undefined;
                     SXYL.i++;
 
@@ -308,9 +308,9 @@
                 }
                 return
             }
-            if(i == x.length -1){
+            if(i == SXYL.SORT.array.length -1){
                 //需要判断是升序还是降序? 可放在嵌套循环里， 但是做的判断更多一些
-                SXYL.DOM.changeElementColor(uuidArray[0], "green");
+                SXYL.DOM.changeElementColor(SXYL.SORT.uuidArray[0], "green");
                 //执行步骤变色
                 SXYL.SORT.executeStep("A-END");
             }

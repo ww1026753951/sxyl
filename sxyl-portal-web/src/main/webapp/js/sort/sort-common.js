@@ -72,7 +72,6 @@ SXYL.SORT = {
         clearInterval(SXYL.execute_i);
     },
     changeSpeed:function (f) {
-        debugger
         var runType = $("#run-pause").attr("run-type");
         if(runType==1){
             clearInterval(SXYL.execute_i);
