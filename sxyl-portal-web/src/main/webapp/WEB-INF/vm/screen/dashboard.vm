@@ -154,7 +154,7 @@
 <!-- Bootstrap JS -->
 <script src="/js/bootstrap/bootstrap.min.js" ></script>
 <!-- Icons -->
-<script src="/js/sort/sort-common.js"></script>
+<script src="/js/sort/sort-common.min.js"></script>
 
 
 <script>
@@ -177,7 +177,9 @@
             .attr("height",height);
 
     function init() {
-        sortInit();
+        //变量置换为 undefined
+        SXYL.SORT.parameterInit();
+        //按钮变为
         SXYL.SORT.changeToStart();
 
 
@@ -232,22 +234,7 @@
         }
 
         function sortInit() {
-            SXYL.i = undefined ;
-            SXYL.j = undefined ;
-            SXYL.selectMinIndex=0;
-            SXYL.insertSortConfig.index = 0 ;
-            SXYL.insertSortConfig.indexContent = false ;
-            SXYL.insertSortConfig.idIndexContent = false ;
-            SXYL.insertSortConfig.indexFlag = false ;
-            SXYL.quickSortConfig.partitionIndex = undefined ;
-            SXYL.quickSortConfig.partitionFinishFlag = false ;
-            SXYL.quickSortConfig.recursiveStack = [] ;
-            SXYL.mergeSortConfig.recursiveGroupStack=[];
-            SXYL.mergeSortConfig.recursiveMergeResult=undefined;
-            SXYL.mergeSortConfig.recursiveMergeUuidResult=undefined;
-            SXYL.mergeSortConfig.recursiveMergeLeftIndex=undefined;
-            SXYL.mergeSortConfig.recursiveMergeRightIndex=undefined;
-            SXYL.mergeSortConfig.recursiveMergeWidth=undefined;
+
         }
     }
     init();
@@ -255,7 +242,7 @@
 
 <script>
     function bubbleSort() {
-        console.log("start");
+
         if(SXYL.i == undefined){
             SXYL.i = 0
         }
@@ -277,9 +264,8 @@
                 }
                 var leftColor =SXYL.DOM.changeElementColor(SXYL.SORT.uuidArray[j], "red") ;
                 var rightColor =SXYL.DOM.changeElementColor(SXYL.SORT.uuidArray[j+1], "red") ;
-
-
-                if(SXYL.SORT.array[j] > SXYL.SORT.array[j+1]){//比较大小 , 说明需要换位置
+                //比较大小 , 说明需要换位置
+                if(SXYL.SORT.array[j] > SXYL.SORT.array[j+1]){
                     //元素交换位置
                     SXYL.DOM.changeElementTransformX(SXYL.SORT.uuidArray[j] , SXYL.SORT.uuidArray[j+1]);
                     //uuid的数组进行交换
@@ -288,11 +274,7 @@
                     SXYL.base.changeArrayElement(SXYL.SORT.array ,j , j+1);
                     //执行步骤变色
                     SXYL.SORT.executeStep("A2");
-                    console.log("compare end  need change , a = " + SXYL.SORT.array[j] + ",b = " + SXYL.SORT.array[j+1]);
                 }else{//比较大小,说明不需要换位置
-                    //颜色变换回来
-                    console.log("compare end  no change , a = " + SXYL.SORT.array[j] + ",b = " + SXYL.SORT.array[j+1]);
-
                     //执行步骤变色
                     SXYL.SORT.executeStep("A3");
                 }
@@ -300,7 +282,6 @@
                     SXYL.DOM.changeElementColor(SXYL.SORT.uuidArray[j+1], "green");
                     SXYL.j = undefined;
                     SXYL.i++;
-
                     //执行步骤变色
                     SXYL.SORT.executeStep("A4");
                 }else{
@@ -317,6 +298,7 @@
         }
         console.log("end");
         window.clearInterval(SXYL.execute_i);
+
     }
 
 </script>

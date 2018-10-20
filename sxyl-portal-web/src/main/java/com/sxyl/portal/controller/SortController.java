@@ -31,13 +31,5 @@ public class SortController {
         return executionSequenceService.queryExecutionSequence() ;
     }
 
-//    private List<ExecutionSequence> mapToStep(Map<String,String> stepMap){
-//
-//        List<ExecutionSequence> r = new ArrayList<ExecutionSequence>();
-//        for (Map.Entry<String, String> m : stepMap.entrySet()) {
-//            r.add();
-//        }
-//        return r;
-//    }
 
 }

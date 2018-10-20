@@ -1,16 +1,20 @@
 //var str = "js实现用{two}自符串替换占位符{two} {three}  {one} ".format({one: "I",two: "LOVE",three: "YOU"});
 //var str2 = "js实现用{1}自符串替换占位符{1} {2}  {0} ".format("I","LOVE","YOU");
 String.prototype.format = function() {
-    if(arguments.length == 0) return this;
+    if(arguments.length == 0){
+        return this;
+    }
     var param = arguments[0];
     var s = this;
     if(typeof(param) == 'object') {
-        for(var key in param)
+        for(var key in param){
             s = s.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
+        }
         return s;
     } else {
-        for(var i = 0; i < arguments.length; i++)
+        for(var i = 0; i < arguments.length; i++){
             s = s.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
+        }
         return s;
     }
 }
@@ -207,5 +211,5 @@ SXYL.DOM.changeElementXYByObject = function (id , o) {
 SXYL.DOM.getDomXY = function (id) {
     var rectTarget = d3.select("#" + id) ;
     var rectTargetMatrix = SXYL.DOM.getTranslation(rectTarget.attr("transform"));
-    return {x:parseInt(rectTargetMatrix[0]) , y:parseInt(rectTargetMatrix[1])}
+    return {x:parseInt(rectTargetMatrix[0]) , y:parseInt(rectTargetMatrix[1])};
 }

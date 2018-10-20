@@ -34,7 +34,7 @@ SXYL.SORT = {
         if(replace){
             var targetText = $("#" + code).attr("t");
             for (var i = 0 ; i< replace.length ; i++){
-                targetText = targetText.replace(replace[i][0] , replace[i][1])
+                targetText = targetText.replace(replace[i][0] , replace[i][1]);
             }
             $("#" + code).text(targetText);
         }
@@ -79,4 +79,25 @@ SXYL.SORT = {
         }
     },
 
+    parameterInit:function f() {
+        SXYL.i = undefined ;
+        SXYL.j = undefined ;
+        SXYL.selectMinIndex=0;
+        SXYL.insertSortConfig.index = 0 ;
+        SXYL.insertSortConfig.indexContent = false ;
+        SXYL.insertSortConfig.idIndexContent = false ;
+        SXYL.insertSortConfig.indexFlag = false ;
+        SXYL.quickSortConfig.partitionIndex = undefined ;
+        SXYL.quickSortConfig.partitionFinishFlag = false ;
+        SXYL.quickSortConfig.recursiveStack = [] ;
+        SXYL.mergeSortConfig.recursiveGroupStack=[];
+        SXYL.mergeSortConfig.recursiveMergeResult=undefined;
+        SXYL.mergeSortConfig.recursiveMergeUuidResult=undefined;
+        SXYL.mergeSortConfig.recursiveMergeLeftIndex=undefined;
+        SXYL.mergeSortConfig.recursiveMergeRightIndex=undefined;
+        SXYL.mergeSortConfig.recursiveMergeWidth=undefined;
+    },
+    switchSortFunction:function (type) {
+        i
+    }
 }
