@@ -10,7 +10,6 @@ function quickSort() {
      */
     function quickSortStart(arr, left, right){
         var len = arr.length, pivot, partitionIndex;
-        debugger
         if(left < right){
             pivot = right;
             //分割位置

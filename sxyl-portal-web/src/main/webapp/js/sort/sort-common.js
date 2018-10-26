@@ -1,6 +1,10 @@
 SXYL.SORT = {
-    array:[],//排序数组的全局变量
-    uuidArray:[],//排序数组对应的dom唯一标识id
+    //排序数组的全局变量
+    array:[],
+    //排序数组对应的dom唯一标识id
+    uuidArray:[],
+    //当前执行的 function
+    F:undefined ,
     stepHtml:"<p id='{stepCode}' group='{group}' t='{stepDesc}'>{stepDesc}</p>" ,
     getStep:function (url) {
         $.ajax({
@@ -18,7 +22,6 @@ SXYL.SORT = {
     },
 
     executeStep:function(code,replace,color){
-    // ,groupCode,group
         var codeOb = $("#"+code);
         var group = codeOb.attr("group");
         $("#"+code).parent().children("p[group='"+group+"']").css("background-color","");
@@ -79,25 +82,78 @@ SXYL.SORT = {
         }
     },
 
-    parameterInit:function f() {
-        SXYL.i = undefined ;
-        SXYL.j = undefined ;
-        SXYL.selectMinIndex=0;
-        SXYL.insertSortConfig.index = 0 ;
-        SXYL.insertSortConfig.indexContent = false ;
-        SXYL.insertSortConfig.idIndexContent = false ;
-        SXYL.insertSortConfig.indexFlag = false ;
-        SXYL.quickSortConfig.partitionIndex = undefined ;
-        SXYL.quickSortConfig.partitionFinishFlag = false ;
-        SXYL.quickSortConfig.recursiveStack = [] ;
-        SXYL.mergeSortConfig.recursiveGroupStack=[];
-        SXYL.mergeSortConfig.recursiveMergeResult=undefined;
-        SXYL.mergeSortConfig.recursiveMergeUuidResult=undefined;
-        SXYL.mergeSortConfig.recursiveMergeLeftIndex=undefined;
-        SXYL.mergeSortConfig.recursiveMergeRightIndex=undefined;
-        SXYL.mergeSortConfig.recursiveMergeWidth=undefined;
+    sortInit:function f(o) {
+        //参数初始化
+        parameterInit();
+        //按钮变为初始化
+        SXYL.SORT.changeToStart();
+        //清除画布中的元素
+        d3.select("#sortAlg").selectAll("g").remove();
+        //生产数据
+        if(o && o.data){
+            if(o.dataType==='array'){
+                for (var i =0 ; i<o.data.length; i++ ){
+                    if(!isNaN(o.data[i])){
+                        SXYL.SORT.array.push(parseInt(o.data[i])) ;
+                        SXYL.SORT.uuidArray.push(SXYL.base.uuid()) ;
+                    }else{
+                        SXYL.SORT.array = new Array();
+                        SXYL.SORT.uuidArray = new Array();
+                        break;
+                    }
+                }
+            }
+        }
+        //暂定默认10数组,后续优化
+        var arrayLength = 10;
+        //初始化数据 ,默认为数组初始化
+        if(SXYL.SORT.array.length == 0 && SXYL.SORT.uuidArray.length == 0 ){
+            for (var i =0 ; i<arrayLength; i++ ){
+                SXYL.SORT.array.push(SXYL.base.randomFrom(3,40)) ;
+                SXYL.SORT.uuidArray.push(SXYL.base.uuid()) ;
+            }
+        }
+
+        //生产矩形条
+        var left = undefined;
+        for (var i=0 ;i< SXYL.SORT.array.length ; i++) {
+            left = SXYL.GRAPH.drawRect({marginLeft:left , value:SXYL.SORT.array[i], id:SXYL.SORT.uuidArray[i]}).left;
+        }
+
+        function parameterInit(){
+            //数组初始化
+            SXYL.SORT.array = new Array();
+            SXYL.SORT.uuidArray = new Array() ;
+            SXYL.i = undefined ;
+            SXYL.j = undefined ;
+            SXYL.selectMinIndex=0;
+            SXYL.insertSortConfig.index = 0 ;
+            SXYL.insertSortConfig.indexContent = false ;
+            SXYL.insertSortConfig.idIndexContent = false ;
+            SXYL.insertSortConfig.indexFlag = false ;
+            SXYL.quickSortConfig.partitionIndex = undefined ;
+            SXYL.quickSortConfig.partitionFinishFlag = false ;
+            SXYL.quickSortConfig.recursiveStack = [] ;
+            SXYL.mergeSortConfig.recursiveGroupStack=[];
+            SXYL.mergeSortConfig.recursiveMergeResult=undefined;
+            SXYL.mergeSortConfig.recursiveMergeUuidResult=undefined;
+            SXYL.mergeSortConfig.recursiveMergeLeftIndex=undefined;
+            SXYL.mergeSortConfig.recursiveMergeRightIndex=undefined;
+            SXYL.mergeSortConfig.recursiveMergeWidth=undefined;
+        }
     },
+    //切换function
     switchSortFunction:function (type) {
-        i
+        // if(type ==1 || type == undefined){
+        //     SXYL.execute_f = SXYL.SORT.BubbleSort;
+        // }
+
+        // return SXYL.SORT.BubbleSort;
+        // debugger
+        if (SXYL.SORT.F == undefined){
+            return SXYL.SORT.BubbleSort;
+        }
+
+        return SXYL.SORT.F;
     }
 }

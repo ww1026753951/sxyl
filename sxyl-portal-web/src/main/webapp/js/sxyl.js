@@ -23,6 +23,8 @@ String.prototype.format = function() {
 SXYL={
     //全局执行次数
     execute_i: undefined ,
+    //全局执行的函数
+    // execute_f: undefined ,
     i:undefined,
     j:undefined,
     selectMinIndex:0,
@@ -63,6 +65,10 @@ SXYL={
         defaultY: 240 , //默认y轴坐标
         defaultSpaceX: 50//默认y轴坐标
     }
+}
+
+SXYL.base.randomFrom = function (lowerValue,upperValue){
+    return Math.floor(Math.random() * (upperValue - lowerValue + 1) + lowerValue);
 }
 
 /***
