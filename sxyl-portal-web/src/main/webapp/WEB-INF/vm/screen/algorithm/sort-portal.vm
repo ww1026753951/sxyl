@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="/css/bootstrap/dashboard.css" >
     <link rel="stylesheet" href="/css/bootstrap/bootstrap-reboot.min.css" >
     <script src="/js/d3/d3.min.js"></script>
-    <script src="/js/sxyl.js"></script>
+    <script src="/js/sxyl.min.js"></script>
     <style>
         .sidebar-sticky a:hover{
             background: #C0C0C0;
@@ -47,8 +47,23 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" type="2" style="cursor: pointer">
-                            xxxx排序(稍后)
+                        <a class="nav-link" type="3" style="cursor: pointer">
+                            选择排序
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" type="4" style="cursor: pointer">
+                            插入排序
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" type="5" style="cursor: pointer">
+                            快速排序
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" type="6" style="cursor: pointer">
+                            归并排序
                         </a>
                     </li>
                 </ul>
@@ -69,7 +84,34 @@
                     </div>
 
                     <div><p><b>伪代码</b></p></div>
+##                    <pre><b>procedure</b> cocktailShakerSort( A <b>:</b> list of sortable items ) <b>defined as:</b>
+##  <b>do</b>
+##    swapped&nbsp;:= false
+##    <b>for each</b> i <b>in</b> 0 <b>to</b> length( A ) - 2 <b>do:</b>
+##      <b>if</b> A[ i ] &gt; A[ i + 1 ] <b>then</b> <span style="color:green">// test whether the two elements are in the wrong order</span>
+##        swap( A[ i ], A[ i + 1 ] ) <span style="color:green">// let the two elements change places</span>
+##        swapped&nbsp;:= true
+##      <b>end if</b>
+##    <b>end for</b>
+##    <b>if not</b> swapped <b>then</b>
+##      <span style="color:green">// we can exit the outer loop here if no swaps occurred.</span>
+##      <b>break do-while loop</b>
+##    <b>end if</b>
+##    swapped&nbsp;:= false
+##    <b>for each</b> i <b>in</b> length( A ) - 2 <b>to</b> 0 <b>do:</b>
+##      <b>if</b> A[ i ] &gt; A[ i + 1 ] <b>then</b>
+##        swap( A[ i ], A[ i + 1 ] )
+##        swapped&nbsp;:= true
+##      <b>end if</b>
+##    <b>end for</b>
+##  <b>while</b> swapped <span style="color:green">// if no elements have been swapped, then the list is sorted</span>
+##<b>end procedure</b>
+##</pre>
+
+
+
                     <div id="pseudo-code">
+
                     </div>
                 </div>
             </div>
@@ -87,13 +129,13 @@
 <!-- Bootstrap JS -->
 <script src="/js/bootstrap/bootstrap.min.js" ></script>
 
-<script src="/js/sxyl.graph.js"></script>
+<script src="/js/sxyl.graph.min.js"></script>
 <!-- Icons -->
-<script src="/js/sort/sort-common.js"></script>
+<script src="/js/sort/sort-common.min.js"></script>
 
 ##具体的排序算法
-<script src="/js/sort/s.js"></script>
+<script src="/js/sort/s.min.js"></script>
 ##面板的js,具体页面的js事件等
-<script src="/js/sort/d.js"></script>
+<script src="/js/sort/d.min.js"></script>
 
 </html>

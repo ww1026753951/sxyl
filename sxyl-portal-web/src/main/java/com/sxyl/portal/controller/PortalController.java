@@ -35,8 +35,7 @@ public class PortalController extends BaseController {
      */
     @RequestMapping("/sort")
     public String sort() throws Exception{
-//        return "/screen/algorithm/algorithm-sort-portal";
-        return "/screen/algorithm/sort";
+        return "/screen/algorithm/sort-portal";
     }
 
     /***

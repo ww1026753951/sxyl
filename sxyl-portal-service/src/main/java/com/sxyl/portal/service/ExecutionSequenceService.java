@@ -10,5 +10,5 @@ public interface ExecutionSequenceService {
      * 查询动画执行步骤
      * @return
      */
-    List<ExecutionSequence> queryExecutionSequence();
+    List<ExecutionSequence> queryExecutionSequence(String type);
 }

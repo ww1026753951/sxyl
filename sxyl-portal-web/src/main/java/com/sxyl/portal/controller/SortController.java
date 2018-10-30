@@ -25,10 +25,10 @@ public class SortController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/bubbleStep")
+    @RequestMapping("/step")
     @ResponseBody
-    public Object bubbleStep() throws Exception{
-        return executionSequenceService.queryExecutionSequence() ;
+    public Object step(String type) throws Exception{
+        return executionSequenceService.queryExecutionSequence(type) ;
     }
 
 

@@ -11,16 +11,24 @@ SXYL.SORT = {
             type: 'POST',
             url: url,
             success: function (d) {
+                // $("#"+ob.groupCode)
+                var clearFlag={};
+                $("#step-content").empty();
+                $("#pseudo-code").empty();
                 if(d instanceof Array){
                     for (var i=0;i<d.length;i++){
                         var ob = d[i];
+                        if(clearFlag[ob.groupCode] != true ){
+                            $("#"+ob.groupCode).empty();
+                            clearFlag[ob.groupCode]=true;
+                        }
                         $("#"+ob.groupCode).append(SXYL.SORT.stepHtml.format(ob));
                     }
                 }
             }
         });
     },
-
+    //执行步骤的js
     executeStep:function(code,replace,color){
         var codeOb = $("#"+code);
         var group = codeOb.attr("group");
@@ -124,6 +132,7 @@ SXYL.SORT = {
             //数组初始化
             SXYL.SORT.array = new Array();
             SXYL.SORT.uuidArray = new Array() ;
+            //冒泡排序等变量初始化
             SXYL.i = undefined ;
             SXYL.j = undefined ;
             SXYL.selectMinIndex=0;
@@ -140,20 +149,16 @@ SXYL.SORT = {
             SXYL.mergeSortConfig.recursiveMergeLeftIndex=undefined;
             SXYL.mergeSortConfig.recursiveMergeRightIndex=undefined;
             SXYL.mergeSortConfig.recursiveMergeWidth=undefined;
+            //鸡尾酒排序的变量初始化
+            SXYL.cocktailShakerSortConfig.swapJ=undefined;
+            SXYL.cocktailShakerSortConfig.swap=true;
         }
     },
     //切换function
-    switchSortFunction:function (type) {
-        // if(type ==1 || type == undefined){
-        //     SXYL.execute_f = SXYL.SORT.BubbleSort;
-        // }
-
-        // return SXYL.SORT.BubbleSort;
-        // debugger
+    switchSortFunction:function () {
         if (SXYL.SORT.F == undefined){
             return SXYL.SORT.BubbleSort;
         }
-
         return SXYL.SORT.F;
     }
 }

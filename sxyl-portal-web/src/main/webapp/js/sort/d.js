@@ -3,7 +3,7 @@
  * **/
 $(document).ready(function(){
     //获取执行步骤
-    SXYL.SORT.getStep('/sort/bubbleStep');
+    SXYL.SORT.getStep('/sort/step');
     //初始化画布
     SXYL.GRAPH.InitContext(1,"graph-content");
     //初始化排序数据
@@ -32,23 +32,15 @@ $(document).ready(function(){
         var type = $(this).attr('type') ;
         SXYL.SORT.sortInit({dataType:'array',data:getData()});
 
-
-        debugger
         $(this).parent().parent().find('.active').removeClass('active');
 
         $(this).addClass('active');
-        //后期用map格式
-        if(type == 1){
-            SXYL.SORT.F = SXYL.SORT.BubbleSort;
-        }else  {
-            SXYL.SORT.F = SXYL.SORT.CocktailShakerSort;
-        }
+        //获取类型对应的方法
+        SXYL.SORT.F = SXYL.SORT.F_MAP[type];
+        //获取执行步骤
+        SXYL.SORT.getStep('/sort/step?type='+type);
 
 
-
-        // SXYL.SORT.changeSpeed(
-        //     SXYL.SORT.switchSortFunction(1)
-        // );
     });
 
     /****
