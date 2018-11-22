@@ -5,17 +5,22 @@ package com.sxyl.portal.domain.constant;
  */
 public enum  ShowTextPositionEnum {
 
+    //起始位置
+    START(1,"text-anchor: start;","在起始的位置"),
     //中间位置
-    MIDDLE(1,"中间位置"),
-    //在范围内的顶部
-    TOP_INSIDE(2,"顶部-在范围内"),
-    //在范围外的顶部
-    TOP_OUTSIDE(3,"顶部-在范围外");
+    MIDDLE(2,"text-anchor: middle;","中间位置"),
+    //结束位置
+    END(3,"text-anchor: end;","在结束的位置");
 
     private final int type;
+
+
+    private final String code ;
+
     private final String desc;
-    private ShowTextPositionEnum(int type , String desc) {
+    private ShowTextPositionEnum(int type , String code , String desc) {
         this.type = type;
+        this.code = code ;
         this.desc = desc;
     }
 
@@ -26,5 +31,9 @@ public enum  ShowTextPositionEnum {
 
     public String getDesc() {
         return desc;
+    }
+
+    public String getCode() {
+        return code;
     }
 }

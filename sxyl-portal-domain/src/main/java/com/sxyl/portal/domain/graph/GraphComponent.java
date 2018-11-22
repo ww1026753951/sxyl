@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +27,6 @@ public abstract class GraphComponent implements Serializable {
      */
     private String id;
 
-
     /***
      * 左边距
      * marginRight
@@ -39,20 +39,6 @@ public abstract class GraphComponent implements Serializable {
      */
     private Integer mt;
 
-
-    /****
-     * 需要展示的文字
-     * showText
-     */
-    private String st;
-
-    /****
-     * 需要展示文字的位置
-     * showTextPosition
-     * @see com.sxyl.portal.domain.constant.ShowTextPositionEnum
-     */
-    private String stp;
-
     /*****
      * 元素的类型
      * componentType
@@ -60,6 +46,23 @@ public abstract class GraphComponent implements Serializable {
      */
     private Integer ct;
 
+
+    /****
+     *分组内图画的对象
+     */
+    private List<GraphComponent> currentComponent;
+
+    public boolean addCurrentComponent(GraphComponent graphComponent) {
+        if(this.currentComponent==null){
+            this.currentComponent = new ArrayList<GraphComponent>();
+        }
+        this.currentComponent.add(graphComponent);
+        return true;
+    }
+
+    public List<GraphComponent> getCurrentComponent() {
+        return currentComponent;
+    }
 
     /****
      *  设置组件类型
@@ -76,14 +79,6 @@ public abstract class GraphComponent implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getSt() {
-        return st;
-    }
-
-    public void setSt(String st) {
-        this.st = st;
     }
 
     public Integer getCt() {
@@ -111,13 +106,5 @@ public abstract class GraphComponent implements Serializable {
 
     public void setMt(Integer mt) {
         this.mt = mt;
-    }
-
-    public String getStp() {
-        return stp;
-    }
-
-    public void setStp(String stp) {
-        this.stp = stp;
     }
 }

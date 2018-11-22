@@ -1,12 +1,8 @@
 package com.sxyl.portal.controller.ml;
 
 import com.sxyl.portal.controller.BaseController;
-import com.sxyl.portal.domain.constant.ComponentCompositeEnum;
-import com.sxyl.portal.domain.constant.LinePositionEnum;
-import com.sxyl.portal.domain.graph.Circle;
-import com.sxyl.portal.domain.graph.GraphComponent;
-import com.sxyl.portal.domain.graph.Group;
-import com.sxyl.portal.domain.graph.Line;
+import com.sxyl.portal.domain.constant.*;
+import com.sxyl.portal.domain.graph.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,11 +26,11 @@ public class MachineLearningController extends BaseController {
     @RequestMapping("/dnnConstruct")
     @ResponseBody
     public Object dnnConstruct() throws Exception{
-        Group group =  circleList();
+        Group groupInput =  circleInput();
 
-        Group group1 = circleList1();
+        Group circleHidden = circleHidden();
 
-        Group group2 = circleList2();
+        Group circleOutput = circleOutput();
 
         Group all = new Group();
 
@@ -43,16 +39,24 @@ public class MachineLearningController extends BaseController {
 
         all.setCompose(ComponentCompositeEnum.VERTICAL.getType());
 
-        all.addChild(group);
-        all.addChild(group1);
+        all.addChild(groupInput);
+        all.addChild(circleHidden);
 
-        all.addChild(group2);
+        all.addChild(circleOutput);
 
 
         //线的图形
-        List inputIds = group.getChild().stream().map(GraphComponent::getId).collect(Collectors.toList());
-        List hiddenIds = group1.getChild().stream().map(GraphComponent::getId).collect(Collectors.toList());
-        List outputIds = group2.getChild().stream().map(GraphComponent::getId).collect(Collectors.toList());
+        List inputIds = groupInput.getChild().stream().map(GraphComponent::getId).collect(Collectors.toList());
+//        List hiddenIds = circleHidden.getChild().stream().map(GraphComponent::getId).collect(Collectors.toList());
+        List hiddenIds = new ArrayList();
+
+        for (GraphComponent gc: circleHidden.getChild()){
+            if(gc.getCt()== ComponentTypeEnum.CIRCLE.getType()){
+                hiddenIds.add(gc.getId());
+            }
+        }
+
+        List outputIds = circleOutput.getChild().stream().map(GraphComponent::getId).collect(Collectors.toList());
 
 
         all.addChild(lineList(inputIds,hiddenIds));
@@ -65,22 +69,40 @@ public class MachineLearningController extends BaseController {
      * 展示圆形结构
      * @return
      */
-    private Group circleList(){
+    private Group circleInput(){
+
+        int circleNum = 3 ;
 
         Group group = new Group();
         group.setCompose(ComponentCompositeEnum.VERTICAL.getType());
-        group.setSt("INPUT LAYER1");
-        for (int i=0;i< 3;i++){
+//        group.setSt("INPUT LAYER1");
+        for (int i=0;i< circleNum;i++){
             Circle circle = new Circle();
-            circle.setSt("X"+(i+1));
+//            circle.setSt("I"+(i+1));
             circle.setId("inputLayer1-"+i);
             if(i==0){
                 circle.setMl(55);
                 circle.setMt(50);
+            }else if(i == circleNum - 1){//最后一位为 bias ,所以间距设置多一些
+                circle.setMt(80);
+//                circle.setSt("B");
+            }else {
+                circle.setMt(20);
             }
             //半径
             circle.setR(50);
             circle.setS("red");
+
+            //圆心的文本
+            Text t = new Text();
+            t.setSt("I"+(i+1));
+            t.setSts(ShowTextPositionEnum.MIDDLE.getCode());
+            t.setX(0);
+            t.setY(0);
+            circle.addCurrentComponent(t);
+
+
+
             group.addChild(circle);
         }
         return group;
@@ -92,40 +114,77 @@ public class MachineLearningController extends BaseController {
      * 展示圆形结构
      * @return
      */
-    private Group circleList1(){
+    private Group circleHidden(){
 
+        int r = 70;
         Group group = new Group();
-        group.setMl(150);
+        group.setMl(350);
         group.setMt(-50);
         group.setCompose(ComponentCompositeEnum.VERTICAL.getType());
-        group.setSt("HIDDEN LAYER");
-        for (int i=0;i< 4;i++){
+//        group.setSt("HIDDEN LAYER");
+        for (int i=0;i< 3;i++){
             Circle circle = new Circle();
-            circle.setSt("Y"+(i+1));
+//            circle.setSt("H"+(i+1));
             circle.setId("hiddenLayer1-"+i);
             if(i==0){
                 circle.setMl(55);
                 circle.setMt(50);
+            }else {
+
+                circle.setMt(30);
             }
             //半径
-            circle.setR(50);
+            circle.setR(r);
             circle.setS("blue");
+
+            //圆心的文本
+            Text left = new Text();
+            left.setSt("net"+(i+1));
+            left.setX(-r/2);
+            left.setY(0);
+            left.setSts(ShowTextPositionEnum.MIDDLE.getCode());
+            circle.addCurrentComponent(left);
+
+
+
+            Text right = new Text();
+            right.setSt("out"+(i+1));
+            right.setX(r/2);
+            right.setY(0);
+            right.setSts(ShowTextPositionEnum.MIDDLE.getCode());
+            circle.addCurrentComponent(right);
+
+            //圆心的线
+            Line l = new Line();
+            l.setId("hidden"+(i+1));
+            l.setLt(LineTypeEnum.POSITION.getCode());
+            l.setX1(0);
+            l.setY1(-r);
+            l.setX2(0);
+            l.setY2(r);
+//            group.addChild(l);
+
+            circle.addCurrentComponent(l);
+
             group.addChild(circle);
+
+
+
         }
         return group;
     }
 
-    private Group circleList2(){
+    private Group circleOutput(){
 
         Group group = new Group();
-        group.setSt("OUTPUT LAYER");
-        group.setMl(150);
+//        group.setSt("OUTPUT LAYER");
+        group.setMl(350);
         group.setMt(50);
         group.setCompose(ComponentCompositeEnum.VERTICAL.getType());
         for (int i=0;i< 3;i++){
             Circle circle = new Circle();
             circle.setId("outputLayer1-"+i);
-            circle.setSt("Z"+(i+1));
+//            circle.setSt("O"+(i+1));
             if(i==0){
                 circle.setMl(55);
                 circle.setMt(50);
@@ -133,6 +192,15 @@ public class MachineLearningController extends BaseController {
             //半径
             circle.setR(50);
             circle.setS("blue");
+
+            //圆心的文本
+            Text t = new Text();
+            t.setSt("O"+(i+1));
+            t.setX(0);
+            t.setY(0);
+            t.setSts(ShowTextPositionEnum.MIDDLE.getCode());
+            circle.addCurrentComponent(t);
+
             group.addChild(circle);
         }
         return group;
@@ -144,6 +212,7 @@ public class MachineLearningController extends BaseController {
         for (String s: sid){
             for (String t:tid){
                 Line l = new Line();
+                l.setId(s + t);
                 l.setSid(s);
                 l.setTid(t);
                 l.setLpt(new Integer[]{LinePositionEnum.RADIUS.getCode(),

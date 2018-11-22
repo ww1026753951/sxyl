@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sxyl.portal.domain.constant.ComponentTypeEnum;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /****
  * 圆的对象
@@ -29,6 +31,8 @@ public class Circle extends GraphComponent implements Serializable {
      * fill
      */
     private String f;
+
+
 
     public Integer getR() {
         return r;

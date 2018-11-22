@@ -45,6 +45,7 @@
 ##
 ##    <line x1="155" y1="150" x2="365" y2="250" style="stroke:rgb(99,99,99);stroke-width:1"></line>
 ##    <line x1="200.16" y1="171.50" x2="365" y2="250" style="stroke:rgb(99,99,99);stroke-width:1"></line>
+    <text id="text1" x="205" y="150">test1</text>
 </svg>
 
 </body>
@@ -80,9 +81,28 @@
             SXYL.GRAPH.drawByComponent(parent , d);
 
             // SXYL.GRAPH.L(parent,"inputLayer1-0","outputLayer1-2")
+            test_d();
 
         }
     });
+
+
+    function test_d() {
+
+        var rectLeft = d3.select("#text1" ) ;
+        var rectRight = d3.select("#hiddenLayer1-0" ) ;
+
+        debugger
+        rectLeft.attr("fill","red")         //初始颜色为红色
+                .transition().duration(5000)          //启动过渡
+                .attr("x",500).attr("y",500)
+
+        //终止颜色为铁蓝色
+        // var rectRightMatrix = SXYL.DOM.getTranslation(rectRight.attr("transform"));
+        //
+        //
+        // rectLeft.transition().duration(50).attr("transform", "translate("+rectRightMatrix[0]+","+rectLeftMatrix[1]+")");
+    }
 
 
 
