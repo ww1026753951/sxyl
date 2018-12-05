@@ -1,4 +1,25 @@
 <!DOCTYPE html>
+<head>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG' ></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_SVG' ></script>
+
+    <script>
+        MathJax.Hub.Config({
+            showProcessingMessages: false,
+            // jax: ["input/TeX", "output/HTML-CSS"],
+            jax: ["input/TeX", "output/SVG"],
+            TeX: {
+                TagSide: "left",
+                Macros: {
+                    RR: '{\\bf R}',
+                    bold: ['{\\bf #1}',1]
+                }
+            }
+        });
+    </script>
+
+</head>
 <meta charset="utf-8">
 <link href="/css/animate/animate.min.css" rel="stylesheet">
 <script>
@@ -16,8 +37,20 @@
     //     Date.now = now;
     // };
 
+
 </script>
 <body>
+<div style="color: red">
+    $$net1 = x1*w1+x2*w2+x3*w3......+wn*xn+bias$$ $$bias$$
+
+</div>
+<p>
+##    When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
+    <span>$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$</span>  <span>$$x = {a \over -b \pm \sqrt{b^2-4ac}}$$</span>
+</p>
+##<p>
+##    $$x = {a \over -b \pm \sqrt{b^2-4ac}}$$
+##</p>
 <svg width="1200" height="1200" id="sortAlg">
 
 
@@ -45,8 +78,11 @@
 ##
 ##    <line x1="155" y1="150" x2="365" y2="250" style="stroke:rgb(99,99,99);stroke-width:1"></line>
 ##    <line x1="200.16" y1="171.50" x2="365" y2="250" style="stroke:rgb(99,99,99);stroke-width:1"></line>
-    <text id="text1" x="205" y="150">test1</text>
+    <text id="text1" x="205" y="150">需要重新定义标签 $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$</text>
+##    <object>$$net1 = x1*w1+x2*w2+x3*w3......+wn*xn+bias$$</object>
+    <g></g>
 </svg>
+
 
 </body>
 ##<script src="//d3js.org/d3.v3.min.js"></script>
@@ -54,6 +90,7 @@
 <script src="/js/jquery/jquery-3.2.1.min.js" ></script>
 
 <script src="/js/sxyl.js"></script>
+
 
 
 <script src="/js/sxyl.graph.js"></script>
@@ -75,14 +112,10 @@
         url: "/ml/dnnConstruct",
         success: function (d) {
             var parent = SXYL.GRAPH.getContext();
-
             SXYL.GRAPH.initPosition();
-
             SXYL.GRAPH.drawByComponent(parent , d);
-
             // SXYL.GRAPH.L(parent,"inputLayer1-0","outputLayer1-2")
             test_d();
-
         }
     });
 
@@ -92,37 +125,30 @@
         var rectLeft = d3.select("#text1" ) ;
         var rectRight = d3.select("#hiddenLayer1-0" ) ;
 
-        debugger
         rectLeft.attr("fill","red")         //初始颜色为红色
                 .transition().duration(5000)          //启动过渡
-                .attr("x",500).attr("y",500)
+                .attr("x",400).attr("y",400)
 
         //终止颜色为铁蓝色
-        // var rectRightMatrix = SXYL.DOM.getTranslation(rectRight.attr("transform"));
-        //
-        //
-        // rectLeft.transition().duration(50).attr("transform", "translate("+rectRightMatrix[0]+","+rectLeftMatrix[1]+")");
     }
 
 
 
-    // f();
-    // sleep(5000)
-    // $("#testCircle").addClass('animated bounceOutLeft');
-    // // debugger
-    //
-    //
-    // function f() {
-    //     $("#testCircle").addClass('animated bounceOutRight');
-    // }
-    //
-    // function sleep(numberMillis) {
-    //     var now = new Date();
-    //     var exitTime = now.getTime() + numberMillis;
-    //     while (true) {
-    //         now = new Date();
-    //         if (now.getTime() > exitTime)
-    //             return;
-    //     }
-    // }
+
+    MathJax.Hub.Register.StartupHook("End", function(){
+
+        debugger
+        var svg = d3.select('#sortAlg');
+        svg.selectAll('.tick').each(function(){
+
+            var self = d3.select(this),
+                    g = self.select('text>div>span>svg');
+
+            g.remove();
+            self.append(function(){
+                return g.node();
+            });
+        });
+
+    })
 </script>

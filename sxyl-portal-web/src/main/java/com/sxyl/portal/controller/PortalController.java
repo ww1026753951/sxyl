@@ -48,6 +48,16 @@ public class PortalController extends BaseController {
         return "/screen/algorithm/im";
     }
 
+    /***
+     * im
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("mathjax")
+    public String mathjax() throws Exception{
+        return "/screen/algorithm/math-jax";
+    }
+
 
     /***
      * dashboard

@@ -5,6 +5,11 @@ SXYL.GRAPH = {
     addY:false,//y累加的标志位
     xStack:null,
     yStack:null,
+
+    //临时的x坐标,现在主要用于线上的文字
+    currentX:undefined,
+    //临时的y坐标,现在主要用于线上的文字
+    currentY:undefined,
     /****
      * 初始化位置对象
      */
@@ -118,10 +123,18 @@ SXYL.GRAPH = {
      * @returns {*|void}
      */
     T:function(parent,o){
+        var x = o.x;
+        var y = o.y;
+        if(SXYL.GRAPH.currentX){
+            x = SXYL.GRAPH.currentX;
+        }
+        if(SXYL.GRAPH.currentY){
+            y = SXYL.GRAPH.currentY;
+        }
         //文本的值
         var ob = parent.append("text")
-            .attr("x", o.x)
-            .attr("y", o.y)
+            .attr("x", x)
+            .attr("y", y)
             .attr("style",o.sts)
             .text(o.st); //o.st
         return {ob:ob};
@@ -285,7 +298,15 @@ SXYL.GRAPH = {
         // 文本的处理,在xy变化之前
         if(o.currentComponent){
             for (var j = 0;j < o.currentComponent.length;j++){
+                debugger;
+
                 var childOb = o.currentComponent[j];
+
+                //如父元素为line ,则重新计算 x,y的值
+                if(o.ct == parseInt(SXYL.GRAPH.GRAPH_TYPE.LINE)){
+                    SXYL.GRAPH.computePosition(o,childOb);
+                }
+
                 SXYL.GRAPH.drawByComponent(parent , childOb);
             }
         }
@@ -318,6 +339,38 @@ SXYL.GRAPH = {
             }
         }
         return ob ;
+    },
+    /***
+     * 计算位置,现在主要是  线上的文字,
+     * 计算后的数值放入到 x, y 栈里面。
+     * @param lineObject
+     */
+    computePosition:function (lineObject,textObject) {
+        var ratio = textObject.ratio;
+        if(!ratio){
+            ratio = 2 ;
+        }
+        debugger
+        var lineId = lineObject.id;
+        var l = d3.select("#"+lineId) ;
+        var x1 = l.attr("x1");
+        var x2 = l.attr("x2");
+        var y1 = l.attr("y1");
+        var y2 = l.attr("y2");
+
+        var x_different = parseInt(x2) - parseInt(x1);
+        var y_different = parseInt(y2) - parseInt(y1);
+
+        //暂定除以 2 ,放在线的中间位置
+        var x_different = parseInt(x_different/ratio);
+        var y_different = parseInt(y_different/ratio);
+
+        SXYL.GRAPH.currentX=parseInt(x1) + parseInt(x_different)  ;
+        SXYL.GRAPH.currentY=parseInt(y1) + parseInt(y_different);
+
+
+        // SXYL.GRAPH.xStack.push
+
     }
 
 
@@ -327,7 +380,8 @@ SXYL.GRAPH = {
  */
 SXYL.GRAPH.GRAPH_TYPE = {
     GROUP:1,
-    CIRCLE:4
+    CIRCLE:4,
+    LINE:5
 }
 
 /****

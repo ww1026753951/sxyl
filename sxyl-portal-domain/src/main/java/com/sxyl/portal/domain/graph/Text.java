@@ -41,6 +41,14 @@ public class Text extends GraphComponent implements Serializable {
     private String sts;
 
 
+    /****
+     * 比例,用于线状的文字展示时的偏移量比例计算,
+     * 当为2时,则 (x2 - x1)/2  。 结果为中间位置。
+     * 当为1时，则与 x2位置重叠
+     */
+    private Double ratio;
+
+
     public String getSts() {
         return sts;
     }
@@ -71,6 +79,14 @@ public class Text extends GraphComponent implements Serializable {
 
     public void setY(Integer y) {
         this.y = y;
+    }
+
+    public Double getRatio() {
+        return ratio;
+    }
+
+    public void setRatio(Double ratio) {
+        this.ratio = ratio;
     }
 
     @Override
