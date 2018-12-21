@@ -46,6 +46,12 @@ public abstract class GraphComponent implements Serializable {
      */
     private Integer ct;
 
+    /***
+     * 元素的数据
+     * data
+     */
+    private Integer d;
+
 
     /****
      *分组内图画的对象
@@ -106,5 +112,13 @@ public abstract class GraphComponent implements Serializable {
 
     public void setMt(Integer mt) {
         this.mt = mt;
+    }
+
+    public Integer getD() {
+        return d;
+    }
+
+    public void setD(Integer d) {
+        this.d = d;
     }
 }

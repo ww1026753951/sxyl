@@ -18,6 +18,8 @@ SXYL.GRAPH = {
         SXYL.GRAPH.y=0;
         SXYL.GRAPH.xStack = new Array();
         SXYL.GRAPH.yStack = new Array() ;
+        SXYL.GRAPH.currentX = undefined;
+        SXYL.GRAPH.currentY = undefined;
     },
     /****
      * 初始化背景
@@ -133,10 +135,15 @@ SXYL.GRAPH = {
         }
         //文本的值
         var ob = parent.append("text")
+            .attr("id", o.id)
             .attr("x", x)
             .attr("y", y)
             .attr("style",o.sts)
             .text(o.st); //o.st
+        if(o.d){
+            ob.datum(o.d);
+        }
+
         return {ob:ob};
     },
 
@@ -269,7 +276,6 @@ SXYL.GRAPH = {
      */
     drawByComponent:function (parent ,o) {
 
-
         //左边距
         SXYL.GRAPH.x = SXYL.GRAPH.x + parseInt(o.ml?o.ml:0) ;
         //右边距
@@ -298,8 +304,6 @@ SXYL.GRAPH = {
         // 文本的处理,在xy变化之前
         if(o.currentComponent){
             for (var j = 0;j < o.currentComponent.length;j++){
-                debugger;
-
                 var childOb = o.currentComponent[j];
 
                 //如父元素为line ,则重新计算 x,y的值
@@ -350,7 +354,6 @@ SXYL.GRAPH = {
         if(!ratio){
             ratio = 2 ;
         }
-        debugger
         var lineId = lineObject.id;
         var l = d3.select("#"+lineId) ;
         var x1 = l.attr("x1");
@@ -365,9 +368,22 @@ SXYL.GRAPH = {
         var x_different = parseInt(x_different/ratio);
         var y_different = parseInt(y_different/ratio);
 
-        SXYL.GRAPH.currentX=parseInt(x1) + parseInt(x_different)  ;
-        SXYL.GRAPH.currentY=parseInt(y1) + parseInt(y_different);
+        SXYL.GRAPH.currentX = parseInt(x1) + parseInt(x_different)  ;
+        SXYL.GRAPH.currentY = parseInt(y1) + parseInt(y_different);
 
+        /****
+         * 左侧的buffer
+         */
+        if(textObject.ml){
+            SXYL.GRAPH.currentX = SXYL.GRAPH.currentX + parseInt(textObject.ml);
+        }
+
+        /***
+         * 上面的buffer
+         */
+        if(textObject.mt){
+            SXYL.GRAPH.currentY = SXYL.GRAPH.currentY + parseInt(textObject.mt);
+        }
 
         // SXYL.GRAPH.xStack.push
 

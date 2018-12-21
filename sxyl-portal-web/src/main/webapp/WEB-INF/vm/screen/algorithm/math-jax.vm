@@ -123,12 +123,10 @@
 
             svg.selectAll('.tick').each(function(){
 
-                debugger
             var self = d3.select(this),
                     g = self.select('text>div>span>svg');
             g.remove();
             self.append(function(){
-                debugger
                 return g.node();
             });
         });

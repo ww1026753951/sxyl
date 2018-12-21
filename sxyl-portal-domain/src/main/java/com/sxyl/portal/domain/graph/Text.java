@@ -49,6 +49,31 @@ public class Text extends GraphComponent implements Serializable {
     private Double ratio;
 
 
+    public Text() {
+    }
+
+
+
+    public Text(Integer x, Integer y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public Text(Integer x, Integer y, String st) {
+        this.x = x;
+        this.y = y;
+        this.st = st;
+    }
+
+
+    public Text(String id ,Integer x, Integer y, String st) {
+        super.setId(id);
+        this.x = x;
+        this.y = y;
+        this.st = st;
+    }
+
+
     public String getSts() {
         return sts;
     }

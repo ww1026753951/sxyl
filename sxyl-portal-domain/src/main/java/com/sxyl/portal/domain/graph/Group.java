@@ -23,6 +23,11 @@ public class Group extends GraphComponent implements Serializable {
      */
     private Integer compose ;
 
+    /***
+     * 缓存类,主要用于公式处理时是否保存到前端对象。
+     */
+    private boolean cache;
+
     /****
      *分组内图画的对象
      */
@@ -55,5 +60,13 @@ public class Group extends GraphComponent implements Serializable {
 
     public void setCompose(Integer compose) {
         this.compose = compose;
+    }
+
+    public boolean isCache() {
+        return cache;
+    }
+
+    public void setCache(boolean cache) {
+        this.cache = cache;
     }
 }

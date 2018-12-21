@@ -30,18 +30,13 @@ public class Move extends AnimationComponent implements Serializable {
      */
     private Integer by;
 
+    public Move() {
+    }
 
-
-    /****
-     * 需要移动的x位置
-     */
-//    private Integer x ;
-
-    /****
-     * 需要移动的y的位置
-     */
-//    private Integer y ;
-
+    public Move(String id, String tid) {
+        this.id = id;
+        this.tid = tid;
+    }
 
     public String getId() {
         return id;
@@ -76,7 +71,7 @@ public class Move extends AnimationComponent implements Serializable {
     }
 
     @Override
-    void setAnimationType() {
+    public void setAnimationType() {
         super.setAt(AnimationEnum.MOVE.getType());
     }
 }

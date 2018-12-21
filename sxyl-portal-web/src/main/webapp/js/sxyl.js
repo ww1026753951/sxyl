@@ -21,7 +21,11 @@ String.prototype.format = function() {
 
 
 SXYL={
-    //全局执行次数
+    //全局执行速度
+    speed:200,
+    //执行的顺序号
+    step_no:0,
+    //全局执行次数,  SXYL.execute_i = setInterval(f, speed);
     execute_i: undefined ,
     //全局执行的函数
     // execute_f: undefined ,
@@ -218,4 +222,158 @@ SXYL.DOM.getDomXY = function (id) {
     var rectTarget = d3.select("#" + id) ;
     var rectTargetMatrix = SXYL.DOM.getTranslation(rectTarget.attr("transform"));
     return {x:parseInt(rectTargetMatrix[0]) , y:parseInt(rectTargetMatrix[1])};
+}
+
+/*****
+ * 移动元素 ,对应 move对象
+ * @param o
+ * @param o.id 元素id
+ */
+SXYL.DOM.moveElement = function(o){
+    var sid = d3.select("#"+o.id ) ;
+    var xyDom = getXY(o.tid);
+
+    var x = parseInt(xyDom.x) + parseInt(o.bx?o.bx:0);
+    var y = parseInt(xyDom.y) + parseInt(o.by?o.by:0);
+
+    sid.transition().duration(SXYL.speed)
+        .attr("x",x).attr("y",y);
+
+
+    /****
+     * 获取元素的 x,y
+     * @param tid
+     * @param xb
+     * @param yb
+     * @return {{x: (*|void), y: (*|void)}}
+     */
+    function getXY(tid) {
+        var x = 0 ;
+        var y = 0 ;
+        if(tid){
+            var tidOb = d3.select("#"+tid ) ;
+            x = tidOb.attr("x");
+            y = tidOb.attr("y");
+        }
+
+        return {x:x,y:y}
+    }
+}
+
+/*****
+ *
+ * @param o
+ */
+SXYL.DOM.copyElement = function (o) {
+   var ob = document.getElementById(o.sid);
+   var target = ob.cloneNode(true);
+
+   if(o.cdf){
+       target.innerHTML = d3.select("#"+o.sid).datum();
+   }
+   target.id = o.tidEnd;
+   ob.parentElement.appendChild(target);
+}
+
+
+
+/*****
+ * 复制对象，从公式对象中
+ * @param o
+ */
+SXYL.DOM.copyFormulaElement = function (o) {
+
+    var ob = SXYL.ANIMATION.FORMULA_STEP[o.sid] ;
+    var parent = d3.select("#"+o.tid);
+    $("#"+o.tid).empty();
+
+    SXYL.GRAPH.initPosition();
+    SXYL.GRAPH.drawByComponent(parent , ob);
+}
+
+
+
+/*****
+ * 乘积对象
+ * @param o
+ */
+SXYL.DOM.multiplyElement = function (o) {
+    var r = 1;
+    for (var i=0;i<o.ids.length;i++){
+        r = parseFloat(r) * parseFloat($("#"+o.ids[i]).text()).toFixed(2);
+    }
+    $("#"+o.tid).text(parseFloat(r).toFixed(2));
+}
+
+
+/*****
+ * 求和对象
+ * @param o
+ */
+SXYL.DOM.sumElement = function (o) {
+    var r = 0;
+    for (var i=0;i<o.ids.length;i++){
+        r = parseFloat(r) + parseFloat($("#"+o.ids[i]).text());
+    }
+    $("#"+o.tid).text(parseFloat(r).toFixed(2));
+}
+
+
+/*****
+ * sigmoid计算
+ * @param o
+ */
+SXYL.DOM.sigmoidElement = function (o) {
+    var value = -parseFloat($("#"+o.cid).text());
+    var eValue = parseFloat(Math.exp(value).toFixed(2));
+    eValue = (parseFloat(1)/(parseFloat(1)+eValue)).toFixed(2);
+
+    $("#"+o.tid).text(eValue);
+}
+
+
+/***
+ * 计算输出值权重
+ * @param o
+ */
+SXYL.DOM.computeOutWeight = function(o){
+    var target_o = o.targetId;
+    var target_o_v = parseFloat($("#"+target_o).text());
+    var outo = o.outo;
+    var outo_v = parseFloat($("#"+outo).text());
+    var outh  = o.outh;
+    var outh_v = parseFloat($("#"+outh).text());
+    var result = ((outo_v - target_o_v)*outo_v*(1-outo_v)*outh_v);
+    $("#"+o.tid).text(parseFloat(result).toFixed(2));
+}
+
+
+/*****
+ * 平方差
+ * @param o
+ */
+SXYL.DOM.squareErrorElement = function (o) {
+    var targetValue =parseFloat($("#"+o.targetId).text());
+    var outputValue =parseFloat($("#"+o.outputId).text());
+    var sub = Math.pow(parseFloat(targetValue - outputValue) ,2).toFixed(2);
+    $("#"+o.tid).text(parseFloat(sub/2).toFixed(2));
+}
+
+
+/*****
+ * 销毁对象
+ * @param o
+ */
+SXYL.DOM.destroyElement = function (o) {
+    $("#"+o.id).remove();
+}
+
+
+
+/*****
+ * 交换对象内容 ,暂时赋值 text
+ * @param o
+ */
+SXYL.DOM.changeElement = function (o) {
+    $("#"+o.sid).text($("#"+o.tid).text());
 }

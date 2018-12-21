@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <head>
 
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG' ></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_SVG' ></script>
+    <script src='//cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG' ></script>
+    <script src='//cdn.bootcss.com/mathjax/2.7.5/latest.js?config=TeX-MML-AM_SVG' ></script>
 
     <script>
         MathJax.Hub.Config({
@@ -23,36 +23,62 @@
 <meta charset="utf-8">
 <link href="/css/animate/animate.min.css" rel="stylesheet">
 <script>
-    // var callbacks = [];
-    // requestAnimationFrame = function(callback) {
-    //     callbacks.push(callback);
-    // };
-    //
-    // flushAnimationFrames = function() {
-    //     debugger
-    //     var now = Date.now;
-    //     Date.now = function() { return Infinity; };
-    //     callbacks.forEach(function(callback) { try { callback(); } catch (e) { console.error(e); } });
-    //     callbacks = [];
-    //     Date.now = now;
-    // };
+// function pause() {
+//
+//     window.clearInterval(SXYL.execute_i);
+//
+// }
+function go() {
+    var v = $("#sxylspeed").val();
+    if(v){
+        SXYL.speed = v;
+    }
 
+    var ob = $("#go-pause");
+    if(parseInt(ob.data("type")) ==0){
+        window.clearInterval(SXYL.execute_i);
+        ob.html("继续");
+        ob.data("type" ,"1");
+    }else {
+        SXYL.execute_i = setInterval(SXYL.ANIMATION.executeAnimation, SXYL.speed*1.2);
+        ob.html("暂停");
+        ob.data("type" ,"0");
+    }
+
+}
 
 </script>
 <body>
-<div style="color: red">
-    $$net1 = x1*w1+x2*w2+x3*w3......+wn*xn+bias$$ $$bias$$
-
+<div>
+    速度:<input id="sxylspeed" value="200">
+    <button id="go-pause" type="button" onclick="go()" data-type="0">暂停</button>
+##    <button type="button" onclick="goon()">继续</button>
 </div>
-<p>
-##    When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
-    <span>$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$</span>  <span>$$x = {a \over -b \pm \sqrt{b^2-4ac}}$$</span>
-</p>
-##<p>
-##    $$x = {a \over -b \pm \sqrt{b^2-4ac}}$$
-##</p>
-<svg width="1200" height="1200" id="sortAlg">
 
+
+##<div style="color: red" class="tick">
+##    $$net1 = x1*w1+x2*w2+x3*w3......+wn*xn+bias$$
+##</div>
+
+##<p>
+##    <span>$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$</span>  <span>$$x = {a \over -b \pm \sqrt{b^2-4ac}}$$</span>
+##</p>
+
+
+<svg width="1200" height="1200" id="sortAlg">
+##    <g class="tick">
+##        <text id="testabcd" x="10" y="10" >$$x = {a \over -b \pm \sqrt{b^2-4ac}}$$</text>
+##    </g>
+    <g id="formula_id">
+        <text x="150" y="30">net1=</text>
+        <text x="200" y="30">X1*W1</text>
+        <text x="260" y="30">+</text>
+        <text x="280" y="30">X2*W4</text>
+        <text x="340" y="30">+</text>
+        <text x="360" y="30">X3*W7</text>
+        <text x="420" y="30">=</text>
+        <text x="440" y="30">???</text>
+    </g>
 
 ##    z = 半径除以 10    cx - z - 文本的宽度计算     cy + z
 
@@ -78,9 +104,16 @@
 ##
 ##    <line x1="155" y1="150" x2="365" y2="250" style="stroke:rgb(99,99,99);stroke-width:1"></line>
 ##    <line x1="200.16" y1="171.50" x2="365" y2="250" style="stroke:rgb(99,99,99);stroke-width:1"></line>
-    <text id="text1" x="205" y="150">需要重新定义标签 $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$</text>
+
+##    <text id="text1" x="205" y="150">需要重新定义标签 $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$</text>
+
+
+    <text id="text1" x="50" y="50">
+        C<tspan style="baseline-shift: sub;">12</tspan>
+        H<tspan style="baseline-shift: sub;">10</tspan>
+    </text>
 ##    <object>$$net1 = x1*w1+x2*w2+x3*w3......+wn*xn+bias$$</object>
-    <g></g>
+##    <div>asdfsadf<sub>aaa</sub></div>
 </svg>
 
 
@@ -94,6 +127,7 @@
 
 
 <script src="/js/sxyl.graph.js"></script>
+<script src="/js/animation/animation.base.js"></script>
 <script>
 
 
@@ -112,32 +146,42 @@
         url: "/ml/dnnConstruct",
         success: function (d) {
             var parent = SXYL.GRAPH.getContext();
+            //初始化dom结构
             SXYL.GRAPH.initPosition();
-            SXYL.GRAPH.drawByComponent(parent , d);
+            SXYL.GRAPH.drawByComponent(parent , d.group);
+
+            //初始化公式结构
+            SXYL.ANIMATION.cleanFormulaStep();
+            SXYL.ANIMATION.initFormulaStep(d.fa);
+
+            //执行步骤
+            SXYL.GRAPH.initPosition();
+            SXYL.ANIMATION.ALL_STEP = d.at;
+            SXYL.execute_i = setInterval(SXYL.ANIMATION.executeAnimation, SXYL.speed*1.2);
+
             // SXYL.GRAPH.L(parent,"inputLayer1-0","outputLayer1-2")
-            test_d();
+            // test_d();
         }
     });
 
 
-    function test_d() {
-
-        var rectLeft = d3.select("#text1" ) ;
-        var rectRight = d3.select("#hiddenLayer1-0" ) ;
-
-        rectLeft.attr("fill","red")         //初始颜色为红色
-                .transition().duration(5000)          //启动过渡
-                .attr("x",400).attr("y",400)
-
-        //终止颜色为铁蓝色
-    }
+    // function test_d() {
+    //
+    //     var rectLeft = d3.select("#text1" ) ;
+    //     var rectRight = d3.select("#hiddenLayer1-0" ) ;
+    //
+    //     rectLeft.attr("fill","red")         //初始颜色为红色
+    //             .transition().duration(5000)          //启动过渡
+    //             .attr("x",400).attr("y",400)
+    //
+    //     //终止颜色为铁蓝色
+    // }
 
 
 
 
     MathJax.Hub.Register.StartupHook("End", function(){
 
-        debugger
         var svg = d3.select('#sortAlg');
         svg.selectAll('.tick').each(function(){
 
