@@ -4,9 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="思想摇篮 动画算法">
+    <meta name="description" content="思想摇篮 动画算法 算法动画">
     <meta name="author" content="谷禾水">
-    <title>sxyl 思想摇篮 动画算法</title>
+    <title>$!{dc.title}</title>
     <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="/css/bootstrap/3-col-portfolio.css" rel="stylesheet">
 </head>
@@ -152,7 +152,7 @@
 
 <footer class="py-5 bg-dark">
     <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; 2018 思想摇篮 sixiangyaolan.com by 谷禾水 .All rights reserved</p>
+        <p class="m-0 text-center text-white">Copyright &copy; 2018 $!{dc.domain} $!{dc.domainName} by 谷禾水 .All rights reserved</p>
         <p class="m-0 text-center text-white">版权声明：本站原创文章、作品，未经本人许可，任何人或机构不得以任何形式对本站内容进行复制作商业用途.</p>
     </div>
 </footer>

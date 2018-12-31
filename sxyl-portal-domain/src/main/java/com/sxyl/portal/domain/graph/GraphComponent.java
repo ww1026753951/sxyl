@@ -54,7 +54,8 @@ public abstract class GraphComponent implements Serializable {
 
 
     /****
-     *分组内图画的对象
+     *分组内图画的对象, 不会增加到节点下面， 只会增加到同级上,
+     * 即 没有上下级关系
      */
     private List<GraphComponent> currentComponent;
 
@@ -77,9 +78,9 @@ public abstract class GraphComponent implements Serializable {
 
 
     public String getId() {
-        if(StringUtils.isBlank(id)){
-            return UUID.randomUUID().toString();
-        }
+//        if(StringUtils.isBlank(id)){
+//            return UUID.randomUUID().toString();
+//        }
         return id;
     }
 

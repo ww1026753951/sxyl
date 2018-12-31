@@ -32,7 +32,23 @@ public class Circle extends GraphComponent implements Serializable {
      */
     private String f;
 
+    public Circle() {
+    }
 
+
+    public Circle(String id ,Integer r, String s) {
+        this.setId(id);
+        this.r = r;
+        this.s = s;
+    }
+
+
+    public Circle(String id ,Integer r, String s, String f) {
+        this.setId(id);
+        this.r = r;
+        this.s = s;
+        this.f = f;
+    }
 
     public Integer getR() {
         return r;

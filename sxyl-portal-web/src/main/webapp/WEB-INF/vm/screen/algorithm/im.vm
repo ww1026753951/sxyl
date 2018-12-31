@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <head>
 
-    <script src='//cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG' ></script>
-    <script src='//cdn.bootcss.com/mathjax/2.7.5/latest.js?config=TeX-MML-AM_SVG' ></script>
+##    <script src='//cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG' ></script>
+##    <script src='//cdn.bootcss.com/mathjax/2.7.5/latest.js?config=TeX-MML-AM_SVG' ></script>
+
+
+    <script src="/js/math/MathJax.js?config=TeX-MML-AM_SVG"></script>
+    <script src="/js/math/latest.js?config=TeX-MML-AM_SVG" ></script>
 
     <script>
         MathJax.Hub.Config({
@@ -109,7 +113,7 @@ function go() {
 
 
     <text id="text1" x="50" y="50">
-        C<tspan style="baseline-shift: sub;">12</tspan>
+        C<tspan style="baseline-shift: sub;">12</tspan><tspan dx="-15" style="baseline-shift: super;">5</tspan>
         H<tspan style="baseline-shift: sub;">10</tspan>
     </text>
 ##    <object>$$net1 = x1*w1+x2*w2+x3*w3......+wn*xn+bias$$</object>

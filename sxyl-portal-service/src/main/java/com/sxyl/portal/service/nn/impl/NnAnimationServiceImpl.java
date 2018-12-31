@@ -34,7 +34,7 @@ public class NnAnimationServiceImpl extends NnCommonService implements NnAnimati
         this.addOutWeight(total ,firstHidden , outputIds);
 
 
-        this.addHiddenWeight(total , inputIds , firstHidden);
+        this.addHiddenWeight(total , inputIds , firstHidden , outputIds);
 
         return total;
     }
@@ -347,7 +347,7 @@ public class NnAnimationServiceImpl extends NnCommonService implements NnAnimati
      * @param inputList
      * @param hiddenList
      */
-    private void addHiddenWeight(AnimationTotal total , List<String> inputList ,List<String> hiddenList){
+    private void addHiddenWeight(AnimationTotal total , List<String> inputList ,List<String> hiddenList , List<String> targetList){
         int stepNo =0 ;
         for (int i = 0  ; i <inputList.size() ; i++) {
             String sid = inputList.get(i);
@@ -357,8 +357,98 @@ public class NnAnimationServiceImpl extends NnCommonService implements NnAnimati
                 //将error公式拷贝到处理逻辑中
                 total.addComponent(new FormulaCopy(super.getFormulaUpdateWeightId(tid, sid), super.getFormulaId()));
 
+
+                List<String> weight = new ArrayList<>();
+                List<String> targetId = new ArrayList<>();
+                List<String> outId = new ArrayList<>();
+
+                List<String> copyId = new ArrayList<>();
+                for (int k =0; k<targetList.size() ; k++) {
+
+
+                        String errorId = super.getErrorTextId(targetList.get(k));
+                        weight.add(super.getNeuronToNeuronWeightValue(tid , targetList.get(k)));
+
+                        targetId.add(super.getHiddenBottomOutId(errorId));
+
+                        outId.add(super.getHiddenBottomOutId(targetList.get(k)));
+
+
+
+                        String copyWeightId = this.getCopyId(super.getNeuronToNeuronWeightValue(tid , targetList.get(k) ) , stepNo);
+                        total.addComponent(new Copy(super.getNeuronToNeuronWeightValue(tid , targetList.get(k)) ,copyWeightId));
+                        Move hiddenNode = new Move(copyWeightId , super.getOutputWeightNodeId(tid , targetList.get(k)));
+                        hiddenNode.setBx(20);
+                        total.addComponent(hiddenNode);
+                        total.addComponent(new Destroy(super.getOutputWeightNodeId(tid , targetList.get(k))));
+                        stepNo++;
+                        copyId.add(copyWeightId);
+
+                }
+
+
+                String copyHiddenId0 = this.getCopyId(super.getHiddenBottomOutId(tid) , stepNo);
+                total.addComponent(new Copy(super.getHiddenBottomOutId(tid) ,copyHiddenId0));
+                Move hiddenNode = new Move(copyHiddenId0 , super.getOutWeightOutNodeId(tid , "0"));
+                hiddenNode.setBx(20);
+                total.addComponent(hiddenNode);
+                total.addComponent(new Destroy( super.getOutWeightOutNodeId(tid , "0")));
+
+                stepNo++ ;
+
+
+                String copyHiddenId1 = this.getCopyId(super.getHiddenBottomOutId(tid) , stepNo);
+                total.addComponent(new Copy(super.getHiddenBottomOutId(tid) ,copyHiddenId1));
+                Move hiddenNode1 = new Move(copyHiddenId1, super.getOutWeightOutNodeId(tid , "1"));
+                hiddenNode1.setBx(20);
+                total.addComponent(hiddenNode1);
+                total.addComponent(new Destroy( super.getOutWeightOutNodeId(tid , "1")));
+
+                stepNo++ ;
+
+                String copyInputId = this.getCopyId(super.getHiddenBottomOutId(sid) , stepNo);
+                total.addComponent(new Copy(super.getHiddenBottomOutId(sid) ,copyInputId));
+                Move inputNode = new Move(copyInputId , super.getOutWeightOutHiddenNodeId(sid));
+                inputNode.setBx(20);
+                total.addComponent(inputNode);
+                total.addComponent(new Destroy(super.getOutWeightOutHiddenNodeId(sid)));
+
+
+                stepNo++ ;
+
+
+                ComputeHiddenWeight computeHiddenWeight = new ComputeHiddenWeight();
+                computeHiddenWeight.setTid(super.getFormulaResultId(sid));
+                computeHiddenWeight.setTargetId(targetId);
+                computeHiddenWeight.setOutId(outId);
+                computeHiddenWeight.setWeightId(weight);
+
+                computeHiddenWeight.setOid(super.getHiddenBottomOutId(tid));
+                computeHiddenWeight.setIv(super.getHiddenBottomOutId(sid));
+
+
+                total.addComponent(computeHiddenWeight);
+
+
+                //将结算结果放入到
+                total.addComponent(new Move(super.getFormulaResultId(sid) , super.getNeuronToNeuronWeightValue(sid , tid)));
+
+
+                //变更内容,将公式计算结果替换到输出层的结果上
+                total.addComponent(new ChangeContent(super.getNeuronToNeuronWeightValue(sid , tid) , super.getFormulaResultId(sid)));
+
+                total.addComponent(new Destroy(super.getFormulaResultId(sid)));
+
+                for (String s :copyId){
+                    total.addComponent(new Destroy(s));
+                }
+
+                total.addComponent(new Destroy(copyHiddenId0));
+                total.addComponent(new Destroy(copyHiddenId1));
+                total.addComponent(new Destroy(copyInputId));
+
 //                if (j==0){
-                    return;
+//                    return;
 //                }
 
 

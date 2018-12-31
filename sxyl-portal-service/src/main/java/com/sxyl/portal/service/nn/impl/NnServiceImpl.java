@@ -2,7 +2,8 @@ package com.sxyl.portal.service.nn.impl;
 
 import com.sxyl.portal.domain.d.AnimationTotal;
 import com.sxyl.portal.domain.graph.Group;
-import com.sxyl.portal.domain.nn.DnnConstruct;
+import com.sxyl.portal.domain.nn.dnn.param.DnnConstructParam;
+import com.sxyl.portal.domain.nn.dnn.result.DnnConstruct;
 import com.sxyl.portal.service.nn.NnAnimationService;
 import com.sxyl.portal.service.nn.NnConstructService;
 import com.sxyl.portal.service.nn.NnFormulaService;
@@ -28,7 +29,7 @@ public class NnServiceImpl implements NnService {
 
 
     @Override
-    public DnnConstruct getDnnConstruct(int inputNum, int[] hiddenNum, int outputNum) {
+    public DnnConstruct getDnnConstruct(int inputNum, int[] hiddenNum, int outputNum , DnnConstructParam dnnConstructParam) {
         DnnConstruct result = new DnnConstruct();
         //输入层的ids
         List<String> inputIds = new ArrayList<>();
@@ -56,7 +57,7 @@ public class NnServiceImpl implements NnService {
 
 
         // dnn结构
-        Group group =nnConstructService.getDnnConstruct(inputIds,hiddenIds,outIds);
+        Group group =nnConstructService.getDnnConstruct(inputIds,hiddenIds,outIds,  dnnConstructParam);
         result.setGroup(group);
 
         //dnn动画
@@ -73,4 +74,6 @@ public class NnServiceImpl implements NnService {
 
         return result;
     }
+
+
 }

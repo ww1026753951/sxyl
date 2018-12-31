@@ -236,6 +236,25 @@ SXYL.GRAPH = {
         return {ob:tarG};
     },
 
+
+
+    /***
+     * draw svg  tspan 标签
+     * @param parent
+     * @returns {*|void}
+     */
+    TS:function(parent,o){
+        //文本 tspan的值
+        var ob = parent.append("tspan")
+            // .attr("id", o.id)
+            .attr("dx", o.dx)
+            .attr("dy", o.dy)
+            .attr("style",o.sts)
+            .text(o.st); //o.st
+        return {ob:ob};
+
+    },
+
     /***
      * draw svg  circle 标签
      * @param parent
@@ -275,7 +294,6 @@ SXYL.GRAPH = {
      * @param o
      */
     drawByComponent:function (parent ,o) {
-
         //左边距
         SXYL.GRAPH.x = SXYL.GRAPH.x + parseInt(o.ml?o.ml:0) ;
         //右边距
@@ -407,7 +425,8 @@ SXYL.GRAPH.GRAPH_MAP = {
     1:{f:SXYL.GRAPH.G},
     2:{f:SXYL.GRAPH.T},
     4:{f:SXYL.GRAPH.C},
-    5:{f:SXYL.GRAPH.L}
+    5:{f:SXYL.GRAPH.L},
+    6:{f:SXYL.GRAPH.TS}
 }
 
 /****

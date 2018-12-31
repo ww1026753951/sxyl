@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+    <title>动画算法,算法动画,排序</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" >
+    <link rel="stylesheet" href="/css/bootstrap/dashboard.css" >
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap-reboot.min.css" >
+    <script src="/js/d3/d3.min.js"></script>
+    <script src="/js/sxyl.min.js"></script>
+    <script src="/js/jquery/jquery-3.2.1.min.js" ></script>
+    <script src="/js/sxyl.js"></script>
+
+
+    <script src="/js/sxyl.graph.js"></script>
+    <script src="/js/animation/animation.base.js"></script>
+
+    <script src="/js/math/MathJax.js?config=TeX-MML-AM_SVG"></script>
+    <script src="/js/math/latest.js?config=TeX-MML-AM_SVG" ></script>
+
+
+    <style>
+
+        /*body{ font-size:14px; line-height:24px;}*/
+
+        body{
+            font-size: 90%;
+        }
+
+        .sidebar-sticky a:hover{
+            background: #C0C0C0;
+        }
+    </style>
+</head>
+
+<body>
+##<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+##    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">动效算法-DNN</a>
+####    <input id="array-content" class="form-control form-control-dark w-40" type="text" placeholder="自定义排序数组,逗号分隔。为空时使用随机数" aria-label="Search">
+##    <ul class="navbar-nav px-3">
+##        <li class="nav-item text-nowrap">
+##            <a id="enterInit" class="nav-link" href="javascript:void(0)" >确认</a>
+##        </li>
+##    </ul>
+##</nav>
+
+<div class="container-fluid">
+    <div class="row">
+##        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+##            <div class="sidebar-sticky">
+##                <ul class="nav flex-column" id="menu-list">
+##                    <li class="nav-item">
+##                        <a class="nav-link active" type="1" style="cursor: pointer;">
+##                            全连接神经网络(DNN)
+##                        </a>
+##                    </li>
+##                </ul>
+##            </div>
+##        </nav>
+
+        <main role="main" class="col-md-12" style="padding-top:10px">
+            <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+            <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+            </div>
+            <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+            <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+        </div>
+        </div>
+
+        ##            执行面板的文件引入
+##            #parse("screen/execute-panel.vm")
+
+
+        ##操作面板的vm模块
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-0 pb-2 mb-1 border-bottom">
+                <div class="btn-toolbar mb-2 mb-md-0  col-md-2">
+                    <div class="btn-group mr-2">
+                        <button class="btn btn-sm btn-outline-secondary" id="run">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
+                                <path id="play-path" d="M0 0v6l6-3-6-3z" transform="translate(1 1)" />
+                            </svg>
+                            <span id="run-pause" run-type="0">播放</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" id="reset" >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 8 8">
+                                <path d="M4 0c-2.2 0-4 1.8-4 4s1.8 4 4 4c1.1 0 2.12-.43 2.84-1.16l-.72-.72c-.54.54-1.29.88-2.13.88-1.66 0-3-1.34-3-3s1.34-3 3-3c.83 0 1.55.36 2.09.91l-1.09 1.09h3v-3l-1.19 1.19c-.72-.72-1.71-1.19-2.81-1.19z" />
+                            </svg>
+                            重置
+                        </button>
+                    </div>
+                </div>
+                <div class="btn-toolbar mb-4 mb-md-0  col-md-4">
+                    <div class="btn-group mr-2">
+                        <p class="m-2"><b>速度:</b></p>
+                        <label class="radio-inline m-2" >
+                            <input type="radio" name="speedRadioOptions" id="speed0.5" value="0.5" > 0.5 <!-- onclick="SXYL.SORT.changeSpeed(bubbleSort)"-->
+                        </label>
+                        <label class="radio-inline m-2" >
+                            <input type="radio" name="speedRadioOptions" id="speed1" value="1" checked="checked"> 1
+                        </label>
+                        <label class="radio-inline m-2" >
+                            <input type="radio" name="speedRadioOptions" id="speed2" value="2"> 2
+                        </label>
+                        <label class="radio-inline  m-2">
+                            <input type="radio" name="speedRadioOptions" id="speed5" value="5"> 5
+                        </label>
+                    </div>
+                </div>
+                <div class="btn-toolbar mb-6 mb-md-0  col-md-6">
+                    <div><b>全连接神经网络计算简介：</b></div>
+                    <div>
+                        全连接神经网络：根据每个样本特征向量x计算预测值y&#x0302;，通过损失函数计算预测值y&#x0302和实际值y的偏差。求损失函数对权重的偏导，
+                        通过偏导结果更新权重。
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="algorithm-content" class="row">
+                <div id="graph-content" class="col-lg-9 col-sm-9 ">
+                    <svg width="1200" height="600" id="sortAlg">
+                        <g id="formula_id">
+                        </g>
+                    </svg>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    <div>
+                        <div><p><b>FP前向传播公式</b></p></div>
+
+##                        等号左边的  求和函数 net 为变量 ,
+                        <span>$$net^1 = W^1*X + b^1$$</span>
+##                        等号左侧 out 为变量 ,   激活函数整体为变量  sigmoid 为变量
+                        <span>$$out^1 = sigmoid(net^1)=\frac{1}{1+e^{-net^1}}$$</span>
+
+##                        输出层的 函数处理
+                        <span>$$net^2 = W^2*out^1 + b^2$$</span>
+                        <span>$$\hat{y} = out^2 = sigmoid(net^2)=\frac{1}{1+e^{-net^2}}$$</span>
+
+                        <div><p><b>BP反向传播公式</b></p></div>
+##                        等号左边的损失函数为 变量 ,
+                        <span>$$Error(all) = \sum\frac{1}{2}(y - \hat{y})^2$$</span>
+
+                        <span>$$\frac{\partial Error(all)}{\partial W^2} = \frac{\partial Error(all)}{\partial out^2}\frac{\partial out^2}{\partial net^2}\frac{\partial net^2}{\partial W^2} $$</span>
+                        <span>$$W^2 = W^2 - \frac{\partial Error(all)}{\partial W^2}$$</span>
+##                        <span>$$\frac{\partial Error(Total)}{\partial W^1} = \frac{1}{m}sum_f(X;W)-y$$</span>
+
+
+                        <span>$$\frac{\partial Error(all)}{\partial W^1} = \frac{\partial Error(all)}{\partial out^1}\frac{\partial out^1}{\partial net^1}\frac{\partial net^1}{\partial W^1} $$</span>
+                        <span>$$W^1 = W^1 - \frac{\partial Error(all)}{\partial W^1}$$</span>
+
+
+                    </div>
+                    <div id="step-content">
+                    </div>
+
+##                    <div><p><b>伪代码</b></p></div>
+##
+##                    <div id="pseudo-code">
+##
+##                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+##<script src="/js/vendor/jquery-slim.min.js" ></script>
+<!-- Popper.JS -->
+<script src="/js/vendor/popper.min.js" ></script>
+<!-- Bootstrap JS -->
+<script src="/js/bootstrap/bootstrap.min.js" ></script>
+
+<script>
+    $.ajax({
+        type: 'POST',
+        url: "/ml/dnnConstruct",
+        success: function (d) {
+            var parent = SXYL.GRAPH.getContext();
+            //初始化dom结构
+            SXYL.GRAPH.initPosition();
+            SXYL.GRAPH.drawByComponent(parent , d.group);
+
+            //初始化公式结构
+            SXYL.ANIMATION.cleanFormulaStep();
+            SXYL.ANIMATION.initFormulaStep(d.fa);
+
+            //执行步骤
+            SXYL.GRAPH.initPosition();
+            SXYL.ANIMATION.ALL_STEP = d.at;
+            SXYL.execute_i = setInterval(SXYL.ANIMATION.executeAnimation, SXYL.speed*1.2);
+
+            // SXYL.GRAPH.L(parent,"inputLayer1-0","outputLayer1-2")
+            // test_d();
+        }
+    });
+
+</script>
+
+##<script src="/js/sxyl.graph.min.js"></script>
+<!-- Icons -->
+##<script src="/js/sort/sort-common.min.js"></script>
+
+##具体的排序算法
+##<script src="/js/sort/s.min.js"></script>
+##面板的js,具体页面的js事件等
+##<script src="/js/sort/d.min.js"></script>
+
+</html>

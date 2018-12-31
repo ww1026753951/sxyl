@@ -13,6 +13,7 @@
 		</property>
 	</bean>
 
+	<import resource="spring/spring-service.xml"></import>
 
     <context:component-scan base-package="com.sxyl.portal"/>
 

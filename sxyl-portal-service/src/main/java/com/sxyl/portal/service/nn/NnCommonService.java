@@ -12,10 +12,10 @@ public class NnCommonService {
     private final String INPUT_TEXT="X";
 
     //隐藏层 net 的文本前缀
-    private String NET = "net";
+    protected String NET = "∑";
 
     //输出层的 out 的文本前缀
-    private String OUT = "out";
+    protected String OUT = "out";
 
 
     //误差项的 target 的文本前缀
@@ -30,8 +30,6 @@ public class NnCommonService {
 
 
 
-
-
     //输入层的后缀
     protected String INPUT_ID_SUFFIX ="-inputId";
 
@@ -43,11 +41,11 @@ public class NnCommonService {
 
 
     //文本的前缀
-    private String TEXT_NAME_ID ="t-";
+    protected String TEXT_NAME_ID ="t-";
 
 
 
-    private String BOTTOM ="bottom-";
+    protected String BOTTOM ="bottom-";
 
 
     //-----------------------------公式篇

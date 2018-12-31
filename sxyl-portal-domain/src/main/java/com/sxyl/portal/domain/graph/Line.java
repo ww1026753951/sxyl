@@ -10,7 +10,7 @@ public class Line extends GraphComponent implements Serializable {
 
 
     /****
-     *
+     * @see com.sxyl.portal.domain.constant.LineTypeEnum
      */
     private Integer lt;
 
@@ -31,6 +31,17 @@ public class Line extends GraphComponent implements Serializable {
      * targetId
      */
     private String tid;
+
+    public Line() {
+    }
+
+    public Line(Integer lt, Integer x1, Integer y1, Integer x2, Integer y2) {
+        this.lt = lt;
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+    }
 
     /****
      *

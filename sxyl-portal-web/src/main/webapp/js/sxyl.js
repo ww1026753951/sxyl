@@ -348,6 +348,52 @@ SXYL.DOM.computeOutWeight = function(o){
 }
 
 
+
+
+/***
+ * 计算输入值权重
+ *
+ *
+ *
+ private String tid;
+
+ private List<String> targetId;
+
+ private List<String> outId;
+
+ private List<String> weightId;
+
+ private String oid ;
+
+ private String iv;
+ *
+ *
+ * @param o
+ */
+SXYL.DOM.computeHiddenWeight = function(o){
+    var target_List = o.targetId;
+    var weight_List = o.weightId;
+    var out_List = o.outId ;
+    var error =0;
+    var error_sum=0;
+    for(var i =0 ; i< target_List.length ; i++){
+
+        var target_o_v = parseFloat($("#"+target_List[i]).text());
+        var outo_v = parseFloat($("#"+out_List[i]).text());
+        var weight = parseFloat($("#"+weight_List[i]).text());
+
+        error = ((outo_v - target_o_v)*outo_v*(1- outo_v)).toFixed(2) ;
+        error = (parseFloat(error) * parseFloat(weight)).toFixed(2);
+        error_sum = parseFloat(error_sum) + parseFloat(error);
+    }
+
+    var outh  = parseFloat($("#"+o.oid).text());
+    var iv = parseFloat($("#"+o.iv).text());
+    var result = (error_sum*(outh*(1-outh))*iv);
+    $("#"+o.tid).text(parseFloat(result).toFixed(2));
+}
+
+
 /*****
  * 平方差
  * @param o

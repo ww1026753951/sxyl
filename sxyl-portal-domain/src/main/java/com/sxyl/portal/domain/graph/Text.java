@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sxyl.portal.domain.constant.ComponentTypeEnum;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /****
  * 圆的对象
@@ -30,8 +32,6 @@ public class Text extends GraphComponent implements Serializable {
      */
     private String st;
 
-
-
     /****
      * 需要展示文字的位置
      * showTextPosition
@@ -49,10 +49,13 @@ public class Text extends GraphComponent implements Serializable {
     private Double ratio;
 
 
+    /****
+     *分组内图画的对象
+     */
+    private List<GraphComponent> child;
+
     public Text() {
     }
-
-
 
     public Text(Integer x, Integer y) {
         this.x = x;
@@ -71,6 +74,18 @@ public class Text extends GraphComponent implements Serializable {
         this.x = x;
         this.y = y;
         this.st = st;
+    }
+
+    public Text(String id ,Integer x, Integer y, String st, String sts) {
+        super.setId(id);
+        this.x = x;
+        this.y = y;
+        this.st = st;
+        this.sts = sts;
+    }
+    @Override
+    void setComponentType() {
+        super.setCt(ComponentTypeEnum.TEXT.getType());
     }
 
 
@@ -114,8 +129,20 @@ public class Text extends GraphComponent implements Serializable {
         this.ratio = ratio;
     }
 
-    @Override
-    void setComponentType() {
-        super.setCt(ComponentTypeEnum.TEXT.getType());
+
+    public boolean addChild(GraphComponent graphComponent) {
+        if(this.child==null){
+            this.child = new ArrayList<GraphComponent>();
+        }
+        this.child.add(graphComponent);
+        return true;
+    }
+
+    public List<GraphComponent> getChild() {
+        return child;
+    }
+
+    public void setChild(List<GraphComponent> child) {
+        this.child = child;
     }
 }

@@ -11,7 +11,9 @@ public enum ComponentTypeEnum {
     //圆形的枚举
     CIRCLE(4,"circle"),
     //线的枚举
-    LINE(5,"line");
+    LINE(5,"line"),
+    //文字的附加样式
+    TSPAN(6,"tspan");
 
     private final int type;
     private final String desc;

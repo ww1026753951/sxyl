@@ -1,7 +1,11 @@
 package com.sxyl.portal.controller;
 
+import com.sxyl.portal.domain.DomainContent;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by wangweiyf on 2017/11/2.
@@ -19,7 +23,9 @@ public class PortalController extends BaseController {
      * @throws Exception
      */
     @RequestMapping("/portal")
-    public String portal() throws Exception{
+    public String portal(ModelMap modelMap ,HttpServletRequest request) throws Exception{
+        DomainContent dc = super.getDomainByReferer(request);
+        modelMap.put("dc",dc);
         return "/screen/portal-org";
     }
 
@@ -44,7 +50,9 @@ public class PortalController extends BaseController {
      * @throws Exception
      */
     @RequestMapping("im")
-    public String im() throws Exception{
+    public String im(ModelMap modelMap ,HttpServletRequest request) throws Exception{
+        DomainContent dc = super.getDomainByReferer(request);
+        modelMap.put("dc",dc);
         return "/screen/algorithm/im";
     }
 

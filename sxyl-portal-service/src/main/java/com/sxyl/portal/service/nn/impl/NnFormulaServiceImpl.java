@@ -368,10 +368,10 @@ public class NnFormulaServiceImpl extends NnCommonService implements NnFormulaSe
             String iid = inputList.get(k);
 
             Integer inputIndex = k+1;
-            String weightText = super.getWeightText(new Integer(inputIndex).toString());
 
             for (int i = 0 ; i < hiddenList.size() ; i ++){
                 String hid = hiddenList.get(i);
+                Integer hiddenIndex = i;
 
                 hiddenWeight = new Group();
                 hiddenWeight.setId(super.getFormulaUpdateWeightId(hid,iid));
@@ -381,6 +381,7 @@ public class NnFormulaServiceImpl extends NnCommonService implements NnFormulaSe
                 int x = 150;
                 int y = 30 ;
 
+                String weightText = super.getWeightText(new Integer(inputIndex+(hiddenIndex)*3).toString());
                 Text target = new Text(x,y);
 //                text.setSt();
                 target.setSt(weightText+"="+weightText + " - ∂Etotal/∂"+weightText+"= (");
@@ -459,10 +460,8 @@ public class NnFormulaServiceImpl extends NnCommonService implements NnFormulaSe
                 hiddenWeight.addChild(new Text(super.getFormulaResultId(iid) , x, y ,"???"));
 
 
-
                 result.addChild(hiddenWeight);
 
-                return ;
             }
 
         }

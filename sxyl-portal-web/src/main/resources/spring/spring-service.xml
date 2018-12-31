@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="DomainContentMap" class="com.sxyl.portal.domain.DomainContentMap">
+        <property name="dcMap">
+            <map>
+                <entry key="www.sixiangyaolan.com">
+                    <bean class="com.sxyl.portal.domain.DomainContent">
+                        <property name="domain" value="sixiangyaolan.com" />
+                        <property name="domainName" value="思想摇篮" />
+                        <property name="title" value="sxyl 思想摇篮 动画算法" />
+                    </bean>
+                </entry>
+                <entry key="www.donghuasuanfa.com">
+                    <bean class="com.sxyl.portal.domain.DomainContent">
+                        <property name="domain" value="donghuasuanfa.com" />
+                        <property name="domainName" value="动画算法" />
+                        <property name="title" value="donghuasuanfa 动画算法" />
+                    </bean>
+                </entry>
+
+                <entry key="www.suanfadonghua.com">
+                    <bean class="com.sxyl.portal.domain.DomainContent">
+                        <property name="domain" value="suanfadonghua.com" />
+                        <property name="domainName" value="算法动画" />
+                        <property name="title" value="suanfadonghua 算法动画" />
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+
+</beans>

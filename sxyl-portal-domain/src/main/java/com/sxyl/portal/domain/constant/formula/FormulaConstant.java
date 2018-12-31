@@ -8,7 +8,6 @@ public class FormulaConstant {
      */
     public static final String MULTIPLICATION ="*";
 
-
     /****
      * 加法符号
      */
