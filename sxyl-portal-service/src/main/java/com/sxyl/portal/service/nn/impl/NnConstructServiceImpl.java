@@ -21,7 +21,7 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
     private int VALUE_BUFFER = 20;
 
     //权重的上下标的buffer
-    private int WEIGHT_SUB_BUFFER = -10 ;
+    private int WEIGHT_SUB_BUFFER = -6 ;
 
 
     @Override
@@ -31,7 +31,7 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
         //创建隐藏层  hiddenIds
         Group circleHidden = circleHidden(dnnConstructParam.getDnnHiddenLayerList());
         //创建输出层 outputIds ,
-        Group circleOutput = circleOutput(dnnConstructParam.getOutputLayer());
+        Group circleOutput = circleOutput(dnnConstructParam.getOutputLayer(),hiddenIds.size()+1);
         Group all = new Group();
         all.setMl(80);
         all.setMt(120);
@@ -40,7 +40,7 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
         all.addChild(circleHidden);
         all.addChild(circleOutput);
         //误差项的值
-        all.addChild(createError(outputIds));
+//        all.addChild(createError(outputIds));
 
         //todo
         all.addChild(lineList(inputIds,hiddenIds.get(0) ,1));
@@ -75,16 +75,7 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
 
             if(i==0){
                 circle.setMl(35);
-//                circle.setMt(30);
-//            }else if(i == inputIds.size() - 1){//最后一位为 bias ,所以间距设置多一些
-//                circle.setMt(50);
-//            }else {
-//                circle.setMt(50);
             }
-            //半径
-//            circle.setR(r);
-//            circle.setS("red");
-
             //圆心的文本
             circle.addCurrentComponent(new Text(dnnInputNeuron.getTextId() , 0,0,dnnInputNeuron.getText() ,ShowTextPositionEnum.MIDDLE.getCode() ));
 
@@ -117,23 +108,25 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
                 DnnHiddenNeuron dnnHiddenNeuron = dnnHiddenLayer.getNeurons().get(j) ;
                 Circle circle = new Circle(dnnHiddenNeuron.getId(), r ,"blue");
 //                circle.setId();
-                circle.setMt(30);
+                circle.setMt(60);
                 if(j==0){
                     circle.setMl(35);
                 }
 
                 //圆心的文本 , net 单元 ,sum的文本
-                circle.addCurrentComponent(new Text(dnnHiddenNeuron.getSumTextId(),-r/2,0,
-                        dnnHiddenNeuron.getSumText(),ShowTextPositionEnum.MIDDLE.getCode()));
+                circle.addCurrentComponent(addSubAndSup(new Text(dnnHiddenNeuron.getSumTextId(),-r/2,0,
+                        dnnHiddenNeuron.getSumText(),ShowTextPositionEnum.MIDDLE.getCode()),  (i+1)+"" ,(j+1)+""  ));
 
-                //圆心的文本 ,  net 单元的输出值
+                //圆心的文本 ,  net 单元的输出值 sum的值
                 circle.addCurrentComponent(new Text(dnnHiddenNeuron.getSumValueTextId() , -r/2 , r + VALUE_BUFFER,
                         dnnHiddenNeuron.getSumValueText() , ShowTextPositionEnum.MIDDLE.getCode()));
 
-                //圆心的文本 , out 单元
-                circle.addCurrentComponent(new Text(dnnHiddenNeuron.getActivationTextId(),r/2,0,
-                        dnnHiddenNeuron.getActivationText(),ShowTextPositionEnum.MIDDLE.getCode()));
 
+                //圆心的文本 , 激活函数后文本
+                circle.addCurrentComponent(addSubAndSup(new Text(dnnHiddenNeuron.getActivationTextId(),r/2,0,
+                        dnnHiddenNeuron.getActivationText(),ShowTextPositionEnum.MIDDLE.getCode()) ,  (i+1)+"" ,(j+1)+""));
+
+                //圆心   激活函数后的 值的文本
                 circle.addCurrentComponent(new Text(dnnHiddenNeuron.getActivationValueTextId(),r/2,r + VALUE_BUFFER,
                         dnnHiddenNeuron.getActivationValueText(),ShowTextPositionEnum.MIDDLE.getCode()));
 
@@ -149,7 +142,7 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
      * 创建输出层的结构  List<String> outputIdsc ,
      * @return
      */
-    private Group circleOutput( DnnOutputLayer dnnOutputLayer){
+    private Group circleOutput( DnnOutputLayer dnnOutputLayer ,Integer layerNo){
 
         int r = 60;
         Group group = new Group();
@@ -163,7 +156,7 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
         for (int i=0;i< list.size();i++){
             dnnOutputNeuron = list.get(i);
             String outId = dnnOutputNeuron.getId();
-            Circle circle = new Circle(outId , r, "blue");
+            Circle circle = new Circle(outId , r, "green");
 //            circle.setId(outId);
 //            circle.setSt("O"+(i+1));
 
@@ -176,29 +169,33 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
             //半径
 
             //圆心的文本 , net 单元
-            circle.addCurrentComponent(new Text(dnnOutputNeuron.getSumTextId(),-r/2 ,0,
-                    dnnOutputNeuron.getSumText() ,ShowTextPositionEnum.MIDDLE.getCode() ));
+            circle.addCurrentComponent(addSubAndSup(new Text(dnnOutputNeuron.getSumTextId(),-r/2 ,0,
+                    dnnOutputNeuron.getSumText() ,ShowTextPositionEnum.MIDDLE.getCode() ) ,layerNo.toString(),(i+1)+"" ));
 
             //圆心的文本 ,  net 单元的输出值
             circle.addCurrentComponent(new Text(dnnOutputNeuron.getSumValueTextId(), -r/2 , r + VALUE_BUFFER,
                     dnnOutputNeuron.getSumValueText(),ShowTextPositionEnum.MIDDLE.getCode()));
 
             //圆心的文本 , out 单元
-            circle.addCurrentComponent(new Text(dnnOutputNeuron.getActivationTextId(),r/2,0,
-                    dnnOutputNeuron.getActivationText(),ShowTextPositionEnum.MIDDLE.getCode()));
+            circle.addCurrentComponent(addSubAndSup(new Text(dnnOutputNeuron.getActivationTextId(),r/2,0,
+                    dnnOutputNeuron.getActivationText(),ShowTextPositionEnum.MIDDLE.getCode()) ,layerNo.toString(),(i+1)+"" ));
 
             circle.addCurrentComponent(new Text(dnnOutputNeuron.getActivationValueTextId(),r/2,r + VALUE_BUFFER,
                     dnnOutputNeuron.getActivationValueText(),ShowTextPositionEnum.MIDDLE.getCode()));
 
             //圆心的线
-//            Line l = ;
-//            l.setId("hidden"+(i+1));
-//            l.setLt();
-//            l.setX1(0);
-//            l.setY1(-r);
-//            l.setX2(0);
-//            l.setY2(r);
             circle.addCurrentComponent(new Line(LineTypeEnum.POSITION.getCode(),0,-r,0,r));
+
+            //实际值
+            circle.addCurrentComponent(new Text(dnnOutputNeuron.getActualTextId() ,r + VALUE_BUFFER,0,
+                    dnnOutputNeuron.getActualText(),ShowTextPositionEnum.START.getCode()));
+
+            //损失函数
+            Text cost = new Text(dnnOutputNeuron.getCostValueTextId() ,r+ VALUE_BUFFER,r +VALUE_BUFFER,
+                    dnnOutputNeuron.getCostValueText(),ShowTextPositionEnum.START.getCode());
+            cost.setD(dnnOutputNeuron.getIndex());
+            circle.addCurrentComponent(cost);
+
             group.addChild(circle);
         }
 
@@ -213,52 +210,52 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
      * @param outputIds
      * @return
      */
-    private Group createError(List<String> outputIds){
-
-        int r = 60;
-        Group group = new Group();
-        group.setMl(100);
-        group.setMt(10);
-        group.setCompose(ComponentCompositeEnum.VERTICAL.getType());
-        for (int i=0;i< outputIds.size();i++){
-            String errorId = super.getErrorTextId(outputIds.get(i));
-            Circle circle = new Circle();
-            circle.setId(errorId);
-
-            circle.setMt(50);
-            if(i==0){
-                circle.setMl(55);
-            }
-            //半径
-            circle.setR(r);
-            circle.setS("green");
-
-            //圆心的文本 , net 单元
-            Text t = new Text();
-            t.setId(super.getTextId(errorId , super.NET_ID) );
-            t.setSt(super.getTargetNetText(new Integer(i+1).toString()));
-            t.setX(0);
-            t.setY(0);
-            t.setSts(ShowTextPositionEnum.MIDDLE.getCode());
-            circle.addCurrentComponent(t);
-
-
-            //圆心的文本 , 底部的损失函数
-            Text tBottom = new Text();
-            tBottom.setId(super.getHiddenBottomOutId(errorId) );
-            tBottom.setSt(super.getErrorText(new Integer(i+1).toString())+"=???");
-            tBottom.setD(new Integer(i+1));
-            tBottom.setX(0);
-            tBottom.setY(r + VALUE_BUFFER);
-            tBottom.setSts(ShowTextPositionEnum.MIDDLE.getCode());
-            circle.addCurrentComponent(tBottom);
-
-
-            group.addChild(circle);
-        }
-        return group;
-
-    }
+//    private Group createError(List<String> outputIds){
+//
+//        int r = 60;
+//        Group group = new Group();
+//        group.setMl(100);
+//        group.setMt(10);
+//        group.setCompose(ComponentCompositeEnum.VERTICAL.getType());
+//        for (int i=0;i< outputIds.size();i++){
+//            String errorId = super.getErrorTextId(outputIds.get(i));
+//            Circle circle = new Circle();
+//            circle.setId(errorId);
+//
+//            circle.setMt(50);
+//            if(i==0){
+//                circle.setMl(55);
+//            }
+//            //半径
+//            circle.setR(r);
+//            circle.setS("green");
+//
+//            //圆心的文本 , net 单元
+//            Text t = new Text();
+//            t.setId(super.getTextId(errorId , super.NET_ID) );
+//            t.setSt(super.getTargetNetText(new Integer(i+1).toString()));
+//            t.setX(0);
+//            t.setY(0);
+//            t.setSts(ShowTextPositionEnum.MIDDLE.getCode());
+//            circle.addCurrentComponent(t);
+//
+//
+//            //圆心的文本 , 底部的损失函数
+//            Text tBottom = new Text();
+//            tBottom.setId(super.getHiddenBottomOutId(errorId) );
+//            tBottom.setSt(super.getErrorText(new Integer(i+1).toString())+"=???");
+//            tBottom.setD(new Integer(i+1));
+//            tBottom.setX(0);
+//            tBottom.setY(r + VALUE_BUFFER);
+//            tBottom.setSts(ShowTextPositionEnum.MIDDLE.getCode());
+//            circle.addCurrentComponent(tBottom);
+//
+//
+//            group.addChild(circle);
+//        }
+//        return group;
+//
+//    }
 
 
     /****
@@ -293,8 +290,10 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
                 text.setRatio(ratio);
                 text.setSts(ShowTextPositionEnum.MIDDLE.getCode());
 
-                text.addChild(new TSPAN("" + layerNo , BaselineShiftEnum.LINE_SUPER.getCode() , 0 ,5));
-                text.addChild(new TSPAN((i+1)+""+(j+1),BaselineShiftEnum.LINE_SUB.getCode() , WEIGHT_SUB_BUFFER , -5 ));
+                //增加上下标
+                text = this.addSubAndSup(text, layerNo + "" , (i+1)+""+(j+1));
+//                text.addChild(new TSPAN("" + layerNo , BaselineShiftEnum.LINE_SUPER.getCode() , 0 ,5));
+//                text.addChild(new TSPAN(,BaselineShiftEnum.LINE_SUB.getCode() , WEIGHT_SUB_BUFFER , -5 ));
 //                text.addCurrentComponent()
 
                 //线上的文本
@@ -326,5 +325,18 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
             }
         }
         return group;
+    }
+
+    /****
+     * 增加上下标
+     * @param t
+     * @param sup 上标
+     * @param sub 下标
+     * @return
+     */
+    private Text addSubAndSup(Text t , String sup , String sub){
+        t.addChild(new TSPAN(sup, BaselineShiftEnum.LINE_SUPER.getCode() , 0 ,0));
+        t.addChild(new TSPAN(sub,BaselineShiftEnum.LINE_SUB.getCode() , WEIGHT_SUB_BUFFER , 0 ));
+        return t ;
     }
 }

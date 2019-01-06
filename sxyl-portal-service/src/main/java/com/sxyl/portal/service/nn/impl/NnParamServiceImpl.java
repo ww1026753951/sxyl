@@ -78,7 +78,7 @@ public class NnParamServiceImpl extends NnCommonService implements NnParamServic
             dnnInputNeuron.setText(dnnParam.getInputText() + dnnInputNeuron.getIndex());
             dnnInputNeuron.setTextId(super.TEXT_NAME_ID + dnnInputNeuron.getId() + CommonConstant.HYPHEN + INPUT_ID_ALIAS );
             dnnInputNeuron.setValueText(dnnInputNeuron.getIndex().toString());
-            dnnInputNeuron.setValueTextId( TEXT_NAME_ID + BOTTOM + dnnInputNeuron.getId() + OUT_ID );
+            dnnInputNeuron.setValueTextId(TEXT_NAME_ID + BOTTOM + dnnInputNeuron.getId() + OUT_ID );
             neurons.add(dnnInputNeuron);
         }
         dnnInputLayer.setNeurons(neurons);
@@ -109,12 +109,16 @@ public class NnParamServiceImpl extends NnCommonService implements NnParamServic
                 dnnHiddenNeuron.setId(id);
                 //求和的部分
                 dnnHiddenNeuron.setSumTextId(  TEXT_NAME_ID + id + super.NET_ID );
-                dnnHiddenNeuron.setSumText("h_" + NET + index);
+//                dnnHiddenNeuron.setSumText("h_" + NET + index);
+
+                dnnHiddenNeuron.setSumText(dnnParam.getSumText());
                 dnnHiddenNeuron.setSumValueTextId(TEXT_NAME_ID + BOTTOM + id + super.NET_ID );
                 dnnHiddenNeuron.setSumValueText("n"+ index);
                 //激活函数的部分
                 dnnHiddenNeuron.setActivationTextId(TEXT_NAME_ID + id + super.OUT_ID);
-                dnnHiddenNeuron.setActivationText("h_" + OUT + index);
+//                dnnHiddenNeuron.setActivationText("h_" + OUT + index);
+                dnnHiddenNeuron.setActivationText(dnnParam.getActivationText()) ;
+
                 dnnHiddenNeuron.setActivationValueTextId(TEXT_NAME_ID + BOTTOM + id + OUT_ID );
                 dnnHiddenNeuron.setActivationValueText("o"+index);
                 neurons.add(dnnHiddenNeuron);
@@ -154,15 +158,24 @@ public class NnParamServiceImpl extends NnCommonService implements NnParamServic
 
             //求和的部分
             dnnOutputNeuron.setSumTextId(  TEXT_NAME_ID + id + super.NET_ID );
-            dnnOutputNeuron.setSumText("o_" + NET + index);
+//            dnnOutputNeuron.setSumText("o_" + NET + index);
+            dnnOutputNeuron.setSumText(dnnParam.getSumText());
             dnnOutputNeuron.setSumValueTextId(TEXT_NAME_ID + BOTTOM + id + super.NET_ID );
             dnnOutputNeuron.setSumValueText("n"+ index);
             //激活函数的部分
             dnnOutputNeuron.setActivationTextId(TEXT_NAME_ID + id + super.OUT_ID);
-            dnnOutputNeuron.setActivationText("h_" + OUT + index);
+//            dnnOutputNeuron.setActivationText("h_" + OUT + index);
+            dnnOutputNeuron.setActivationText(dnnParam.getActivationText());
             dnnOutputNeuron.setActivationValueTextId(TEXT_NAME_ID + BOTTOM + id + OUT_ID );
             dnnOutputNeuron.setActivationValueText("o"+index);
 
+
+//            errorId , super.NET_ID)
+            dnnOutputNeuron.setActualTextId(TEXT_NAME_ID + getErrorTextId(id) + super.NET_ID);
+            dnnOutputNeuron.setActualText("y=" + index);
+
+            dnnOutputNeuron.setCostValueTextId(TEXT_NAME_ID + BOTTOM + getErrorTextId(id) + OUT_ID );
+            dnnOutputNeuron.setCostValueText("error"+index+"=???");
 
             neurons.add(dnnOutputNeuron);
         }
