@@ -3,6 +3,7 @@ package com.sxyl.portal.domain.graph;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sxyl.portal.domain.constant.ComponentTypeEnum;
+import com.sxyl.portal.domain.constant.PositionEnum;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,6 +14,10 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Text extends GraphComponent implements Serializable {
+
+    /***
+     * 序列化id
+     */
     private static final long serialVersionUID = 1L;
 
 
@@ -25,6 +30,33 @@ public class Text extends GraphComponent implements Serializable {
      * y 的位置
      */
     private Integer y;
+
+
+    /****
+     *
+     * x 坐标  的类型
+     *
+     * 0或者无代表使用绝对位置:
+     *
+     * 1 使用兄弟节点的上一层 横坐标
+     *
+     * 2 代表使用 兄弟节点的上一层 横坐标 + x  的值
+     */
+    private Integer xt ;
+
+
+
+    /***
+     * y坐标  是否使用相对位置
+     *
+     * 0或者无代表使用绝对位置:
+     *
+     * 1 使用兄弟节点的上一层 纵坐标
+     *
+     * 2 代表使用 兄弟节点的上一层 纵坐标 + y  的值
+     */
+    private Integer yt;
+
 
     /****
      * 需要展示的文字
@@ -62,7 +94,50 @@ public class Text extends GraphComponent implements Serializable {
         this.y = y;
     }
 
+
+    public Text(String id ,Integer x, Integer y) {
+        super.setId(id);
+        this.x = x;
+        this.y = y;
+    }
+
     public Text(Integer x, Integer y, String st) {
+        this.x = x;
+        this.y = y;
+        this.st = st;
+    }
+
+    public Text(String id , PositionEnum xt , PositionEnum yt ) {
+        super.setId(id);
+        this.xt = xt.getCode();
+        this.yt = yt.getCode();
+    }
+
+    public Text( PositionEnum xt , PositionEnum yt , String st) {
+        this.xt = xt.getCode();
+        this.yt = yt.getCode();
+        this.st = st;
+    }
+
+    public Text(String id , PositionEnum xt , PositionEnum yt , String st) {
+        super.setId(id);
+        this.xt = xt.getCode();
+        this.yt = yt.getCode();
+        this.st = st;
+    }
+
+    public Text(String id , PositionEnum xt , PositionEnum yt, Integer x, Integer y , String st) {
+        super.setId(id);
+        this.xt = xt.getCode();
+        this.yt = yt.getCode();
+        this.x = x;
+        this.y = y;
+        this.st = st;
+    }
+
+    public Text(PositionEnum xt , PositionEnum yt , Integer x, Integer y, String st) {
+        this.xt = xt.getCode();
+        this.yt = yt.getCode();
         this.x = x;
         this.y = y;
         this.st = st;
@@ -129,6 +204,21 @@ public class Text extends GraphComponent implements Serializable {
         this.ratio = ratio;
     }
 
+    public Integer getXt() {
+        return xt;
+    }
+
+    public void setXt(Integer xt) {
+        this.xt = xt;
+    }
+
+    public Integer getYt() {
+        return yt;
+    }
+
+    public void setYt(Integer yt) {
+        this.yt = yt;
+    }
 
     public boolean addChild(GraphComponent graphComponent) {
         if(this.child==null){

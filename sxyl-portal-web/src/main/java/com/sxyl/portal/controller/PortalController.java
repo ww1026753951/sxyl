@@ -26,7 +26,7 @@ public class PortalController extends BaseController {
     public String portal(ModelMap modelMap ,HttpServletRequest request) throws Exception{
         DomainContent dc = super.getDomainByReferer(request);
         modelMap.put("dc",dc);
-        return "/screen/portal-org";
+        return "/screen/portal-algorithm";
     }
 
 

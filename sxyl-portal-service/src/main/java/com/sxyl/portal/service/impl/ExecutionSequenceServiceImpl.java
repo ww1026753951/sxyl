@@ -1,6 +1,8 @@
 package com.sxyl.portal.service.impl;
 
 import com.sxyl.portal.domain.ExecutionSequence;
+import com.sxyl.portal.domain.nn.dnn.param.DnnConstructParam;
+import com.sxyl.portal.domain.nn.dnn.result.DnnConstruct;
 import com.sxyl.portal.service.ExecutionSequenceService;
 import org.springframework.stereotype.Service;
 
@@ -88,5 +90,17 @@ public class ExecutionSequenceServiceImpl implements ExecutionSequenceService {
             add(new ExecutionSequence("pseudo-code","","","}"));
         }};
         return bubbleStep;
+    }
+
+
+    /****
+     * 全连接神经网络的执行步骤
+     */
+    public List<ExecutionSequence> queryDnnExecutionSequence(DnnConstructParam dnnConstructParam){
+        List<ExecutionSequence> list = new ArrayList<>();
+
+
+
+        return list ;
     }
 }

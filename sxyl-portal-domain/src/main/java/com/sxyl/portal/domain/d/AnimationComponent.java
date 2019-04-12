@@ -9,16 +9,17 @@ public abstract class AnimationComponent implements Serializable {
 
     /****
      * AnimationType
+     * 动画类型
      * @see com.sxyl.portal.domain.constant.AnimationEnum
      */
     private Integer at;
 
-    /*****
-     * 执行步骤序列号,从1 开始
+    /****
+     * AnimationDescCode
+     * 动画描述的编码,
+     * 对应 ExecutionSequence 中的
      */
-//    private Integer c;
-
-
+    private Integer ad;
 
     public void setAt(Integer at) {
         this.at = at;
@@ -31,13 +32,13 @@ public abstract class AnimationComponent implements Serializable {
         return at;
     }
 
-//    public Integer getC() {
-//        return c;
-//    }
-//
-//    public void setC(Integer c) {
-//        this.c = c;
-//    }
+    public Integer getAd() {
+        return ad;
+    }
+
+    public void setAd(Integer ad) {
+        this.ad = ad;
+    }
 
     /****
      *  设置组件类型

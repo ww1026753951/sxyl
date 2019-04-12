@@ -1,8 +1,7 @@
 package com.sxyl.portal.service.nn;
 
-import com.sxyl.portal.domain.d.AnimationComponent;
 import com.sxyl.portal.domain.d.AnimationTotal;
-import com.sxyl.portal.domain.graph.GraphComponent;
+import com.sxyl.portal.domain.nn.dnn.param.DnnConstructParam;
 
 import java.util.List;
 
@@ -16,5 +15,5 @@ public interface NnAnimationService {
      * 获取dnn 的动画算法信息
      * @return
      */
-    AnimationTotal getNnAnimation(List<String> inputIds, List<List<String>> hiddenIds, List<String> outputIds);
+    AnimationTotal getNnAnimation(List<String> inputIds, List<List<String>> hiddenIds, List<String> outputIds ,  DnnConstructParam dnnConstructParam);
 }

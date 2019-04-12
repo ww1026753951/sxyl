@@ -21,4 +21,7 @@ public class DnnHiddenLayer  implements Serializable {
 
     //神经元列表
     private List<DnnHiddenNeuron> neurons;
+
+    //隐藏层偏置量神经单元
+    private DnnBiasNeuron dnnBiasNeuron;
 }

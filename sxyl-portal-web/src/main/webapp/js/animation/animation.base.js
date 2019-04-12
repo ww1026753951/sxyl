@@ -4,11 +4,19 @@ SXYL.ANIMATION={
     ALL_STEP:undefined,
     //公式执行步骤
     FORMULA_STEP:undefined,
+    //备注执行步骤
+    SEQUENCE_STEP:undefined,
     /****
      * 清除公式
      */
     cleanFormulaStep:function(){
         SXYL.ANIMATION.FORMULA_STEP = {};
+    },
+    /****
+     * 清除描述序列
+     */
+    cleanSequenceStep:function(){
+        SXYL.ANIMATION.SEQUENCE_STEP = {};
     },
     /***
      * 初始化公式执行步骤
@@ -25,6 +33,18 @@ SXYL.ANIMATION={
         }
         if(o.child){
             SXYL.ANIMATION.initFormulaStep(o.child);
+        }
+    },
+    /***
+     * 初始化执行map
+     * @param o
+     */
+    initExecutionSequence:function(o){
+        if(!o){
+            debugger;
+        }
+        for (var i=0;i<o.length;i++){
+            SXYL.ANIMATION.SEQUENCE_STEP[o.stepCode]=o;
         }
     },
 

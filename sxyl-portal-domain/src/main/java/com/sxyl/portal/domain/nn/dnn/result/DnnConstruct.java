@@ -1,6 +1,7 @@
 package com.sxyl.portal.domain.nn.dnn.result;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.sxyl.portal.domain.ExecutionSequence;
 import com.sxyl.portal.domain.d.AnimationTotal;
 import com.sxyl.portal.domain.formula.MathFormulaTemplate;
 import com.sxyl.portal.domain.graph.Group;
@@ -30,9 +31,9 @@ public class DnnConstruct implements Serializable {
     private AnimationTotal at ;
 
     /****
-     * 数学公式数组
+     * 描述
      */
-    private List<MathFormulaTemplate> mfs;
+    private List<ExecutionSequence> es;
 
 
     /****

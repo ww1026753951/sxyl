@@ -1,11 +1,18 @@
 package com.sxyl.portal.service.nn;
 
 import com.sxyl.portal.domain.constant.formula.FormulaConstant;
+import com.sxyl.portal.domain.constant.graph.BaselineShiftEnum;
+import com.sxyl.portal.domain.graph.TSPAN;
+import com.sxyl.portal.domain.graph.Text;
 import org.apache.commons.lang.StringUtils;
 
 import java.lang.annotation.Target;
 
 public class NnCommonService {
+
+
+    //权重的上下标的buffer
+    protected final int WEIGHT_SUB_BUFFER = -6 ;
 
 
     //输入层的文本前缀
@@ -365,6 +372,43 @@ public class NnCommonService {
 
     protected String getOutWeightOutHiddenNodeId(String id){
         return OUT + "node" + id;
+    }
+
+
+
+    /****
+     * 增加上下标
+     * @param t
+     * @param sup 上标
+     * @param sub 下标
+     * @return
+     */
+    protected Text addSubAndSup(Text t , String sup , String sub){
+        if(sub != null){
+            t.addChild(new TSPAN(sub, BaselineShiftEnum.LINE_SUB.getCode() , 0 , 0 ));
+        }
+        if(sup!=null){
+            t.addChild(new TSPAN(sup, BaselineShiftEnum.LINE_SUPER.getCode() , WEIGHT_SUB_BUFFER ,0));
+        }
+        return t ;
+    }
+
+    /****
+     * 增加上下标
+     * @param t
+     * @param sup 上标
+     * @param sub 下标
+     * @return
+     */
+    protected Text addSubAndSup(Text t , String sup , String sub , Integer dxSup , Integer dySup
+            , Integer dxSub , Integer dySub){
+        if(sub != null){
+            t.addChild(new TSPAN(sub, BaselineShiftEnum.LINE_SUB.getCode() , dxSub , dySub ));
+        }
+        if(sup!=null){
+            t.addChild(new TSPAN(sup, BaselineShiftEnum.LINE_SUPER.getCode() , dxSup ,dySup));
+        }
+        return t ;
     }
 
 }

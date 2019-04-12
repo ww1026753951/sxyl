@@ -22,4 +22,8 @@ public class DnnInputLayer implements Serializable {
     //神经元列表
     private List<DnnInputNeuron> neurons;
 
+
+    //隐藏层偏置量神经单元
+    private DnnBiasNeuron dnnBiasNeuron;
+
 }

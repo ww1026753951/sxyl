@@ -17,6 +17,13 @@ public class DnnParam  implements Serializable {
      */
     private String inputText = "x";
 
+
+    /****
+     * 输入文本的前缀
+     */
+    private String biasText = "b";
+
+
     /***
      * 求和的文字展示
      */

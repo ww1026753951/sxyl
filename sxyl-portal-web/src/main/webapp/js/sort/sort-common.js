@@ -54,8 +54,11 @@ SXYL.SORT = {
      * 获取速度,默认600,
      * @returns {number}
      */
-    getSpeed:function () {
+    getSpeed:function (s) {
         var speed = 600;
+        if(s){
+            speed =s;
+        }
         var a = $("input[name='speedRadioOptions']:checked").val();
         if(a && !isNaN(a) ){
             speed = speed / a;
@@ -82,11 +85,11 @@ SXYL.SORT = {
         $("#play-path").attr("d","M0 0v6l6-3-6-3z");
         clearInterval(SXYL.execute_i);
     },
-    changeSpeed:function (f) {
+    changeSpeed:function (f,s) {
         var runType = $("#run-pause").attr("run-type");
         if(runType==1){
             clearInterval(SXYL.execute_i);
-            SXYL.execute_i = setInterval(f, SXYL.SORT.getSpeed());
+            SXYL.execute_i = setInterval(f, SXYL.SORT.getSpeed(s));
         }
     },
 

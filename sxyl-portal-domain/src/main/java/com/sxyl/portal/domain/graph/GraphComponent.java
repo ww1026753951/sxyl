@@ -59,6 +59,11 @@ public abstract class GraphComponent implements Serializable {
      */
     private List<GraphComponent> currentComponent;
 
+    /***
+     * 属性值
+     */
+    private List<Attr> attr;
+
     public boolean addCurrentComponent(GraphComponent graphComponent) {
         if(this.currentComponent==null){
             this.currentComponent = new ArrayList<GraphComponent>();
@@ -121,5 +126,13 @@ public abstract class GraphComponent implements Serializable {
 
     public void setD(Integer d) {
         this.d = d;
+    }
+
+    public List<Attr> getAttr() {
+        return attr;
+    }
+
+    public void setAttr(List<Attr> attr) {
+        this.attr = attr;
     }
 }

@@ -248,12 +248,28 @@ SXYL.DOM.moveElement = function(o){
      * @return {{x: (*|void), y: (*|void)}}
      */
     function getXY(tid) {
+
         var x = 0 ;
         var y = 0 ;
         if(tid){
             var tidOb = d3.select("#"+tid ) ;
-            x = tidOb.attr("x");
-            y = tidOb.attr("y");
+
+            // debugger
+
+            // if(tid =="MJMATHI-62"){
+            //     debugger
+            // }
+            // if(!x){
+            //
+            //     var cob = document.getElementById("MJMATHI-62").getBoundingClientRect();
+            //     x = cob.x;
+            //     y = cob.y;
+            // }else{
+                x = tidOb.attr("x");
+                y = tidOb.attr("y");
+            // }
+
+
         }
 
         return {x:x,y:y}

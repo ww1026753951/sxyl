@@ -19,6 +19,7 @@
 
 
     <script src="/js/sxyl.graph.js"></script>
+    <script src="/js/sort/sort-common.js"></script>
     <script src="/js/animation/animation.base.js"></script>
 
     <script src="/js/math/MathJax.js?config=TeX-MML-AM_SVG"></script>
@@ -35,6 +36,9 @@
         body{
             font-size: 90%;
         }
+        text{
+            font-size: 95%;
+        }
         tspan{
             font-size: 80%;
         }
@@ -42,23 +46,28 @@
         .sidebar-sticky a:hover{
             background: #C0C0C0;
         }
+        .modal {
+            top: -50px;
+            left: -600px;
+        }
+        sub, sup {
+            font-size: 30%;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline;
+        }
+        sub {  bottom: -0.5em; }
+        sup {
+            left: -0.5em;
+            /*top: 0.5em;*/
+        }
     </style>
 </head>
 
 <body>
-##<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-##    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">动效算法-DNN</a>
-####    <input id="array-content" class="form-control form-control-dark w-40" type="text" placeholder="自定义排序数组,逗号分隔。为空时使用随机数" aria-label="Search">
-##    <ul class="navbar-nav px-3">
-##        <li class="nav-item text-nowrap">
-##            <a id="enterInit" class="nav-link" href="javascript:void(0)" >确认</a>
-##        </li>
-##    </ul>
-##</nav>
 
 <div class="container-fluid">
     <div class="row">
-sa
         <main role="main" class="col-md-12" style="padding-top:10px">
             <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
             <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
@@ -69,20 +78,29 @@ sa
         </div>
         </div>
 
-        ##            执行面板的文件引入
-##            #parse("screen/execute-panel.vm")
-
-
         ##操作面板的vm模块
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-0 pb-2 mb-1 border-bottom">
                 <div class="btn-toolbar mb-2 mb-md-0  col-md-2">
                     <div class="btn-group mr-2">
+
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#myModal">
+##                            <svg  xmlns="http://www.w3.org/2000/svg" width="15" height="15"  viewBox="0 0 8 8">
+##                                <path d="M3 0c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm-1.5 2.5c-.83 0-1.5.67-1.5 1.5h1c0-.28.22-.5.5-.5s.5.22.5.5-1 1.64-1 2.5c0 .86.67 1.5 1.5 1.5s1.5-.67 1.5-1.5h-1c0 .28-.22.5-.5.5s-.5-.22-.5-.5c0-.36 1-1.84 1-2.5 0-.81-.67-1.5-1.5-1.5z" transform="translate(2)"/>
+##                            </svg>
+                            <span>概述</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary">
+                            <span>当前步骤公式详解</span>
+                        </button>
+                        &nbsp;&nbsp;
                         <button class="btn btn-sm btn-outline-secondary" id="run">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
                                 <path id="play-path" d="M0 0v6l6-3-6-3z" transform="translate(1 1)" />
                             </svg>
                             <span id="run-pause" run-type="0">播放</span>
                         </button>
+
 ##                        <button class="btn btn-sm btn-outline-secondary" id="reset" >
 ##                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 8 8">
 ##                                <path d="M4 0c-2.2 0-4 1.8-4 4s1.8 4 4 4c1.1 0 2.12-.43 2.84-1.16l-.72-.72c-.54.54-1.29.88-2.13.88-1.66 0-3-1.34-3-3s1.34-3 3-3c.83 0 1.55.36 2.09.91l-1.09 1.09h3v-3l-1.19 1.19c-.72-.72-1.71-1.19-2.81-1.19z" />
@@ -130,13 +148,13 @@ sa
                         <div><p><b>FP前向传播公式</b></p></div>
 
 ##                        等号左边的  求和函数 net 为变量 ,
-                        <span>$$net^1 = W^1*X + b^1$$</span>
+                        <span>$$z^1 = W^1*X + b^1$$</span>
 ##                        等号左侧 out 为变量 ,   激活函数整体为变量  sigmoid 为变量
-                        <span>$$out^1 = sigmoid(net^1)=\frac{1}{1+e^{-net^1}}$$</span>
+                        <span>$$a^1 = sigmoid(z^1)=\frac{1}{1+e^{-z^1}}$$</span>
 
 ##                        输出层的 函数处理
-                        <span>$$net^2 = W^2*out^1 + b^2$$</span>
-                        <span>$$\hat{y} = out^2 = sigmoid(net^2)=\frac{1}{1+e^{-net^2}}$$</span>
+                        <span>$$z^2 = W^2*a^1 + b^2$$</span>
+                        <span>$$\hat{y} = a^2 = sigmoid(z^2)=\frac{1}{1+e^{-z^2}}$$</span>
 
                         <div><p><b>BP反向传播公式</b></p></div>
 ##                        等号左边的损失函数为 变量 ,
@@ -146,7 +164,6 @@ sa
                         <span>$$W^2 = W^2 - \frac{\partial Error(all)}{\partial W^2}$$</span>
 ##                        <span>$$\frac{\partial Error(Total)}{\partial W^1} = \frac{1}{m}sum_f(X;W)-y$$</span>
 
-
                         <span>$$\frac{\partial Error(all)}{\partial W^1} = \frac{\partial Error(all)}{\partial out^1}\frac{\partial out^1}{\partial net^1}\frac{\partial net^1}{\partial W^1} $$</span>
                         <span>$$W^1 = W^1 - \frac{\partial Error(all)}{\partial W^1}$$</span>
 
@@ -155,11 +172,6 @@ sa
                     <div id="step-content">
                     </div>
 
-##                    <div><p><b>伪代码</b></p></div>
-##
-##                    <div id="pseudo-code">
-##
-##                    </div>
                 </div>
             </div>
         </main>
@@ -167,17 +179,29 @@ sa
 </div>
 
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-    Launch demo modal
-</button>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered"  style="width: 800px">
-        <div class="modal-content" style="width: 800px">
+    <div class="modal-dialog modal-dialog-centered" >
+        <div class="modal-content" style="width: 1200px">
             <div class="modal-header">
                 <h4 class="js-title-step"></h4>
             </div>
-            <div class="modal-body" style="width: 800px;height: 500px">
+            <div class="modal-body" style="width: 1200px;height: 500px">
+                <div class="row d-none" data-step="0" data-title=":全连接神经网络简介">
+                    <div class="well">
+                        <div>
+                            <span>全连接层的每层的每一个结点都与上一层的所有神经单元相连:<br/></span>
+                            <span>x1:表示输入单元的名称。例:x1，代表第一个输入层神经单元。<br/></span>
+                            <span>1.00:表述输入单元的具体数值。例:1.00，代表第一个神经单元的值为1.00<br/></span>
+                        </div>
+                        <svg width="600" height="400">
+                            <circle r="40" cx="180" cy ="130" stroke="red" style="fill: white;"></circle>
+                            <text x="180" y="130" style="text-anchor: middle;">x1</text>
+                            <text x="180" y="200" style="text-anchor: middle;">1.00</text>
+                        </svg>
+                    </div>
+                </div>
+
                 <div class="row d-none" data-step="1" data-title=":输入层描述">
                     <div class="well">
                         <div>
@@ -197,13 +221,13 @@ sa
                     <div class="well">
                         <div>
                             <span>蓝色边框的圆圈为隐藏层神经单元:<br/></span>
-                            <span>z<sub>1</sub><sup>1</sup>:隐藏层神经元激活函数的输入值，即将上一层的各个神经单元输出值乘以当前层的权重后累计求和。<br/></span>
+                            <span>z<sub>1</sub><sup>1</sup>:隐藏层神经元激活函数的输入值，即将上一层的各个神经单元输出值乘以当前层的权重后累计求和。</span>
 ##                            <span>上一层的神经单元输出值：当上一层为输入层时为输入向量X的具体数值，当上一层为隐藏层时为上一层神经单元通过激活函数计算后的值，<br/></span>
                             <span>例:z<sub>1</sub><sup>1</sup>上标为层数，下标为个数。代表第一隐藏层的第一个神经单元。<br/></span>
                             <span>1.00:表示隐藏神经单元的激活函数输入的具体数值。例:1.00，代表上一层各个神经元乘以权重后求和的具体数值。<br/></span>
 ##                            <span>计算公式:$$W^1 = W^1 - \frac{\partial Error(all)}{\partial W^1}$$ <br/></span>
                             <br>
-                            <span>a<sub>1</sub><sup>1</sup>:隐藏层神经元激活函数的输出值，将z的具体数值通过激活函数<b>g(z)</b>计算结果。<br/></span>
+                            <span>a<sub>1</sub><sup>1</sup>:隐藏层神经元激活函数的输出值，将z的具体数值通过激活函数<b>g(z)</b>计算结果。</span>
                             <span>例:a<sub>1</sub><sup>1</sup>上标为层数，下标为个数。<br/></span>
                             <span>2.00:表示隐藏神经单元的激活函数计算后的输出的具体数值。例:2.00，代表通过激活函数<b>g(z)</b>计算1.00后的具体数值。<br/></span>
                         </div>
@@ -230,35 +254,35 @@ sa
                     <div class="well">
                         <div>
                             <span>绿色边框的圆圈为输出层神经单元:<br/></span>
-                            <span>z<sub>1</sub><sup>1</sup>:隐藏层神经元激活函数的输入值，即将上一层的各个神经单元输出值乘以当前层的权重后累计求和。<br/></span>
+                            <span>z<sub>1</sub><sup  style="left: -0.3em">1</sup>:隐藏层神经元激活函数的输入值，即将上一层的各个神经单元输出值乘以当前层的权重后累计求和。</span>
                         ##                            <span>上一层的神经单元输出值：当上一层为输入层时为输入向量X的具体数值，当上一层为隐藏层时为上一层神经单元通过激活函数计算后的值，<br/></span>
-                            <span>例:z<sub>1</sub><sup>1</sup>上标为层数，下标为个数。代表第一隐藏层的第一个神经单元。<br/></span>
+                            <span>例:z<sub>1</sub><sup>1</sup>上标为层数，下标为个数。代表二层的第一个神经单元。<br/></span>
                             <span>1.00:表示隐藏神经单元的激活函数输入的具体数值。例:1.00，代表上一层各个神经元乘以权重后求和的具体数值。<br/></span>
                         ##                            <span>计算公式:$$W^1 = W^1 - \frac{\partial Error(all)}{\partial W^1}$$ <br/></span>
                             <br>
-                            <span>a<sub>1</sub><sup>1</sup>:隐藏层神经元激活函数的输出值，即将z的具体数值通过激活函数<b>g(z)</b>计算结果。<br/></span>
+                            <span>a<sub>1</sub><sup>1</sup>:隐藏层神经元激活函数的输出值，即将z的具体数值通过激活函数<b>g(z)</b>计算结果。</span>
                             <span>例:a<sub>1</sub><sup>1</sup>上标为层数，下标为个数。<br/></span>
                             <span>2.00:表示隐藏神经单元的激活函数计算后的输出的具体数值。例:2.00，代表通过激活函数<b>g(z)=g(1.00)=2.00</b>计算后的具体数值。<br/></span>
 
                             <br>
                             <span>y=1:此样本的实际值。例:y=1,代表此样本的实际值为1。<br/></span>
-                            <span>3.00:表示输出层的神经单元根据损失函数 通过实际值和预测值的计算结果。例:3.00为通过损失函数<b>Cost(y,y&#x0302)=Cost(1.00,2.00)=3.00</b>的具体数值。<br/></span>
+                            <span>3.00:表示输出层的神经单元根据损失函数的计算结果，损失函数方法入参为单个样本的实际值和预测值，输出为损失函数的结算结果。例:3.00为通过损失函数<b>Cost(y,y&#x0302)=Cost(1.00,2.00)=3.00</b>的具体数值。<br/></span>
 
                         </div>
                         <svg width="600" height="260">
 
                             <circle cx="180" cy="130" r="60" stroke="blue" style="fill: white;"></circle>
-                            <text x="150" y="130" style="text-anchor: middle;">z<tspan dx="0" dy="0" style="baseline-shift: super;">1</tspan><tspan dx="-6" dy="0" style="baseline-shift: sub;">1</tspan></text>
+                            <text x="150" y="130" style="text-anchor: middle;">z<tspan dx="0" dy="0" style="baseline-shift: super;">2</tspan><tspan dx="-6" dy="0" style="baseline-shift: sub;">1</tspan></text>
 
                             <text x="150" y="220" style="text-anchor: middle;">1.00</text>
 
-                            <text x="210" y="130" style="text-anchor: middle;">a<tspan dx="0" dy="0" style="baseline-shift: super;">1</tspan><tspan dx="-6" dy="0" style="baseline-shift: sub;">1</tspan></text>
+                            <text x="210" y="130" style="text-anchor: middle;">a<tspan dx="0" dy="0" style="baseline-shift: super;">2</tspan><tspan dx="-6" dy="0" style="baseline-shift: sub;">1</tspan></text>
 
                             <text x="210" y="220" style="text-anchor: middle;">2.00</text>
                             <line x1="180" y1="70" x2="180" y2="190" style="stroke:rgb(99,99,99);"></line>
 
                             <text x="260" y="130" style="text-anchor: start;">y=1</text>
-                            <text x="260" y="220" style="text-anchor: start;">0.01</text>
+                            <text x="260" y="220" style="text-anchor: start;">3.00</text>
                         </svg>
                     </div>
 
@@ -282,33 +306,15 @@ sa
 
 <script>
 
-
+    var play_first = true ;
     //播放的事件
     $('#run').bind('click', function () {
-        SXYL.SORT.run(SXYL.SORT.switchSortFunction(1), SXYL.SORT.getSpeed())
+        SXYL.SORT.run(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.speed));
     });
 
-    $.ajax({
-        type: 'POST',
-        url: "/ml/dnnConstruct",
-        success: function (d) {
-            var parent = SXYL.GRAPH.getContext();
-            //初始化dom结构
-            SXYL.GRAPH.initPosition();
-            SXYL.GRAPH.drawByComponent(parent , d.group);
-
-            //初始化公式结构
-            SXYL.ANIMATION.cleanFormulaStep();
-            SXYL.ANIMATION.initFormulaStep(d.fa);
-
-            //执行步骤
-            SXYL.GRAPH.initPosition();
-            SXYL.ANIMATION.ALL_STEP = d.at;
-            SXYL.execute_i = setInterval(SXYL.ANIMATION.executeAnimation, SXYL.speed*1.2);
-
-            // SXYL.GRAPH.L(parent,"inputLayer1-0","outputLayer1-2")
-            // test_d();
-        }
+    //速度变化的事件
+    $('input[type=radio][name=speedRadioOptions]').change(function() {
+        SXYL.SORT.changeSpeed(SXYL.ANIMATION.executeAnimation, SXYL.speed);
     });
 
 
@@ -322,6 +328,85 @@ sa
     //     completeCallback: function(){},
     //     callbacks: {}
     // });
+
+    $.ajax({
+        type: 'POST',
+        url: "/ml/dnnConstruct",
+        success: function (d) {
+
+            ## var svg = d3.select("#sortAlg");
+            ## debugger
+            ## svg.append("g")
+            ##         .attr("class", "tick")
+            ##         .attr("transform", "translate(" + 50 + "," + 50  + ")")
+            ##         .append("text")
+            ##         .text("$$x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$$");
+            ## MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+
+
+
+
+        //     MathJax.Hub.Register.StartupHook("End", function() {
+        //
+        //
+        //         svg.selectAll('.tick').each(function(){
+        //
+        //             debugger
+        //             var self = d3.select(this),
+        //                     g = self.select('text>div>span>svg');
+        //             g.remove();
+        //             self.append(function(){
+        //                 return g.node();
+        //             });
+        //         }, 200);
+        //
+        //     MathJax.Hub.Queue(["Typeset", MathJax.Hub, svg.node()]);
+        //
+        // }, 1000);
+
+
+            var parent = SXYL.GRAPH.getContext();
+            //初始化dom结构
+            SXYL.GRAPH.initPosition();
+            SXYL.GRAPH.drawByComponent(parent , d.group);
+
+            //初始化公式结构
+            SXYL.ANIMATION.cleanFormulaStep();
+            SXYL.ANIMATION.initFormulaStep(d.fa);
+
+            //初始化备注描述
+            // SXYL.ANIMATION.cleanSequenceStep()
+            // SXYL.ANIMATION.initExecutionSequence(d.es);
+
+            //执行步骤
+            SXYL.GRAPH.initPosition();
+            SXYL.ANIMATION.ALL_STEP = d.at;
+
+            $('#myModal').modal('show');
+            //执行开始
+            // SXYL.execute_i = setInterval(SXYL.ANIMATION.executeAnimation, SXYL.speed*1.2);
+
+        }
+    });
+
+
+    $('#myModal').on('shown.bs.modal', function () {
+        //页面加载第一次不需要播放
+        if(play_first){
+            play_first = false;
+        }else {
+            SXYL.SORT.run(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.speed));
+        }
+
+        // window.clearInterval(SXYL.execute_i);
+    })
+
+    $('#myModal').on('hidden.bs.modal', function () {
+        // SXYL.execute_i = setInterval(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.speed));
+
+        SXYL.SORT.run(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.speed));
+        // SXYL.SORT.run(SXYL.ANIMATION.executeAnimation, );
+    })
 
 </script>
 </body>

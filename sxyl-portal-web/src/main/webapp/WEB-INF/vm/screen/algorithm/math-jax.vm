@@ -2,16 +2,16 @@
 <meta charset="utf-8">
 <style>
 
-    .axis {
-        font: 10px sans-serif;
-    }
+    /*.axis {*/
+        /*font: 10px sans-serif;*/
+    /*}*/
 
-    .axis path,
-    .axis line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-    }
+    /*.axis path,*/
+    /*.axis line {*/
+        /*fill: none;*/
+        /*stroke: #000;*/
+        /*shape-rendering: crispEdges;*/
+    /*}*/
 
 </style>
 
@@ -24,8 +24,12 @@
 ##
 ##</script>
 
-<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG' ></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_SVG' ></script>
+##<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG' ></script>
+##<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_SVG' ></script>
+
+
+<script src="/js/math/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script src="/js/math/latest.js?config=TeX-MML-AM_SVG" ></script>
 
 <script>
 
@@ -93,29 +97,22 @@
                 .attr("class", "tick")
                 .attr("transform", "translate(" + (posX + fudgeX) + "," + (posY + fudgeY)  + ")")
                 .append("text")
-                .text(
-                        function(){
-                            return d.label;
-                        }
-                );
+                .text("$$x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$$");
+                        // function(){
+                        //     return d.label;
+                        // }
+                // );
 
-        svg.append("path")
-                .attr("d", "M" + width/2 + "," + height/2 + "L" + (width/2 + x) + "," + (height/2 - y))
-                .style("stroke","steelblue")
-                .style("stroke-width","2px");
+        // svg.append("path")
+        //         .attr("d", "M" + width/2 + "," + height/2 + "L" + (width/2 + x) + "," + (height/2 - y))
+        //         .style("stroke","steelblue")
+        //         .style("stroke-width","2px");
+        debugger;
     });
-
-
 
 
     setTimeout(() => {
 
-    //     MathJax.Hub.Config({
-    //     tex2jax: {
-    //         inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-    //         processEscapes: true
-    //     }
-    // });
 
     MathJax.Hub.Register.StartupHook("End", function() {
         setTimeout(() => {
@@ -123,6 +120,7 @@
 
             svg.selectAll('.tick').each(function(){
 
+                debugger
             var self = d3.select(this),
                     g = self.select('text>div>span>svg');
             g.remove();

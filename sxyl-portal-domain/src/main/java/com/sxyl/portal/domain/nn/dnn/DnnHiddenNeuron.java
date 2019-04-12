@@ -1,46 +1,64 @@
 package com.sxyl.portal.domain.nn.dnn;
 
+import com.sxyl.portal.domain.nn.NnWeight;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
-public class DnnHiddenNeuron implements Serializable {
+public class DnnHiddenNeuron extends Neuron implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
-
-    //标识id ,用于html展示使用
-    private String id ;
-
-    //神经元下标
+    /****
+     * 神经元下标
+     */
     private Integer index;
 
-    //求和的文本id
+    /***
+     * 求和的文本id
+     */
     private String sumTextId;
 
-    //求和的文本
+    /***
+     * 求和的文本
+     */
     private String sumText;
 
-    //求和的值id
+    /***
+     * 求和的值id
+     */
     private String sumValueTextId;
 
-    //求和的值
+    /***
+     * 求和的值
+     */
     private String sumValueText;
 
-    //激活函数后的id
+    /***
+     * 激活函数后的id
+     */
     private String activationTextId;
 
-    //激活函数的文本
+    /****
+     * 激活函数的文本
+     */
     private String activationText;
 
-    //激活函数后的id
+    /***
+     * 激活函数后的id
+     */
     private String activationValueTextId;
 
-    //激活函数的文本
+    /****
+     * 激活函数的文本
+     */
     private String activationValueText;
 
-    //神经元类型
-    private Integer neuronType;
+
+    /***
+     * 神经元权重
+     */
+    private List<NnWeight> neuronWeight;
 }

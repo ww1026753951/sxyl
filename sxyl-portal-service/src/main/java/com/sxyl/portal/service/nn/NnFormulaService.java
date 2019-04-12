@@ -2,6 +2,7 @@ package com.sxyl.portal.service.nn;
 
 import com.sxyl.portal.domain.formula.MathFormulaTemplate;
 import com.sxyl.portal.domain.graph.Group;
+import com.sxyl.portal.domain.nn.dnn.param.DnnConstructParam;
 
 import java.util.List;
 
@@ -23,5 +24,5 @@ public interface NnFormulaService {
      * @param outputIds
      * @return
      */
-    Group getDnnFormulaDetailSVG(List<String> inputIds, List<List<String>> hiddenIds, List<String> outputIds);
+    Group getDnnFormulaDetailSVG(List<String> inputIds, List<List<String>> hiddenIds, List<String> outputIds , DnnConstructParam dnnConstructParam);
 }

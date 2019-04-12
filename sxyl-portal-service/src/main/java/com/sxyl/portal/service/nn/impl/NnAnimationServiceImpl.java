@@ -2,6 +2,8 @@ package com.sxyl.portal.service.nn.impl;
 
 import com.sxyl.portal.domain.d.*;
 import com.sxyl.portal.domain.d.compute.*;
+import com.sxyl.portal.domain.nn.dnn.DnnOutputNeuron;
+import com.sxyl.portal.domain.nn.dnn.param.DnnConstructParam;
 import com.sxyl.portal.service.nn.NnAnimationService;
 import com.sxyl.portal.service.nn.NnCommonService;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,7 @@ public class NnAnimationServiceImpl extends NnCommonService implements NnAnimati
 
 
     @Override
-    public AnimationTotal getNnAnimation(List<String> inputIds, List<List<String>> hiddenIds, List<String> outputIds) {
+    public AnimationTotal getNnAnimation(List<String> inputIds, List<List<String>> hiddenIds, List<String> outputIds , DnnConstructParam dnnConstructParam) {
 
         AnimationTotal total = new AnimationTotal();
 
@@ -29,9 +31,9 @@ public class NnAnimationServiceImpl extends NnCommonService implements NnAnimati
         this.addAnimation(total , firstHidden,outputIds);
 
 
-        this.addError(total , outputIds);
+        this.addError(total , dnnConstructParam , outputIds);
 
-        this.addOutWeight(total ,firstHidden , outputIds);
+        this.addOutWeight(total ,dnnConstructParam,firstHidden , outputIds);
 
 
         this.addHiddenWeight(total , inputIds , firstHidden , outputIds);
@@ -71,6 +73,7 @@ public class NnAnimationServiceImpl extends NnCommonService implements NnAnimati
                 Move moveToWeight = new Move();
                 moveToWeight.setId(copyMiddleId);
                 moveToWeight.setTid(super.getNeuronToNeuronWeightId(s, t));
+//                moveToWeight.setTid("MJMATHI-62");
                 //buffer 设置为 -50
                 moveToWeight.setBx(-50);
                 total.addComponent(moveToWeight);
@@ -157,12 +160,6 @@ public class NnAnimationServiceImpl extends NnCommonService implements NnAnimati
             total.addComponent(new ChangeContent( super.getHiddenBottomOutId(t) , super.getFormulaResultId(t)));
 
 
-//            total.addComponent(new FormulaCopy(super.getFormulaSquaredErrorId(t) , super.getFormulaId()));
-
-
-            //todo
-//                total.addComponent(new Destroy(super.getFormulaResultId(t)));
-
 
         }
 
@@ -173,29 +170,33 @@ public class NnAnimationServiceImpl extends NnCommonService implements NnAnimati
     /***
      * 增加损失函数
      * @param total
-     * @param tid
+     * @param dnnConstructParam
      */
-    private void addError(AnimationTotal total ,List<String> tid){
+    private void addError(AnimationTotal total ,DnnConstructParam dnnConstructParam , List<String> tid){
 
         int stepNo = 0 ;
-        for (String t : tid){
 
+        List<DnnOutputNeuron> outputNeuronList = dnnConstructParam.getOutputLayer().getNeurons();
+
+//        for (String t : tid){
+        for (DnnOutputNeuron dnnOutputNeuron : outputNeuronList){
+            String t = dnnOutputNeuron.getId();
             String errorId = super.getErrorTextId(t);
             //将error公式拷贝到处理逻辑中
             total.addComponent(new FormulaCopy(super.getFormulaSquaredErrorId(t) , super.getFormulaId()));
 
             //隐藏层的输出对象
-            String copyBottomNetId = this.getCopyId(super.getHiddenBottomOutId(t) ,stepNo);
+//            String copyBottomNetId = this.getCopyId(super.getHiddenBottomOutId(t) ,stepNo);
+            String copyBottomNetId = this.getCopyId(dnnOutputNeuron.getActivationValueTextId() ,stepNo);
 
-            total.addComponent(new Copy(super.getHiddenBottomOutId(t) , copyBottomNetId));
-
+//            total.addComponent(new Copy(super.getHiddenBottomOutId(t) , copyBottomNetId));
+            total.addComponent(new Copy(dnnOutputNeuron.getActivationValueTextId() , copyBottomNetId));
 
             Move etNode =new Move(copyBottomNetId , super.getSquaredErrorTargetNodeId(t)) ;
             etNode.setBx(10);
             total.addComponent(etNode);
 
             total.addComponent(new Destroy(super.getSquaredErrorTargetNodeId(t)));
-
 
             //error 底部的id
             String copyBottomOutId = this.getCopyId(super.getHiddenBottomOutId(errorId) , stepNo);
@@ -210,22 +211,16 @@ public class NnAnimationServiceImpl extends NnCommonService implements NnAnimati
             total.addComponent(new Destroy(super.getSquaredErrorErrorNodeId(t)));
 
             total.addComponent(new SquaredError( super.getFormulaResultId(t) , copyBottomNetId , copyBottomOutId));
-
-
-
             //将结算结果放入到
-            total.addComponent(new Move(super.getFormulaResultId(t) , super.getHiddenBottomOutId(errorId)));
-
+//            total.addComponent(new Move(super.getFormulaResultId(t) , super.getHiddenBottomOutId(errorId)));
+            total.addComponent(new Move(super.getFormulaResultId(t) , dnnOutputNeuron.getCostValueTextId()));
             //删除拷贝元素
             total.addComponent(new Destroy(copyBottomNetId));
             total.addComponent(new Destroy(copyBottomOutId));
-
             //变更内容,将公式计算结果替换到输出层的结果上
-            total.addComponent(new ChangeContent( super.getHiddenBottomOutId(errorId) , super.getFormulaResultId(t)));
-
+//            total.addComponent(new ChangeContent( super.getHiddenBottomOutId(errorId) , super.getFormulaResultId(t)));
+            total.addComponent(new ChangeContent(dnnOutputNeuron.getCostValueTextId() , super.getFormulaResultId(t)));
             total.addComponent(new Destroy(super.getFormulaResultId(t)));
-
-
             stepNo++;
 
         }
@@ -240,12 +235,10 @@ public class NnAnimationServiceImpl extends NnCommonService implements NnAnimati
      * @param sidList
      * @param tidList
      */
-    private void addOutWeight(AnimationTotal total , List<String> sidList ,List<String> tidList){
+    private void addOutWeight(AnimationTotal total ,DnnConstructParam dnnConstructParam, List<String> sidList ,List<String> tidList){
         int stepNo =0 ;
 
         for (String tid : tidList){
-
-
             String errorId = super.getErrorTextId(tid);
             for (String sid : sidList){
 

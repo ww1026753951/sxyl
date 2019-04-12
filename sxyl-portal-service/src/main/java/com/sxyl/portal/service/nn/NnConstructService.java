@@ -11,5 +11,5 @@ public interface NnConstructService {
      * 获取dnn结构
      * @return
      */
-    Group getDnnConstruct(List<String> inputIds,List<List<String>> hiddenIds,List<String> outputIds, DnnConstructParam dnnConstructParam);
+    Group getDnnConstruct(DnnConstructParam dnnConstructParam);
 }

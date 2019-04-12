@@ -57,18 +57,18 @@ public class NnServiceImpl implements NnService {
 
 
         // dnn结构
-        Group group =nnConstructService.getDnnConstruct(inputIds,hiddenIds,outIds,  dnnConstructParam);
+        Group group =nnConstructService.getDnnConstruct(dnnConstructParam);
         result.setGroup(group);
 
         //dnn动画
-        AnimationTotal animationTotal =nnAnimationService.getNnAnimation(inputIds,hiddenIds,outIds);
+        AnimationTotal animationTotal =nnAnimationService.getNnAnimation(inputIds,hiddenIds,outIds ,  dnnConstructParam);
         result.setAt(animationTotal);
 
         //dnn 公式部分
-        result.setMfs(nnFormulaService.getDnnFormulaTotal());
+//        result.setMfs(nnFormulaService.getDnnFormulaTotal());
 
         // dnn 公式部分
-        Group fa =nnFormulaService.getDnnFormulaDetailSVG(inputIds,hiddenIds,outIds);
+        Group fa =nnFormulaService.getDnnFormulaDetailSVG(inputIds,hiddenIds,outIds ,  dnnConstructParam);
         result.setFa(fa);
 
 

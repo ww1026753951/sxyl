@@ -133,6 +133,35 @@ SXYL.GRAPH = {
         if(SXYL.GRAPH.currentY){
             y = SXYL.GRAPH.currentY;
         }
+        // var children = document.getElementById(t).childNodes;
+        // var rect = children[children.length -1].getBoundingClientRect();
+
+        if(o.xt != undefined && o.yt != undefined){
+            var t = parent.attr("id")
+            var children = document.getElementById(t).childNodes;
+            if(children.length > 0 ){
+                var rect = children[children.length -1].getBoundingClientRect();
+                x = jQuery(children[children.length -1]).attr("x") ;
+                if(parseInt(o.xt) == 2){
+                    x = parseInt(x) + parseInt(Math.ceil(rect.width));
+                    if(o.x != undefined) {
+
+                        
+                        x = x + parseInt(o.x);
+                    }
+                }
+                y = jQuery(children[children.length -1]).attr("y") ;
+                if(parseInt(o.yt) == 2){
+                    y = parseInt(y) +  parseInt(Math.ceil(rect.height));
+                    if(o.y != undefined) {
+                        y = y + parseInt(o.y);
+                    }
+                }
+            }
+
+        }
+
+        // debugger;
         //文本的值
         var ob = parent.append("text")
             .attr("id", o.id)
@@ -142,6 +171,13 @@ SXYL.GRAPH = {
             .text(o.st); //o.st
         if(o.d){
             ob.datum(o.d);
+        }
+        //附加属性
+        if(o.attr){
+            for (var i =0 ; i <o.attr.length ; i ++){
+                var attrOb = o.attr[i];
+                ob.attr(attrOb["key"],attrOb["value"]);
+            }
         }
 
         return {ob:ob};

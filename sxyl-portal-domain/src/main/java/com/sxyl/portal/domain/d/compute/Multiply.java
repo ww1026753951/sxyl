@@ -16,7 +16,7 @@ public class Multiply extends AnimationComponent implements Serializable {
     private String tid ;
 
     /***
-     *  相加id
+     *  乘积的ids列表
      */
     private List<String> ids;
 

@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 public class NnConstructServiceImpl extends NnCommonService implements NnConstructService {
 
-    private double ratio = 1.3D;
+    private double ratio = 4.5D;
 
     //数值的 缓冲值
     private int VALUE_BUFFER = 20;
@@ -23,15 +23,22 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
     //权重的上下标的buffer
     private int WEIGHT_SUB_BUFFER = -6 ;
 
+    private int BIAS_R = 20 ;
+
+    /***
+     * 默认颜色
+     */
+    private final String BIAS_COLOR="gray";
+
 
     @Override
-    public Group getDnnConstruct(List<String> inputIds,List<List<String>> hiddenIds,List<String> outputIds, DnnConstructParam dnnConstructParam) {
-        //创建输入层 inputIds
+    public Group getDnnConstruct(DnnConstructParam dnnConstructParam) {
+        //创建输入层
         Group groupInput =  circleInput(dnnConstructParam.getDnnInputLayer());
-        //创建隐藏层  hiddenIds
+        //创建隐藏层
         Group circleHidden = circleHidden(dnnConstructParam.getDnnHiddenLayerList());
-        //创建输出层 outputIds ,
-        Group circleOutput = circleOutput(dnnConstructParam.getOutputLayer(),hiddenIds.size()+1);
+        //创建输出层  ,
+        Group circleOutput = circleOutput(dnnConstructParam.getOutputLayer(),dnnConstructParam.getDnnHiddenLayerList().size()+1);
         Group all = new Group();
         all.setMl(80);
         all.setMt(120);
@@ -39,13 +46,8 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
         all.addChild(groupInput);
         all.addChild(circleHidden);
         all.addChild(circleOutput);
-        //误差项的值
-//        all.addChild(createError(outputIds));
-
-        //todo
-        all.addChild(lineList(inputIds,hiddenIds.get(0) ,1));
-//        start = start + inputIds.size()* hiddenIds.get(0).size();
-        all.addChild(lineList(hiddenIds.get(0),outputIds,hiddenIds.size() + 1));
+        //创建线的模块
+        all.addChild(lineList(dnnConstructParam));
 
 
         return all;
@@ -61,29 +63,39 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
      * @return
      */
     private Group circleInput(DnnInputLayer dnnInputLayer){
-        int r = 40 ;
+        int r = 30 ;
         Group group = new Group();
         group.setCompose(ComponentCompositeEnum.VERTICAL.getType());
+        group.setMl(20);
+
 
         List<DnnInputNeuron> list = dnnInputLayer.getNeurons();
         for (int i=0;i< list.size();i++){
             DnnInputNeuron dnnInputNeuron = list.get(i);
-
             Circle circle = new Circle(dnnInputNeuron.getId(), r ,"red");
-//            circle.setId();
-            circle.setMt(40);
-
-            if(i==0){
-                circle.setMl(35);
-            }
+            circle.setMt(50);
             //圆心的文本
-            circle.addCurrentComponent(new Text(dnnInputNeuron.getTextId() , 0,0,dnnInputNeuron.getText() ,ShowTextPositionEnum.MIDDLE.getCode() ));
+            circle.addCurrentComponent(addSubAndSup(
+                    new Text(dnnInputNeuron.getTextId() , 0,0,dnnInputNeuron.getText() ,ShowTextPositionEnum.MIDDLE.getCode() ), null,dnnInputNeuron.getIndex().toString()));
 
+            //圆心的文本id
             circle.addCurrentComponent(new Text(dnnInputNeuron.getValueTextId(), 0,r + VALUE_BUFFER,
                     dnnInputNeuron.getValueText(),ShowTextPositionEnum.MIDDLE.getCode()));
 
             group.addChild(circle);
         }
+
+        //bias的偏置量
+        DnnBiasNeuron dnnBiasNeuron = dnnInputLayer.getDnnBiasNeuron();
+        Circle circleBias = new Circle(dnnBiasNeuron.getId(), BIAS_R ,BIAS_COLOR);
+        circleBias.setMt(15);
+//        circleBias.setMl(40);
+        //圆心的文本
+        circleBias.addCurrentComponent(new Text(dnnBiasNeuron.getTextId() , 0,0,dnnBiasNeuron.getText() ,ShowTextPositionEnum.MIDDLE.getCode() ));
+
+        circleBias.addCurrentComponent(new Text(dnnBiasNeuron.getValueTextId(), 0,r + VALUE_BUFFER/3,
+                dnnBiasNeuron.getValueText(),ShowTextPositionEnum.MIDDLE.getCode()));
+        group.addChild(circleBias);
 
         return group;
     }
@@ -95,8 +107,7 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
      * @return
      */
     private Group circleHidden(List<DnnHiddenLayer> hiddenLayers){
-
-        int r = 60;
+        int r = 35;
         Group group = new Group();
         group.setMl(300);
         group.setMt(-40);
@@ -104,13 +115,16 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
 
         for (int i = 0;i< hiddenLayers.size();i++){
             DnnHiddenLayer dnnHiddenLayer = hiddenLayers.get(i);
+
+
+
             for (int j=0;j< dnnHiddenLayer.getNeurons().size();j++){
                 DnnHiddenNeuron dnnHiddenNeuron = dnnHiddenLayer.getNeurons().get(j) ;
                 Circle circle = new Circle(dnnHiddenNeuron.getId(), r ,"blue");
 //                circle.setId();
-                circle.setMt(60);
+                circle.setMt(50);
                 if(j==0){
-                    circle.setMl(35);
+
                 }
 
                 //圆心的文本 , net 单元 ,sum的文本
@@ -134,20 +148,31 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
                 circle.addCurrentComponent(new Line(LineTypeEnum.POSITION.getCode(),0,-r,0,r));
                 group.addChild(circle);
             }
+
+            //bias的偏置量
+            DnnBiasNeuron dnnBiasNeuron = dnnHiddenLayer.getDnnBiasNeuron();
+            Circle circleBias = new Circle(dnnBiasNeuron.getId(), BIAS_R ,BIAS_COLOR);
+            circleBias.setMt(30);
+//            circleBias.setMl(40);
+            //圆心的文本
+            circleBias.addCurrentComponent(new Text(dnnBiasNeuron.getTextId() , 0,0,dnnBiasNeuron.getText() ,ShowTextPositionEnum.MIDDLE.getCode() ));
+            circleBias.addCurrentComponent(new Text(dnnBiasNeuron.getValueTextId(), 0,r + VALUE_BUFFER/3,
+                    dnnBiasNeuron.getValueText(),ShowTextPositionEnum.MIDDLE.getCode()));
+            group.addChild(circleBias);
+
+
         }
         return group;
     }
 
     /****
-     * 创建输出层的结构  List<String> outputIdsc ,
+     * 创建输出层的结构   ,
      * @return
      */
     private Group circleOutput( DnnOutputLayer dnnOutputLayer ,Integer layerNo){
-
-        int r = 60;
+        int r = 35;
         Group group = new Group();
         group.setMl(300);
-        group.setMt(-20);
         group.setCompose(ComponentCompositeEnum.VERTICAL.getType());
 
 
@@ -157,14 +182,10 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
             dnnOutputNeuron = list.get(i);
             String outId = dnnOutputNeuron.getId();
             Circle circle = new Circle(outId , r, "green");
-//            circle.setId(outId);
-//            circle.setSt("O"+(i+1));
 
             circle.setMt(50);
             if(i==0){
                 circle.setMl(55);
-//            }else{
-//                circle.setMt(60);
             }
             //半径
 
@@ -204,127 +225,116 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
         return group;
     }
 
-
-    /***
-     * 创建误差值
-     * @param outputIds
-     * @return
-     */
-//    private Group createError(List<String> outputIds){
-//
-//        int r = 60;
-//        Group group = new Group();
-//        group.setMl(100);
-//        group.setMt(10);
-//        group.setCompose(ComponentCompositeEnum.VERTICAL.getType());
-//        for (int i=0;i< outputIds.size();i++){
-//            String errorId = super.getErrorTextId(outputIds.get(i));
-//            Circle circle = new Circle();
-//            circle.setId(errorId);
-//
-//            circle.setMt(50);
-//            if(i==0){
-//                circle.setMl(55);
-//            }
-//            //半径
-//            circle.setR(r);
-//            circle.setS("green");
-//
-//            //圆心的文本 , net 单元
-//            Text t = new Text();
-//            t.setId(super.getTextId(errorId , super.NET_ID) );
-//            t.setSt(super.getTargetNetText(new Integer(i+1).toString()));
-//            t.setX(0);
-//            t.setY(0);
-//            t.setSts(ShowTextPositionEnum.MIDDLE.getCode());
-//            circle.addCurrentComponent(t);
-//
-//
-//            //圆心的文本 , 底部的损失函数
-//            Text tBottom = new Text();
-//            tBottom.setId(super.getHiddenBottomOutId(errorId) );
-//            tBottom.setSt(super.getErrorText(new Integer(i+1).toString())+"=???");
-//            tBottom.setD(new Integer(i+1));
-//            tBottom.setX(0);
-//            tBottom.setY(r + VALUE_BUFFER);
-//            tBottom.setSts(ShowTextPositionEnum.MIDDLE.getCode());
-//            circle.addCurrentComponent(tBottom);
-//
-//
-//            group.addChild(circle);
-//        }
-//        return group;
-//
-//    }
-
-
     /****
      * 创建 层与层之间的线,权重的线
-     * @param sid
-     * @param tid
+     * @param dnnConstructParam
      * @return
      */
-    private Group lineList(List<String> sid,List<String> tid ,int layerNo){
+    private Group lineList(DnnConstructParam dnnConstructParam){
         Group group = new Group();
-        for (int i = 0 ; i<tid.size() ; i++){
-            String t = tid.get(i);
-            for (int j = 0 ; j < sid.size() ; j ++ ){
-                String s = sid.get(j);
-                Line l = new Line();
-                l.setId(s +"-"+ t);
-                l.setSid(s);
-                l.setTid(t);
-                l.setLpt(new Integer[]{LinePositionEnum.RADIUS.getCode(),
-                        LinePositionEnum.CIRCLE_CENTER.getCode(),
-                        LinePositionEnum.RADIUS.getCode(),
-                        LinePositionEnum.CIRCLE_CENTER.getCode()});
 
+        List<DnnHiddenLayer> hiddenList = dnnConstructParam.getDnnHiddenLayerList();
 
-                //线上的文本
-                Text text = new Text();
-                //权重的id
-                text.setId(super.getNeuronToNeuronWeightId(s,t));
-                text.setSt(super.getWeightText(""));
-                text.setX(0);
-                text.setY(0);
-                text.setRatio(ratio);
-                text.setSts(ShowTextPositionEnum.MIDDLE.getCode());
+        //输入层的输入单元列表
+        List<DnnInputNeuron> inputNeuronList = dnnConstructParam.getDnnInputLayer().getNeurons();
 
-                //增加上下标
-                text = this.addSubAndSup(text, layerNo + "" , (i+1)+""+(j+1));
-//                text.addChild(new TSPAN("" + layerNo , BaselineShiftEnum.LINE_SUPER.getCode() , 0 ,5));
-//                text.addChild(new TSPAN(,BaselineShiftEnum.LINE_SUB.getCode() , WEIGHT_SUB_BUFFER , -5 ));
-//                text.addCurrentComponent()
+        //隐藏层的首层列表
+        List<DnnHiddenNeuron> firstHiddenNeuronList = hiddenList.get(0).getNeurons();
 
-                //线上的文本
-                Text textEqual = new Text();
-                //权重的id
-                textEqual.setId(super.getNeuronToNeuronWeightId(s,t));
-                textEqual.setSt("=");
-                textEqual.setX(0);
-                textEqual.setY(0);
-                textEqual.setMl(25);
-                textEqual.setRatio(ratio);
-                textEqual.setSts(ShowTextPositionEnum.MIDDLE.getCode());
+        //隐藏层的最后一层列表
+        List<DnnHiddenNeuron> lastHiddenNeuronList = hiddenList.get(hiddenList.size()-1).getNeurons();
 
-                //线上的文本
-                Text textValue = new Text();
-                textValue.setId(super.getNeuronToNeuronWeightValue(s,t));
-                textValue.setSt(new DecimalFormat("#.00").format(Math.random()) );
-                textValue.setMl(50);
-                textValue.setRatio(ratio);
-                textValue.setSts(ShowTextPositionEnum.MIDDLE.getCode());
+        //输出层的单元列表
+        List<DnnOutputNeuron> outputNeuronList = dnnConstructParam.getOutputLayer().getNeurons();
 
-                l.addCurrentComponent(text);
+        //创建输入层到第一个隐藏层的线
+        DnnBiasNeuron inputBias = dnnConstructParam.getDnnInputLayer().getDnnBiasNeuron();
+        for (DnnHiddenNeuron dhn : firstHiddenNeuronList){
+            for (DnnInputNeuron din : inputNeuronList){
+                Line l = this.createLine(din.getId() ,din.getIndex() ,dhn.getId(), dhn.getIndex() , 1);
+                group.addChild(l);
+            }
 
-                l.addCurrentComponent(textEqual);
+//            Line l = this.createLine(inputBias.getId() ,0 ,dhn.getId(), dhn.getIndex() , 1);
 
-                l.addCurrentComponent(textValue);
+//            group.addChild(l);
+        }
 
+        // 创建隐藏层到隐藏层的线，但是暂时没有
+        if(hiddenList.size()>1){
+
+        }
+
+        //创建最后一个隐藏层到输出层的线
+        for (DnnHiddenNeuron dhn: lastHiddenNeuronList){
+            for (DnnOutputNeuron don : outputNeuronList){
+                Line l = this.createLine(dhn.getId(), dhn.getIndex() , don.getId() ,don.getIndex() ,hiddenList.size() + 1);
                 group.addChild(l);
             }
         }
+
+
+//        for (int i = 0 ; i<tid.size() ; i++){
+//            String t = tid.get(i);
+//            for (int j = 0 ; j < sid.size() ; j ++ ){
+//                String s = sid.get(j);
+//                Line l = this.createLine(s ,j,t,i , layerNo);
+//                group.addChild(l);
+//            }
+//        }
         return group;
+    }
+
+    private Line createLine(String s ,int sindex ,  String t ,int tindex, int layerNo){
+        Line l = new Line();
+        l.setId(s +"-"+ t);
+        l.setSid(s);
+        l.setTid(t);
+        l.setLpt(new Integer[]{LinePositionEnum.RADIUS.getCode(),
+                LinePositionEnum.CIRCLE_CENTER.getCode(),
+                LinePositionEnum.RADIUS.getCode(),
+                LinePositionEnum.CIRCLE_CENTER.getCode()});
+
+
+        //线上的文本
+        Text text = new Text();
+        //权重的id
+        text.setId(super.getNeuronToNeuronWeightId(s,t));
+        text.setSt(super.getWeightText(""));
+        text.setX(0);
+        text.setY(0);
+        text.setRatio(ratio);
+        text.setSts(ShowTextPositionEnum.MIDDLE.getCode());
+
+        //增加上下标
+        text = this.addSubAndSup(text, layerNo + "" , (tindex)+""+(sindex));
+
+        //线上的等号文本
+        Text textEqual = new Text();
+        //权重的id
+        textEqual.setId(super.getNeuronToNeuronWeightId(s,t));
+        textEqual.setSt("=");
+        textEqual.setX(0);
+        textEqual.setY(0);
+        textEqual.setMl(25);
+        textEqual.setRatio(ratio);
+        textEqual.setSts(ShowTextPositionEnum.MIDDLE.getCode());
+
+        //线上的文本
+        Text textValue = new Text();
+        textValue.setId(super.getNeuronToNeuronWeightValue(s,t));
+        textValue.setSt(new DecimalFormat("#0.00").format(Math.random()) );
+        textValue.setMl(50);
+        textValue.setRatio(ratio);
+        textValue.setSts(ShowTextPositionEnum.MIDDLE.getCode());
+
+        l.addCurrentComponent(text);
+
+        l.addCurrentComponent(textEqual);
+
+        l.addCurrentComponent(textValue);
+
+        return l ;
     }
 
     /****
@@ -334,9 +344,13 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
      * @param sub 下标
      * @return
      */
-    private Text addSubAndSup(Text t , String sup , String sub){
-        t.addChild(new TSPAN(sup, BaselineShiftEnum.LINE_SUPER.getCode() , 0 ,0));
-        t.addChild(new TSPAN(sub,BaselineShiftEnum.LINE_SUB.getCode() , WEIGHT_SUB_BUFFER , 0 ));
-        return t ;
-    }
+//    private Text addSubAndSup(Text t , String sup , String sub){
+//        if(sub != null){
+//            t.addChild(new TSPAN(sub,BaselineShiftEnum.LINE_SUB.getCode() , 0 , 0 ));
+//        }
+//        if(sup!=null){
+//            t.addChild(new TSPAN(sup, BaselineShiftEnum.LINE_SUPER.getCode() , WEIGHT_SUB_BUFFER ,0));
+//        }
+//        return t ;
+//    }
 }
