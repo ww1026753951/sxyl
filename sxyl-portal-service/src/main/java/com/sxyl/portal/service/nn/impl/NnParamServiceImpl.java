@@ -267,10 +267,16 @@ public class NnParamServiceImpl extends NnCommonService implements NnParamServic
 
 //            errorId , super.NET_ID)
             dnnOutputNeuron.setActualTextId(TEXT_NAME_ID + getErrorTextId(id) + super.NET_ID);
-            dnnOutputNeuron.setActualText("y=" + index);
+            dnnOutputNeuron.setActualText("y" + index);
+            dnnOutputNeuron.setActualValueTextId(TEXT_NAME_ID + getErrorTextId(id)+"-VALUE-" + super.NET_ID);
+            dnnOutputNeuron.setActualValueText(index.toString());
 
-            dnnOutputNeuron.setCostValueTextId(TEXT_NAME_ID + BOTTOM + getErrorTextId(id) + OUT_ID );
-            dnnOutputNeuron.setCostValueText("error"+index+"=???");
+
+            dnnOutputNeuron.setCostTextId(TEXT_NAME_ID + BOTTOM + getErrorTextId(id) + OUT_ID );
+            dnnOutputNeuron.setCostText("error"+index+"=");
+            dnnOutputNeuron.setCostValueTextId(TEXT_NAME_ID + BOTTOM + getErrorTextId(id)+"-VALUE-" + OUT_ID );
+            dnnOutputNeuron.setCostValueText("????" );
+
 
             dnnOutputNeuron.setNeuronWeight(createOutHiddenWeight(dnnHiddenLayer , dnnOutputNeuron));
 

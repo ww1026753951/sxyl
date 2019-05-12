@@ -72,6 +72,27 @@ public class DnnOutputNeuron extends Neuron  implements Serializable {
      */
     private String actualTextId;
 
+
+    /****
+     * 实际值的文本的值
+     */
+    private String actualValueText;
+
+    /***
+     * 实际值的文本的id
+     */
+    private String actualValueTextId;
+
+    /****
+     * 损失值,误差值
+     */
+    private String costText;
+
+    /***
+     * 损失值误差项的文本id
+     */
+    private String costTextId;
+
     /****
      * 损失值,误差值
      */

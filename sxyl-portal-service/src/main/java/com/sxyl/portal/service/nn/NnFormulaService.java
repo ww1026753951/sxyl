@@ -1,6 +1,6 @@
 package com.sxyl.portal.service.nn;
 
-import com.sxyl.portal.domain.formula.MathFormulaTemplate;
+import com.sxyl.portal.domain.graph.MathFormula;
 import com.sxyl.portal.domain.graph.Group;
 import com.sxyl.portal.domain.nn.dnn.param.DnnConstructParam;
 
@@ -14,7 +14,7 @@ public interface NnFormulaService {
      * 总公式
      * @return
      */
-    List<MathFormulaTemplate> getDnnFormulaTotal();
+    List<MathFormula> getDnnFormulaTotal();
 
 
     /****

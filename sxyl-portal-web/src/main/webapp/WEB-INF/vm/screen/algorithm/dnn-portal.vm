@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="思想摇篮 动画算法 算法动画">
+    <meta name="author" content="谷禾水">
     <link rel="icon" href="/favicon.ico">
     <title>动画算法,算法动画,排序</title>
     <!-- Bootstrap core CSS -->
@@ -15,15 +15,15 @@
     <script src="/js/d3/d3.min.js"></script>
     <script src="/js/sxyl.min.js"></script>
     <script src="/js/jquery/jquery-3.2.1.min.js" ></script>
-    <script src="/js/sxyl.js"></script>
+    <script src="/js/sxyl.min.js"></script>
 
 
-    <script src="/js/sxyl.graph.js"></script>
-    <script src="/js/sort/sort-common.js"></script>
-    <script src="/js/animation/animation.base.js"></script>
+    <script src="/js/sxyl.graph.min.js"></script>
+    <script src="/js/sort/sort-common.min.js"></script>
+    <script src="/js/animation/animation.base.min.js"></script>
 
     <script src="/js/math/MathJax.js?config=TeX-MML-AM_SVG"></script>
-    <script src="/js/math/latest.js?config=TeX-MML-AM_SVG" ></script>
+##    <script src="/js/math/latest.js?config=TeX-MML-AM_SVG1" ></script>
 
 
     <script src="/js/vendor/popper.min.js" ></script>
@@ -139,6 +139,12 @@
             <div id="algorithm-content" class="row">
                 <div id="graph-content" class="col-lg-9 col-sm-9 ">
                     <svg width="1200" height="600" id="sortAlg">
+                        <foreignObject id="foreign_formula_object" x="5" y = "0"  width="1200" height="200" >
+                            <div id="formula_object">
+
+                            </div>
+                        </foreignObject>
+
                         <g id="formula_id">
                         </g>
                     </svg>
@@ -168,6 +174,7 @@
                         <span>$$W^1 = W^1 - \frac{\partial Error(all)}{\partial W^1}$$</span>
 
 
+
                     </div>
                     <div id="step-content">
                     </div>
@@ -187,20 +194,20 @@
                 <h4 class="js-title-step"></h4>
             </div>
             <div class="modal-body" style="width: 1200px;height: 500px">
-                <div class="row d-none" data-step="0" data-title=":全连接神经网络简介">
-                    <div class="well">
-                        <div>
-                            <span>全连接层的每层的每一个结点都与上一层的所有神经单元相连:<br/></span>
-                            <span>x1:表示输入单元的名称。例:x1，代表第一个输入层神经单元。<br/></span>
-                            <span>1.00:表述输入单元的具体数值。例:1.00，代表第一个神经单元的值为1.00<br/></span>
-                        </div>
-                        <svg width="600" height="400">
-                            <circle r="40" cx="180" cy ="130" stroke="red" style="fill: white;"></circle>
-                            <text x="180" y="130" style="text-anchor: middle;">x1</text>
-                            <text x="180" y="200" style="text-anchor: middle;">1.00</text>
-                        </svg>
-                    </div>
-                </div>
+##                <div class="row d-none" data-step="0" data-title=":全连接神经网络简介">
+##                    <div class="well">
+##                        <div>
+##                            <span>全连接层的每层的每一个结点都与上一层的所有神经单元相连:<br/></span>
+##                            <span>x1:表示输入单元的名称。例:x1，代表第一个输入层神经单元。<br/></span>
+##                            <span>1.00:表述输入单元的具体数值。例:1.00，代表第一个神经单元的值为1.00<br/></span>
+##                        </div>
+##                        <svg width="600" height="400">
+##                            <circle r="40" cx="180" cy ="130" stroke="red" style="fill: white;"></circle>
+##                            <text x="180" y="130" style="text-anchor: middle;">x1</text>
+##                            <text x="180" y="200" style="text-anchor: middle;">1.00</text>
+##                        </svg>
+##                    </div>
+##                </div>
 
                 <div class="row d-none" data-step="1" data-title=":输入层描述">
                     <div class="well">
@@ -254,14 +261,14 @@
                     <div class="well">
                         <div>
                             <span>绿色边框的圆圈为输出层神经单元:<br/></span>
-                            <span>z<sub>1</sub><sup  style="left: -0.3em">1</sup>:隐藏层神经元激活函数的输入值，即将上一层的各个神经单元输出值乘以当前层的权重后累计求和。</span>
+                            <span>z<sub>1</sub><sup>2</sup>:输出层神经元激活函数的输入值，即将上一层的各个神经单元输出值乘以当前层的权重后累计求和。</span>
                         ##                            <span>上一层的神经单元输出值：当上一层为输入层时为输入向量X的具体数值，当上一层为隐藏层时为上一层神经单元通过激活函数计算后的值，<br/></span>
-                            <span>例:z<sub>1</sub><sup>1</sup>上标为层数，下标为个数。代表二层的第一个神经单元。<br/></span>
+                            <span>例:z<sub>1</sub><sup>2</sup>上标为层数，下标为个数。代表二层的第一个神经单元。<br/></span>
                             <span>1.00:表示隐藏神经单元的激活函数输入的具体数值。例:1.00，代表上一层各个神经元乘以权重后求和的具体数值。<br/></span>
                         ##                            <span>计算公式:$$W^1 = W^1 - \frac{\partial Error(all)}{\partial W^1}$$ <br/></span>
                             <br>
-                            <span>a<sub>1</sub><sup>1</sup>:隐藏层神经元激活函数的输出值，即将z的具体数值通过激活函数<b>g(z)</b>计算结果。</span>
-                            <span>例:a<sub>1</sub><sup>1</sup>上标为层数，下标为个数。<br/></span>
+                            <span>a<sub>1</sub><sup>2</sup>:输出层神经元激活函数的输出值，即将z的具体数值通过激活函数<b>g(z)</b>计算结果，此结果也称为预测值y&#x0302。</span>
+                            <span>例:a<sub>1</sub><sup>2</sup>上标为层数，下标为个数。<br/></span>
                             <span>2.00:表示隐藏神经单元的激活函数计算后的输出的具体数值。例:2.00，代表通过激活函数<b>g(z)=g(1.00)=2.00</b>计算后的具体数值。<br/></span>
 
                             <br>
@@ -271,7 +278,7 @@
                         </div>
                         <svg width="600" height="260">
 
-                            <circle cx="180" cy="130" r="60" stroke="blue" style="fill: white;"></circle>
+                            <circle cx="180" cy="130" r="60" stroke="green" style="fill: white;"></circle>
                             <text x="150" y="130" style="text-anchor: middle;">z<tspan dx="0" dy="0" style="baseline-shift: super;">2</tspan><tspan dx="-6" dy="0" style="baseline-shift: sub;">1</tspan></text>
 
                             <text x="150" y="220" style="text-anchor: middle;">1.00</text>

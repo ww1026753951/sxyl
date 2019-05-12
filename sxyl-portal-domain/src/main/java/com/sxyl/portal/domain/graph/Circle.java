@@ -14,6 +14,18 @@ import java.util.List;
 public class Circle extends GraphComponent implements Serializable {
     private static final long serialVersionUID = 1L;
 
+
+
+    /****
+     * x 的位置
+     */
+    private Integer x;
+
+    /****
+     * y 的位置
+     */
+    private Integer y;
+
     /****
      * 圆的半径
      * radius
@@ -72,6 +84,22 @@ public class Circle extends GraphComponent implements Serializable {
 
     public void setF(String f) {
         this.f = f;
+    }
+
+    public Integer getX() {
+        return x;
+    }
+
+    public void setX(Integer x) {
+        this.x = x;
+    }
+
+    public Integer getY() {
+        return y;
+    }
+
+    public void setY(Integer y) {
+        this.y = y;
     }
 
     @Override

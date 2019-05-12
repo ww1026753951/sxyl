@@ -20,10 +20,12 @@ public class ComputeOutWeight extends AnimationComponent implements Serializable
     private String tid ;
 
 
+    private String weight;
+
     /***
-     * 目标id
+     * 目实际值
      */
-    private String targetId;
+    private String actual;
 
     /***
      * 输出层输出
@@ -36,6 +38,13 @@ public class ComputeOutWeight extends AnimationComponent implements Serializable
      */
     private String outh;
 
+    public ComputeOutWeight(String tid, String weight, String actual, String outo, String outh) {
+        this.tid = tid;
+        this.weight = weight;
+        this.actual = actual;
+        this.outo = outo;
+        this.outh = outh;
+    }
 
     public String getTid() {
         return tid;
@@ -45,12 +54,20 @@ public class ComputeOutWeight extends AnimationComponent implements Serializable
         this.tid = tid;
     }
 
-    public String getTargetId() {
-        return targetId;
+    public String getWeight() {
+        return weight;
     }
 
-    public void setTargetId(String targetId) {
-        this.targetId = targetId;
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public String getActual() {
+        return actual;
+    }
+
+    public void setActual(String actual) {
+        this.actual = actual;
     }
 
     public String getOuto() {

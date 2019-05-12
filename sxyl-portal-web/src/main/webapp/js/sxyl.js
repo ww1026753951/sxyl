@@ -67,7 +67,52 @@ SXYL={
     // d3:{},
     DOM:{
         defaultY: 240 , //默认y轴坐标
-        defaultSpaceX: 50//默认y轴坐标
+        defaultSpaceX: 50,//默认y轴坐标
+        tagName:{
+            "text":{x:"x",y:"y"},
+            "circle":{x:"cx",y:"cy"},
+        },
+        getXY:function (id,xyOb) {
+            var x = 0 ;
+            var y = 0 ;
+            if(id){
+                var tidOb = d3.select("#" + id ) ;
+                if(xyOb){
+                    x = tidOb.attr(xyOb.x);
+                    y = tidOb.attr(xyOb.y);
+                }else {
+                    x = tidOb.attr("x");
+                    y = tidOb.attr("y");
+                }
+            }
+            return {x:x,y:y}
+
+        }
+    },
+    formula:{
+
+        oid:"foreign_formula_object",
+        result_value :"result_value",
+        replaceStart:"!re_s!",
+        replaceEnd:"!re_e!",
+        checkFormula : function (t) {
+            if(t==SXYL.formula.oid){
+                return true ;
+            }else {
+                return false ;
+            }
+        },
+        setResult : function (v) {
+            var formula = $("#formula_object");
+            //此次计算的值放在attr中
+            formula.attr(SXYL.formula.result_value , v);
+        },
+        getResult : function () {
+            var formula = $("#formula_object");
+            //此次计算的值放在attr中
+            return formula.attr(SXYL.formula.result_value);
+        },
+
     }
 }
 
@@ -89,7 +134,7 @@ SXYL.base.uuid = function () {
     s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
     s[8] = s[13] = s[18] = s[23] = "-";
     var uuid = s.join("");
-    return uuid;
+    return "a"+uuid;
 }
 /***
  * 交换数组内俩个下标的元素
@@ -201,6 +246,11 @@ SXYL.DOM.changeElementXY = function (id , x , y) {
  * @param o ,   x = o.x  , y = o.y  modifiedX = o.mx, modifiedY = o.my
  */
 SXYL.DOM.changeElementXYByObject = function (id , o) {
+    debugger
+    var speed = o.speed;
+    if(!speed){
+        speed = 50 ;
+    }
     var rectTarget = d3.select("#" + id) ;
     var mx = o.mx;
     var my = o.my;
@@ -208,7 +258,7 @@ SXYL.DOM.changeElementXYByObject = function (id , o) {
     if(!my){my = 0 ;}
     var x = parseInt(mx) + parseInt(o.x);
     var y = parseInt(my) + parseInt(o.y);
-    rectTarget.transition().duration(50).attr("transform", "translate("+x+","+y+")");
+    rectTarget.transition().duration(speed).attr("transform", "translate("+x+","+y+")");
 }
 
 
@@ -230,15 +280,28 @@ SXYL.DOM.getDomXY = function (id) {
  * @param o.id 元素id
  */
 SXYL.DOM.moveElement = function(o){
+    // debugger
     var sid = d3.select("#"+o.id ) ;
     var xyDom = getXY(o.tid);
+
 
     var x = parseInt(xyDom.x) + parseInt(o.bx?o.bx:0);
     var y = parseInt(xyDom.y) + parseInt(o.by?o.by:0);
 
-    sid.transition().duration(SXYL.speed)
-        .attr("x",x).attr("y",y);
+    //公式的特殊处理
+    if(y==0){
+        x = parseInt(document.getElementById(o.tid).getBoundingClientRect().width/3);
+        y = y + 30;
+    }
 
+
+    var tarName = $("#"+o.id)[0].tagName;
+    if(tarName == "g"){
+        SXYL.DOM.changeElementXYByObject(o.sid,{x:x,y:y,speed:SXYL.speed})
+    }else {
+        sid.transition().duration(SXYL.speed)
+            .attr("x",x).attr("y",y);
+    }
 
     /****
      * 获取元素的 x,y
@@ -248,32 +311,40 @@ SXYL.DOM.moveElement = function(o){
      * @return {{x: (*|void), y: (*|void)}}
      */
     function getXY(tid) {
-
         var x = 0 ;
         var y = 0 ;
         if(tid){
             var tidOb = d3.select("#"+tid ) ;
-
-            // debugger
-
-            // if(tid =="MJMATHI-62"){
-            //     debugger
-            // }
-            // if(!x){
-            //
-            //     var cob = document.getElementById("MJMATHI-62").getBoundingClientRect();
-            //     x = cob.x;
-            //     y = cob.y;
-            // }else{
-                x = tidOb.attr("x");
-                y = tidOb.attr("y");
-            // }
-
-
+            x = tidOb.attr("x");
+            y = tidOb.attr("y");
         }
-
         return {x:x,y:y}
     }
+}
+
+/***
+ * 交换对象
+ * @param o
+ */
+SXYL.DOM.swapElement= function(o){
+
+
+    for (var i =0 ; i<o.sid.length;i++){
+        var sid = o.sid[i];
+        var tid = o.tid[i];
+
+        var sidXYObj = SXYL.DOM.tagName[$("#"+sid)[0].tagName];
+        var tidXYObj = SXYL.DOM.tagName[$("#"+tid)[0].tagName]
+        var sidXY = SXYL.DOM.getXY(sid , sidXYObj);
+        var tidXY = SXYL.DOM.getXY(tid , tidXYObj);
+
+        d3.select("#"+sid ).transition().duration(SXYL.speed)
+            .attr(sidXYObj.x,parseInt(tidXY.x)).attr(sidXYObj.y,parseInt(tidXY.y));
+        d3.select("#"+tid ).transition().duration(SXYL.speed)
+            .attr(tidXYObj.x,parseInt(sidXY.x)).attr(tidXYObj.y,parseInt(sidXY.y));
+
+    }
+
 }
 
 /*****
@@ -284,9 +355,9 @@ SXYL.DOM.copyElement = function (o) {
    var ob = document.getElementById(o.sid);
    var target = ob.cloneNode(true);
 
-   if(o.cdf){
-       target.innerHTML = d3.select("#"+o.sid).datum();
-   }
+   // if(o.cdf){
+   //     target.innerHTML = d3.select("#"+o.sid).datum();
+   // }
    target.id = o.tidEnd;
    ob.parentElement.appendChild(target);
 }
@@ -331,7 +402,10 @@ SXYL.DOM.sumElement = function (o) {
     for (var i=0;i<o.ids.length;i++){
         r = parseFloat(r) + parseFloat($("#"+o.ids[i]).text());
     }
-    $("#"+o.tid).text(parseFloat(r).toFixed(2));
+    if(! SXYL.DOM.computeForeignElement(o , parseFloat(r).toFixed(2))){
+        $("#"+o.tid).text(parseFloat(r).toFixed(2));
+    }
+
 }
 
 
@@ -344,23 +418,55 @@ SXYL.DOM.sigmoidElement = function (o) {
     var eValue = parseFloat(Math.exp(value).toFixed(2));
     eValue = (parseFloat(1)/(parseFloat(1)+eValue)).toFixed(2);
 
-    $("#"+o.tid).text(eValue);
+    if(! SXYL.DOM.computeForeignElement(o , eValue)){
+        $("#"+o.tid).text(eValue);
+    }
+
+
 }
 
+/***
+ * 计算元素
+ * @param o
+ */
+SXYL.DOM.computeForeignElement = function (o, eValue) {
+    if(SXYL.formula.checkFormula(o.tid)){
+        var formula = $("#formula_object");
+        var rfc = formula.attr("rfc");
+        var start = rfc.indexOf(SXYL.formula.replaceStart) ;
+        var end = rfc.indexOf(SXYL.formula.replaceEnd) ;
+        var f  = rfc.substr(0,start) + eValue + rfc.substr(end + SXYL.formula.replaceEnd.length);
+        formula.attr("rfc" , f);
+        f = f.replace(new RegExp( SXYL.formula.replaceStart , "g"), "");
+        f = f.replace(new RegExp( SXYL.formula.replaceEnd , "g"), "");
+        formula.text(f);
+        //公式赋值计算结果
+        SXYL.formula.setResult(eValue);
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        return true;
+    }else{
+        return false ;
+    }
+}
 
 /***
  * 计算输出值权重
  * @param o
  */
 SXYL.DOM.computeOutWeight = function(o){
-    var target_o = o.targetId;
-    var target_o_v = parseFloat($("#"+target_o).text());
-    var outo = o.outo;
-    var outo_v = parseFloat($("#"+outo).text());
-    var outh  = o.outh;
-    var outh_v = parseFloat($("#"+outh).text());
-    var result = ((outo_v - target_o_v)*outo_v*(1-outo_v)*outh_v);
-    $("#"+o.tid).text(parseFloat(result).toFixed(2));
+    //权重
+    var weight_o_v = parseFloat($("#"+o.weight).text());
+    //实际值 y
+    var actual_o_v = parseFloat($("#"+o.actual).text());
+    //输出层的激活函数后的值
+    var outo_v = parseFloat($("#"+o.outo).text());
+    //隐藏层的激活函数后的值
+    var outh_v = parseFloat($("#"+o.outh).text());
+    var result = weight_o_v -((outo_v - actual_o_v)*outo_v*(1-outo_v)*outh_v);
+    if(! SXYL.DOM.computeForeignElement(o , parseFloat(result).toFixed(2))){
+        $("#"+o.tid).text(parseFloat(result).toFixed(2));
+    }
+
 }
 
 
@@ -392,6 +498,7 @@ SXYL.DOM.computeHiddenWeight = function(o){
     var out_List = o.outId ;
     var error =0;
     var error_sum=0;
+
     for(var i =0 ; i< target_List.length ; i++){
 
         var target_o_v = parseFloat($("#"+target_List[i]).text());
@@ -405,8 +512,11 @@ SXYL.DOM.computeHiddenWeight = function(o){
 
     var outh  = parseFloat($("#"+o.oid).text());
     var iv = parseFloat($("#"+o.iv).text());
-    var result = (error_sum*(outh*(1-outh))*iv);
-    $("#"+o.tid).text(parseFloat(result).toFixed(2));
+    var weightValue =  parseFloat($("#"+o.weightId).text());
+    var result = weightValue - (error_sum*(outh*(1-outh))*iv);
+    if(! SXYL.DOM.computeForeignElement(o , parseFloat(result).toFixed(2))){
+        $("#"+o.tid).text(parseFloat(result).toFixed(2));
+    }
 }
 
 
@@ -415,10 +525,15 @@ SXYL.DOM.computeHiddenWeight = function(o){
  * @param o
  */
 SXYL.DOM.squareErrorElement = function (o) {
+
     var targetValue =parseFloat($("#"+o.targetId).text());
     var outputValue =parseFloat($("#"+o.outputId).text());
     var sub = Math.pow(parseFloat(targetValue - outputValue) ,2).toFixed(2);
-    $("#"+o.tid).text(parseFloat(sub/2).toFixed(2));
+
+    if(! SXYL.DOM.computeForeignElement(o , parseFloat(sub/2).toFixed(2))){
+        $("#"+o.tid).text(parseFloat(sub/2).toFixed(2));
+    }
+
 }
 
 
@@ -427,10 +542,89 @@ SXYL.DOM.squareErrorElement = function (o) {
  * @param o
  */
 SXYL.DOM.destroyElement = function (o) {
-    $("#"+o.id).remove();
+    if(o.id){
+        $("#"+o.id).remove();
+    }
+    if(o.ids){
+        for (var i =0 ;i<o.ids.length;i++){
+            $("#"+o.ids[i]).remove();
+        }
+
+    }
+}
+
+SXYL.DOM.moveFormulaResult = function(o){
+    var formulaResult = SXYL.formula.getResult() ; //formulaId.attr(o.tid , eValue)
+
+    var uuid = SXYL.base.uuid();
+
+    var xyDom = getXY(o.formulaId);
+    var x = parseInt(xyDom.x) + parseInt(o.bx?o.bx:0);
+    var y = parseInt(xyDom.y) + parseInt(o.by?o.by:0);
+
+    var context = SXYL.GRAPH.getContext() ;
+
+    var ob = context.append("text")
+        .attr("id", uuid)
+        .attr("x", x)
+        .attr("y", y)
+        .attr("style","text-anchor: middle;")
+        .text(formulaResult); //o.st
+
+
+    SXYL.DOM.moveElement({id:uuid , tid:o.tid});
+
+    SXYL.DOM.changeElement({tid:uuid , sid:o.tid});
+
+    function getXY(tid) {
+        var x = 0 ;
+        var y = 0 ;
+        if(tid){
+            var tidOb = d3.select("#"+tid ) ;
+            x = tidOb.attr("x");
+            y = tidOb.attr("y");
+        }
+        return {x:x,y:y}
+    }
+
 }
 
 
+/***
+ * 复制计算结果对象
+ * @param o
+ */
+SXYL.DOM.copyFormulaResult = function(o){
+    var formulaResult = SXYL.formula.getResult() ; //formulaId.attr(o.tid , eValue)
+    var xyDom = getXY(o.formulaId);
+    var x = parseInt(xyDom.x) + parseInt(o.bx?o.bx:0);
+    var y = parseInt(xyDom.y) + parseInt(o.by?o.by:0);
+
+    if(y==0){
+        y=30;
+        x = parseInt(document.getElementById(o.formulaId).getBoundingClientRect().width/2);
+    }
+    var context = SXYL.GRAPH.getContext() ;
+
+    context.append("text")
+        .attr("id", o.tid)
+        .attr("x", x)
+        .attr("y", y)
+        .attr("style","text-anchor: middle;")
+        .text(formulaResult); //o.st
+
+    function getXY(tid) {
+        var x = 0 ;
+        var y = 0 ;
+        if(tid){
+            var tidOb = d3.select("#"+tid ) ;
+            x = tidOb.attr("x");
+            y = tidOb.attr("y");
+        }
+        return {x:x,y:y}
+    }
+
+}
 
 /*****
  * 交换对象内容 ,暂时赋值 text
@@ -439,3 +633,82 @@ SXYL.DOM.destroyElement = function (o) {
 SXYL.DOM.changeElement = function (o) {
     $("#"+o.sid).text($("#"+o.tid).text());
 }
+
+
+/*****
+ * 批量变色
+ * @param o
+ */
+SXYL.DOM.changeColor = function (o) {
+
+    var ids = o.ids ;
+    var color = o.totalColor;
+    var colors = o.colors;
+    for(var i =0; i< ids.length ; i++){
+        var element = d3.select("#" + ids[i]);
+        if(color){
+            element.style("fill",color);
+        }else{
+            element.style("fill",colors[i]);
+        }
+    }
+}
+
+
+
+/*****
+ * 批量变色
+ * @param o
+ */
+SXYL.DOM.show = function (o) {
+    debugger
+    var ids = o.ids ;
+    for(var i =0; i< ids.length ; i++){
+        var element = d3.select("#" + ids[i]);
+        element.style("display","inline");
+    }
+}
+
+
+/*****
+ * 交换对象内容 ,暂时赋值 text
+ * @param o
+ */
+SXYL.DOM.refreshFormula = function (o) {
+    // debugger
+    var formula = $("#formula_object");
+    var rfc = formula.attr("rfc");
+    if (rfc){
+        var value = $("#" + o.tid).html();
+        var start = rfc.indexOf(SXYL.formula.replaceStart) ;
+        var end = rfc.indexOf(SXYL.formula.replaceEnd) ;
+        var f  = rfc.substr(0,start) + value + rfc.substr(end + SXYL.formula.replaceEnd.length);
+        formula.attr("rfc" , f);
+        f = f.replace(new RegExp( SXYL.formula.replaceStart , "g"), "");
+        f = f.replace(new RegExp( SXYL.formula.replaceEnd , "g"), "");
+        formula.text(f);
+
+        //此次计算的值放在attr中
+        formula.attr(o.tid , value);
+
+        // debugger
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+
+        $("#" + o.tid).hide();
+    }
+
+}
+
+SXYL.DOM.clearFormula = function (o) {
+    var formula= document.getElementById("formula_object");
+    var attrs = formula.attributes;
+    for(var i=attrs.length-1; i>=0; i--) {
+        if(attrs[i].name !="id"){
+            formula.removeAttribute(attrs[i].name);
+        }
+        // output+= attrs[i].name + "->" + attrs[i].value;
+    }
+    $("#formula_object").text("");
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+}
+

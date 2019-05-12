@@ -38,6 +38,12 @@ public class Move extends AnimationComponent implements Serializable {
         this.tid = tid;
     }
 
+    public Move(String id, String tid , String ad) {
+        this.id = id;
+        this.tid = tid;
+        super.setAd(ad);
+    }
+
     public String getId() {
         return id;
     }

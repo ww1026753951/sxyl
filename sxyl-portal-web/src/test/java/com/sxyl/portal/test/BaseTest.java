@@ -1,4 +1,4 @@
-package com.demon.joker.toumi.robot;
+package com.sxyl.portal.test;
 
 import org.junit.Before;
 import org.junit.BeforeClass;

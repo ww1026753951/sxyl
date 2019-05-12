@@ -3,7 +3,6 @@ package com.sxyl.portal.domain.nn.dnn.result;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sxyl.portal.domain.ExecutionSequence;
 import com.sxyl.portal.domain.d.AnimationTotal;
-import com.sxyl.portal.domain.formula.MathFormulaTemplate;
 import com.sxyl.portal.domain.graph.Group;
 import lombok.Data;
 
@@ -34,7 +33,6 @@ public class DnnConstruct implements Serializable {
      * 描述
      */
     private List<ExecutionSequence> es;
-
 
     /****
      * Formula-Animation

@@ -1,67 +1,61 @@
 package com.sxyl.portal.service.nn.impl;
 
-import com.sxyl.portal.domain.constant.PositionEnum;
 import com.sxyl.portal.domain.constant.formula.FormulaConstant;
-import com.sxyl.portal.domain.formula.MathFormulaTemplate;
-import com.sxyl.portal.domain.graph.Attr;
+import com.sxyl.portal.domain.formula.HiddenWeightFormula;
+import com.sxyl.portal.domain.formula.OutWeightFormula;
+import com.sxyl.portal.domain.formula.SigmoidFormula;
+import com.sxyl.portal.domain.formula.SumFormula;
+import com.sxyl.portal.domain.formula.common.FormulaCommon;
+import com.sxyl.portal.domain.formula.common.FormulaNode;
+import com.sxyl.portal.domain.formula.common.FormulaNodeContent;
+import com.sxyl.portal.domain.formula.dnn.HiddenWeightContent;
+import com.sxyl.portal.domain.graph.MathFormula;
 import com.sxyl.portal.domain.graph.Group;
 import com.sxyl.portal.domain.graph.Text;
 import com.sxyl.portal.domain.nn.NnWeight;
 import com.sxyl.portal.domain.nn.dnn.*;
 import com.sxyl.portal.domain.nn.dnn.param.DnnConstructParam;
+import com.sxyl.portal.service.formula.IMathFormula;
+import com.sxyl.portal.service.formula.impl.*;
 import com.sxyl.portal.service.nn.NnCommonService;
 import com.sxyl.portal.service.nn.NnFormulaService;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class NnFormulaServiceImpl extends NnCommonService implements NnFormulaService {
 
-
     private int nodeBuffer = 60;
     private int symbolBuffer = 20;
 
-    /***
-     * 公式起始的x值
-     */
-    private final int FORMULA_X = 150;
-
-    /***
-     * 公式起始的y值
-     */
-    private final int FORMULA_Y = 30;
-
-
     @Override
-    public List<MathFormulaTemplate> getDnnFormulaTotal() {
+    public List<MathFormula> getDnnFormulaTotal() {
 
         /****
          * 总公式的列表
          */
-        List<MathFormulaTemplate> result = new ArrayList<>();
+        List<MathFormula> result = new ArrayList<>();
 
 
         //求和函数
-        MathFormulaTemplate sumInput = new MathFormulaTemplate();
+        MathFormula sumInput = new MathFormula();
         sumInput.setId("sumInput");
         sumInput.setFc("hidden_net1 = w1*x_1+w2*x_2+w3*x_3+..+wn*x_n");
 
 
         //sigmoid input输入框
-        MathFormulaTemplate sigmoidSumInput = new MathFormulaTemplate();
+        MathFormula sigmoidSumInput = new MathFormula();
         sigmoidSumInput.setId("sigmoid_sumInput");
         sigmoidSumInput.setFc("out1 = sigmoid(net1)");
 
         //sigmoid input输入框
-        MathFormulaTemplate sumHidden = new MathFormulaTemplate();
+        MathFormula sumHidden = new MathFormula();
         sumHidden.setId("sumHidden");
         sumHidden.setFc("out_net1 = w9*out1+w8*out2+w3*x3+..+wn*out_n");
 
-        MathFormulaTemplate sigmoidSumHidden = new MathFormulaTemplate();
+        MathFormula sigmoidSumHidden = new MathFormula();
         sigmoidSumHidden.setId("sigmoid_sumHidden");
         sigmoidSumHidden.setFc("net1 = w1*x1+w2*x2+w3*x3+..+wn*xn");
 
@@ -88,7 +82,6 @@ public class NnFormulaServiceImpl extends NnCommonService implements NnFormulaSe
 
         List<String> firstHidden =hiddenIds.get(0);
 
-        int start =0 ;
         //输入层到第一个隐藏层的公式
         this.addFormula(result ,  dnnConstructParam);
 
@@ -97,48 +90,17 @@ public class NnFormulaServiceImpl extends NnCommonService implements NnFormulaSe
 
 
         //输出层损失函数
-        this.addErrorFormula(result , outputIds);
+        this.addErrorFormula(result ,  dnnConstructParam);
 
         //反向传播 隐藏层到输出层的偏导
-        this.addOutWeightFormula(result,firstHidden , outputIds ,start );
+        this.addOutWeightFormula(result, dnnConstructParam );
 
         //反向传播   输入层到 隐藏层的偏导
-        addHiddenWeightFormula(result,inputIds,firstHidden , outputIds);
+        addHiddenWeightFormula(result,inputIds,firstHidden , outputIds , dnnConstructParam);
 
         return result ;
     }
 
-
-    /***
-     * 获取权重的信息
-     * @return
-     */
-    private Text getWeightSumAndPlus(String sid , String tid , String layoutNo , NnWeight nnWeights , Map<String , DnnInputNeuron> dnnInputNeuronMap){
-        Text wx = new Text(super.getSumNodeId(sid,tid)  ,PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND);
-
-        DnnInputNeuron inputNeuron = dnnInputNeuronMap.get(sid) ;
-        wx.setSt(inputNeuron.getText() + " * " + nnWeights.getText());
-        wx = this.addSubAndSup(wx ,  null , nnWeights.getSourceIndex().toString(),0,0,-26,0);
-        wx = this.addSubAndSup(wx, layoutNo , (nnWeights.getTargetIndex())+""+(nnWeights.getSourceIndex()), -6,0,18,0);
-        return wx;
-    }
-
-    /***
-     * 获取权重的信息
-     * @return
-     */
-    private Text getHiddenWeightSumAndPlus(String sid , String tid , String sLayoutNo,String tLayoutNo , NnWeight nnWeights , Map<String , DnnHiddenNeuron> dnnHiddenNeuronMap){
-        Text wx = new Text(super.getSumNodeId(sid,tid)  ,PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND);
-
-        List<Attr> attrs = new ArrayList<>();
-        attrs.add(new Attr("word-spacing" , "3"));
-        DnnHiddenNeuron hiddenNeuron = dnnHiddenNeuronMap.get(sid) ;
-        wx.setSt(hiddenNeuron.getActivationText() + " * " + nnWeights.getText() );
-        wx.setAttr(attrs);
-        wx = this.addSubAndSup(wx ,  sLayoutNo , nnWeights.getSourceIndex().toString(),-5,0,-32,0);
-        wx = this.addSubAndSup(wx, tLayoutNo , (nnWeights.getTargetIndex())+""+(nnWeights.getSourceIndex()), -6,0,25,0);
-        return wx;
-    }
 
     /***
      * 增加公式
@@ -154,49 +116,55 @@ public class NnFormulaServiceImpl extends NnCommonService implements NnFormulaSe
             Group groupSum = new Group();
             groupSum.setId(super.getSumInput(tid));
             groupSum.setCache(true);
+
+
             //等号左侧的公式
-            Text net = new Text(FORMULA_X,FORMULA_Y,dnnHiddenNeuron.getSumText());
-            net = this.addSubAndSup(net, layoutNo , dnnHiddenNeuron.getIndex().toString());
-            groupSum.addChild(net);
-            groupSum.addChild(new Text(PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"="));
+
+            List<FormulaNodeContent> formulaNodeContents = new ArrayList<>();
+
 
             //按照权重循环
             for (int j = 0 ;j < dnnHiddenNeuron.getNeuronWeight().size() ; j++ ) {
+
                 NnWeight nnWeights = dnnHiddenNeuron.getNeuronWeight().get(j);
+
                 String sid = nnWeights.getSid();
-                groupSum.addChild(getWeightSumAndPlus(sid,tid,layoutNo , nnWeights , dnnConstructParam.getInputNeuronMap()));
-                if(j != dnnHiddenNeuron.getNeuronWeight().size() -1){
-                    //加法符号
-                    groupSum.addChild(new Text(PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,FormulaConstant.PLUS));
-                }
+
+                DnnInputNeuron inputNeuron = dnnConstructParam.getInputNeuronMap().get(sid) ;
+
+                FormulaNodeContent fn = new FormulaNodeContent();
+                List<FormulaNode> nodes = new ArrayList<>();
+                FormulaNode x2 = new FormulaNode(inputNeuron.getText(),"",nnWeights.getSourceIndex().toString(),"*");
+                nodes.add(x2);
+                FormulaNode w2 = new FormulaNode(nnWeights.getText(),layoutNo,(nnWeights.getTargetIndex())+""+(nnWeights.getSourceIndex()),"");
+                nodes.add(w2);
+                fn.setNodes(nodes);
+                formulaNodeContents.add(fn);
+
+
+
             }
             //相加的节点
-            groupSum.addChild(new Text(PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"="));
-            //结果集
-            groupSum.addChild(new Text(getFormulaResultId(tid),PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"???"));
-//            groupSum.addChild(new Text(getFormulaResultId(tid),PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"$$z^1 = W^1*X + b^1$$"));
-
+            MathFormula sumFormula = getSumFormula(dnnHiddenNeuron.getSumText() , layoutNo ,dnnHiddenNeuron.getIndex().toString()  ,  formulaNodeContents);
+            groupSum.addChild(sumFormula);
             result.addChild(groupSum);
 
-            //sigmoid ,初始化 x的值
-            Group sigmoidInput = new Group();
-            sigmoidInput.setId(super.getSigmoidId(tid));
-            sigmoidInput.setCache(true);
+
+
+            /***
+             * sigmoid 公式版本
+             */
+            Group sigmoidInput = new Group(super.getSigmoidId(tid) , true);
+            MathFormula mathFormula = getSigmoidFormula(dnnHiddenNeuron.getActivationText() , layoutNo ,  dnnHiddenNeuron.getIndex().toString());
+            sigmoidInput.addChild(mathFormula);
 
             //sigmoid  等号左边的
-            Text netSigmoid = new Text(FORMULA_X,FORMULA_Y,dnnHiddenNeuron.getActivationText());
-            netSigmoid = this.addSubAndSup(netSigmoid, layoutNo , dnnHiddenNeuron.getIndex().toString());
-            sigmoidInput.addChild(netSigmoid);
-            sigmoidInput.addChild(new Text(PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"="));
-            sigmoidInput.addChild(new Text(PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"sigmoid("));
-            sigmoidInput.addChild(new Text(super.getSigmoidNodeId(tid),PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,10,0 ,"x"));
-            sigmoidInput.addChild(new Text(PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,10,0 ,")"));
-            sigmoidInput.addChild(new Text( PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"="));
-            sigmoidInput.addChild(new Text(super.getFormulaResultId(tid) , PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"???"));
             result.addChild(sigmoidInput);
         }
 
     }
+
+
 
 
     /***
@@ -214,42 +182,43 @@ public class NnFormulaServiceImpl extends NnCommonService implements NnFormulaSe
             groupSum.setId(super.getSumInput(tid));
             groupSum.setCache(true);
             //等号左侧的公式
-            Text net = new Text(FORMULA_X,FORMULA_Y,dnnOutputNeuron.getSumText());
-            net = this.addSubAndSup(net, tLayoutNo , dnnOutputNeuron.getIndex().toString());
-            groupSum.addChild(net);
-            groupSum.addChild(new Text(PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"="));
 
-            //按照权重循环
+            List<FormulaNodeContent> formulaNodeContents = new ArrayList<>();
+
+
             for (int j = 0 ;j < dnnOutputNeuron.getNeuronWeight().size() ; j++ ) {
                 NnWeight nnWeights = dnnOutputNeuron.getNeuronWeight().get(j);
                 String sid = nnWeights.getSid();
-                groupSum.addChild(getHiddenWeightSumAndPlus(sid,tid , sLayoutNo , tLayoutNo, nnWeights , dnnConstructParam.getHiddenNeuronMap()));
-                if(j != dnnOutputNeuron.getNeuronWeight().size() -1){
-                    //加法符号
-                    groupSum.addChild(new Text(PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,FormulaConstant.PLUS));
-                }
+                DnnHiddenNeuron hiddenNeuron = dnnConstructParam.getHiddenNeuronMap().get(sid) ;
+
+                FormulaNodeContent fn = new FormulaNodeContent();
+                List<FormulaNode> nodes = new ArrayList<>();
+                FormulaNode x2 = new FormulaNode(hiddenNeuron.getActivationText(),sLayoutNo,nnWeights.getSourceIndex().toString(),"*");
+                nodes.add(x2);
+                FormulaNode w2 = new FormulaNode(nnWeights.getText(),tLayoutNo,(nnWeights.getTargetIndex())+""+(nnWeights.getSourceIndex()),"");
+                nodes.add(w2);
+                fn.setNodes(nodes);
+                formulaNodeContents.add(fn);
+
             }
-            //相加的节点
-            groupSum.addChild(new Text(PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"="));
-            //结果集
-            groupSum.addChild(new Text(getFormulaResultId(tid),PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"???"));
+
+
+            MathFormula sumFormula = getSumFormula(dnnOutputNeuron.getSumText() , tLayoutNo ,dnnOutputNeuron.getIndex().toString()  ,  formulaNodeContents);
+            groupSum.addChild(sumFormula);
+
             result.addChild(groupSum);
+
+
 
             //sigmoid ,初始化 x的值
             Group sigmoidInput = new Group();
             sigmoidInput.setId(super.getSigmoidId(tid));
             sigmoidInput.setCache(true);
+            //sigmoid函数
+            MathFormula mathFormula = getSigmoidFormula(dnnOutputNeuron.getActivationText() , tLayoutNo ,  dnnOutputNeuron.getIndex().toString());
+            sigmoidInput.addChild(mathFormula);
 
-            //sigmoid  等号左边的
-            Text netSigmoid = new Text(FORMULA_X,FORMULA_Y,dnnOutputNeuron.getActivationText());
-            netSigmoid = this.addSubAndSup(netSigmoid, tLayoutNo , dnnOutputNeuron.getIndex().toString());
-            sigmoidInput.addChild(netSigmoid);
-            sigmoidInput.addChild(new Text(PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"="));
-            sigmoidInput.addChild(new Text(PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"sigmoid("));
-            sigmoidInput.addChild(new Text(super.getSigmoidNodeId(tid),PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,10,0 ,"x"));
-            sigmoidInput.addChild(new Text(PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,10,0 ,")"));
-            sigmoidInput.addChild(new Text( PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"="));
-            sigmoidInput.addChild(new Text(super.getFormulaResultId(tid) , PositionEnum.EXTEND_PLUS ,PositionEnum.EXTEND,"???"));
+
             result.addChild(sigmoidInput);
         }
     }
@@ -258,62 +227,26 @@ public class NnFormulaServiceImpl extends NnCommonService implements NnFormulaSe
     /***
      * 添加损失函数公式
      * @param result
-     * @param targetList
+     * @param dnnConstructParam
      */
-    private void addErrorFormula(Group result , List<String> targetList){
+    private void addErrorFormula(Group result ,DnnConstructParam dnnConstructParam){
         Group groupError;
 
-        for (int i = 0 ; i<targetList.size() ; i ++){
-            String tid = targetList.get(i);
+        for (int i = 0 ; i<dnnConstructParam.getOutputLayer().getNeurons().size() ; i ++){
+            DnnOutputNeuron dnnOutputNeuron = dnnConstructParam.getOutputLayer().getNeurons().get(i);
             groupError = new Group();
-            groupError.setId(super.getFormulaSquaredErrorId(tid));
+            groupError.setId(super.getFormulaSquaredErrorId(dnnOutputNeuron.getId()));
             groupError.setCache(true);
 
-            int x = 150;
-            int y = 30 ;
+            /***
+             * 增加公式
+             */
+            IMathFormula mathFormula = new MeanSquaredErrorMathFormula();
+            FormulaCommon formulaCommon = new FormulaCommon();
+            formulaCommon.setF(dnnOutputNeuron.getCostText());
+            MathFormula formula = mathFormula.createMathFormula(formulaCommon) ;
+            groupError.addChild(formula);
 
-
-            //损失函数
-            Text netError = new Text(x,y);
-            netError.setSt(super.getErrorText(new Integer(i+1).toString()) + "=");
-            groupError.addChild(netError);
-
-
-            // ((target - out1)^2)/2
-            x=x+nodeBuffer;
-            Text target_s = new Text(x,y);
-            target_s.setSt("((");
-            groupError.addChild(target_s);
-
-
-            x = x + symbolBuffer;
-            Text target = new Text(x,y);
-            target.setSt(super.getTargetNetText(new Integer(i+1).toString()));
-            target.setId(super.getSquaredErrorTargetNodeId(tid));
-            groupError.addChild(target);
-
-
-            //减号
-            x = x + nodeBuffer + symbolBuffer;
-            groupError.addChild(new Text(x,y,"-"));
-
-
-            x = x + symbolBuffer;
-            Text error = new Text(x,y);
-            error.setSt(super.getErrorText(new Integer(i+1).toString()));
-            error.setId(super.getSquaredErrorErrorNodeId(tid));
-            groupError.addChild(error);
-
-
-            x = x + nodeBuffer;
-            Text t = new Text(x,y);
-            t.setSt(")^2)/2=");
-            groupError.addChild(t);
-
-//            x=x+symbolBuffer;
-//            groupError.addChild(new Text( x, y ,"="));
-            x=x+nodeBuffer;
-            groupError.addChild(new Text(super.getFormulaResultId(tid) , x, y ,"???"));
 
             result.addChild(groupError);
 
@@ -327,90 +260,25 @@ public class NnFormulaServiceImpl extends NnCommonService implements NnFormulaSe
      * 添加损失函数公式
      * -(targeto1 - outo1)  * outo1(1-outo1) * outh1
      * @param result
-     * @param targetList
      */
-    private void addOutWeightFormula(Group result , List<String> hiddenList, List<String> targetList,int start){
+    private void addOutWeightFormula(Group result ,DnnConstructParam dnnConstructParam){
         Group outWeight;
-        for (int i = 0 ; i < targetList.size() ; i ++){
-            String tid = targetList.get(i);
-            for (int j = 0 ; j < hiddenList.size() ; j++) {
-                String sid = hiddenList.get(j);
-                String weightText = super.getWeightText(new Integer((start++)+1).toString());
-                outWeight = new Group();
-                outWeight.setId(super.getFormulaUpdateWeightId(tid,sid));
-                outWeight.setCache(true);
-
-                int x = 150;
-                int y = 30 ;
-
-                x = x + symbolBuffer;
-                Text target = new Text(x,y);
-//                text.setSt();
-                target.setSt(weightText+"="+weightText + " - ∂Etotal/∂"+weightText+"=");
-//                target.setId(super.getSquaredErrorTargetNodeId(tid));
-                outWeight.addChild(target);
-
-                x = x + nodeBuffer*4;
-                outWeight.addChild(new Text(x , y ,"-("));
-
-                // targeto1
-                x = x + symbolBuffer ;
-                Text t = new Text(x,y);
-                t.setId(super.getOutWeightTargetNodeId(tid));
-                t.setSt(super.getTargetNetText(new Integer(j+1).toString()));
-                outWeight.addChild(t);
-
-                x = x + nodeBuffer ;
-                outWeight.addChild(new Text(x , y ,"-"));
-
-                x = x + symbolBuffer ;
-
-                Text out0 = new Text(x,y);
-                out0.setId(super.getOutWeightOutNodeId(tid,"0"));
-                out0.setSt(super.getOutOutText(new Integer(j+1).toString()));
-                outWeight.addChild(out0);
-
-                x = x + nodeBuffer ;
-
-                outWeight.addChild(new Text(x , y , ")*"));
-
-
-                x = x + symbolBuffer ;
-                Text out1 = new Text(x,y);
-                out1.setId(super.getOutWeightOutNodeId(tid,"1"));
-                out1.setSt(super.getOutOutText(new Integer(j+1).toString()));
-                outWeight.addChild(out1);
-
-                x = x + nodeBuffer ;
-                outWeight.addChild(new Text(x,y,"(1-"));
-
-                x = x + symbolBuffer ;
-                Text out2 = new Text(x,y);
-                out2.setId(super.getOutWeightOutNodeId(tid,"2"));
-                out2.setSt(super.getOutOutText(new Integer(j+1).toString()));
-                outWeight.addChild(out2);
-
-
-                x = x + nodeBuffer ;
-                outWeight.addChild(new Text(x,y,")*"));
-
-                x = x + symbolBuffer ;
-                Text outh = new Text(x,y);
-                outh.setId(super.getOutWeightOutHiddenNodeId(sid));
-                outh.setSt(super.getHiddenOutText(new Integer(j+1).toString()));
-                outWeight.addChild(outh);
-//                result.addChild(new Text(x , y ,"-"));
-
-                x = x+ nodeBuffer+symbolBuffer;
-                //相加的节点
-                outWeight.addChild(new Text(x,y,"="));
-
-                //结果集
-                x=x+symbolBuffer;
-                outWeight.addChild(new Text(super.getFormulaResultId(tid) , x, y ,"???"));
-
+        String tlayoutNo="2";
+        String slayoutNo="1";
+        for (DnnOutputNeuron dnnOutputNeuron : dnnConstructParam.getOutputLayer().getNeurons()){
+            String tid = dnnOutputNeuron.getId() ;
+            for(NnWeight nnWeight : dnnOutputNeuron.getNeuronWeight()){
+                String sid = nnWeight.getSid() ;
+                //获取权重对应的 隐藏层map
+                DnnHiddenNeuron dnnHiddenNeuron = dnnConstructParam.getHiddenNeuronMap().get(sid);
+                outWeight = new Group(super.getFormulaUpdateWeightId(tid,sid) , true);
+                MathFormula mathFormula = getWeightFormula(dnnOutputNeuron.getActualText(),
+                        nnWeight.getText() , tlayoutNo , nnWeight.getTargetIndex() + "" + nnWeight.getSourceIndex(),
+                        dnnOutputNeuron.getActivationText(), tlayoutNo, dnnOutputNeuron.getIndex().toString() ,
+                        dnnHiddenNeuron.getActivationText(), slayoutNo, dnnHiddenNeuron.getIndex().toString()
+                );
+                outWeight.addChild(mathFormula);
                 result.addChild(outWeight);
-
             }
         }
     }
@@ -427,113 +295,155 @@ public class NnFormulaServiceImpl extends NnCommonService implements NnFormulaSe
      * @param result
      * @param targetList
      */
-    private void addHiddenWeightFormula(Group result , List<String> inputList, List<String> hiddenList, List<String> targetList){
+    private void addHiddenWeightFormula(Group result , List<String> inputList, List<String> hiddenList, List<String> targetList
+            ,DnnConstructParam dnnConstructParam){
         Group hiddenWeight;
 
-        for (int k = 0 ; k<inputList.size() ; k ++){
+        String tlayoutNo="2";
+        String slayoutNo="1";
 
-            String iid = inputList.get(k);
+        List<DnnHiddenLayer> hiddenLayers = dnnConstructParam.getDnnHiddenLayerList();
 
-            Integer inputIndex = k+1;
+        DnnOutputLayer dnnOutputLayer = dnnConstructParam.getOutputLayer() ;
+        //隐藏层循环
+        for ( int i = 0 ; i < hiddenLayers.size() ; i++){
+            DnnHiddenLayer dnnHiddenLayer = hiddenLayers.get(i);
+            //隐藏层神经单元循环
+            for (DnnHiddenNeuron dnnHiddenNeuron : dnnHiddenLayer.getNeurons()){
+                for (NnWeight hnnWeight : dnnHiddenNeuron.getNeuronWeight()){
+                    String sid = hnnWeight.getSid();
+                    String tid = hnnWeight.getTid();
+                    hiddenWeight = new Group(super.getFormulaUpdateWeightId(tid,sid) , true);
 
-            for (int i = 0 ; i < hiddenList.size() ; i ++){
-                String hid = hiddenList.get(i);
-                Integer hiddenIndex = i;
+                    DnnInputNeuron dnnInputNeuron = dnnConstructParam.getInputNeuronMap().get(sid);
+                    List<HiddenWeightContent> hiddenWeightContents = new ArrayList<>() ;
 
-                hiddenWeight = new Group();
-                hiddenWeight.setId(super.getFormulaUpdateWeightId(hid,iid));
-                hiddenWeight.setCache(true);
+                    //按照输出层进行循环
+                    for (DnnOutputNeuron dnnOutputNeuron :dnnOutputLayer.getNeurons()){
+                        for (NnWeight nnWeight :dnnOutputNeuron.getNeuronWeight()){
+                            //如果输出层的 id 和隐藏层的id相同,则说明是能匹配的权重值
+                            if(nnWeight.getSid().equals(tid)){
+                                HiddenWeightContent hiddenWeightContent = new HiddenWeightContent();
+                                hiddenWeightContent.setActual(dnnOutputNeuron.getActualText());
 
+                                hiddenWeightContent.setPredict(dnnOutputNeuron.getActivationText());
+                                hiddenWeightContent.setPredictSup(tlayoutNo);
+                                hiddenWeightContent.setPredictSub(dnnOutputNeuron.getIndex().toString());
 
-                int x = 150;
-                int y = 30 ;
+                                hiddenWeightContent.setWeight(nnWeight.getText());
+                                hiddenWeightContent.setWeightSup(tlayoutNo);
+                                hiddenWeightContent.setWeightSub(nnWeight.getTargetIndex()+""+nnWeight.getSourceIndex());
 
-                String weightText = super.getWeightText(new Integer(inputIndex+(hiddenIndex)*3).toString());
-                Text target = new Text(x,y);
-//                text.setSt();
-                target.setSt(weightText+"="+weightText + " - ∂Etotal/∂"+weightText+"= (");
-//                target.setId(super.getSquaredErrorTargetNodeId(tid));
-                hiddenWeight.addChild(target);
-
-
-                for (int j = 0 ; j < targetList.size() ; j++) {
-
-                    if(j==0){
-                        x = x + nodeBuffer*3+symbolBuffer ;
-                    }else {
-                        x = x + symbolBuffer;
+                                hiddenWeightContents.add(hiddenWeightContent);
+                            }
+                        }
                     }
-                    Text delta =new Text(x,y);
-                    delta.setId(super.getDeltaOutputNodeId(targetList.get(j)));
-                    int targetIndex = j+1;
-                    delta.setSt(super.getDeltaOutputText(new Integer(targetIndex).toString()));
-                    hiddenWeight.addChild(delta);
-
-                    x = x+nodeBuffer;
-                    hiddenWeight.addChild(new Text(x,y,"*"));
-
-
-
-                    x = x+symbolBuffer;
-                    Text weight =new Text(x,y);
-                    weight.setSt(super.getWeightText(new Integer(inputList.size() * hiddenList.size() + 1 + targetList.size()*j).toString()));
-                    weight.setId(super.getOutputWeightNodeId(hid , targetList.get(j)));
-
-                    hiddenWeight.addChild(weight);
-
-                    x = x + nodeBuffer;
-                    if(j==targetList.size()-1){
-                        hiddenWeight.addChild(new Text(x,y,")*("));
-                    }else {
-                        hiddenWeight.addChild(new Text(x,y,FormulaConstant.PLUS));
-                    }
+                    //todo
+                    MathFormula mathFormula = getHiddenWeightFormula(hnnWeight.getText(), slayoutNo , hnnWeight.getTargetIndex()+""+hnnWeight.getSourceIndex(),
+                            dnnInputNeuron.getText(),dnnInputNeuron.getIndex().toString(),dnnHiddenNeuron.getActivationText(),
+                            slayoutNo , dnnHiddenNeuron.getIndex().toString(),
+                            hiddenWeightContents);
+                    hiddenWeight.addChild(mathFormula);
+                    result.addChild(hiddenWeight);
 
                 }
-
-
-
-
-                x = x + symbolBuffer ;
-                Text out1 = new Text(x,y);
-                out1.setId(super.getOutWeightOutNodeId(hid,"0"));
-                out1.setSt(super.getHiddenOutText(new Integer(i+1).toString()));
-                hiddenWeight.addChild(out1);
-
-                x = x + nodeBuffer ;
-                hiddenWeight.addChild(new Text(x,y,"(1-"));
-
-                x = x + symbolBuffer ;
-                Text out2 = new Text(x,y);
-                out2.setId(super.getOutWeightOutNodeId(hid,"1"));
-                out2.setSt(super.getHiddenOutText(new Integer(i+1).toString()));
-                hiddenWeight.addChild(out2);
-
-
-                x = x + nodeBuffer ;
-                hiddenWeight.addChild(new Text(x,y,")*"));
-
-                x = x + symbolBuffer ;
-                Text outh = new Text(x,y);
-                outh.setId(super.getOutWeightOutHiddenNodeId(iid));
-                outh.setSt(super.getInputText(new Integer(inputIndex).toString()));
-                hiddenWeight.addChild(outh);
-
-                x = x+ nodeBuffer+symbolBuffer;
-                //相加的节点
-                hiddenWeight.addChild(new Text(x,y,"="));
-
-                //结果集
-                x=x+symbolBuffer;
-                hiddenWeight.addChild(new Text(super.getFormulaResultId(iid) , x, y ,"???"));
-
-
-                result.addChild(hiddenWeight);
-
             }
-
         }
+        //输入层循环
+
+    }
 
 
+
+    /***
+     * 获取激活函数 sigmoid
+     * template -> construct -> runConstruct
+     * $$ a^1_1=sigmoid(***x***)=***????***
+     * @param sigmoidText
+     * @return
+     */
+    private MathFormula getSigmoidFormula(String sigmoidText,String layoutNo , String index){
+        IMathFormula iMathFormula = new SigmoidMathFormula();
+        SigmoidFormula sigmoidFormula = new SigmoidFormula();
+        sigmoidFormula.setF(sigmoidText);
+        sigmoidFormula.setFsup(layoutNo);
+        sigmoidFormula.setFsub(index);
+        MathFormula mathFormula = iMathFormula.createMathFormula(sigmoidFormula);
+        return mathFormula ;
+    }
+
+
+    private MathFormula getSumFormula(String sumText,String layoutNo , String index ,List<FormulaNodeContent> list ){
+        IMathFormula iMathFormula = new SumMathFormula();
+        SumFormula sumFormula = new SumFormula();
+        sumFormula.setContents(list);
+        sumFormula.setF(sumText);
+        sumFormula.setFsup(layoutNo);
+        sumFormula.setFsub(index);
+        MathFormula mathFormula = iMathFormula.createMathFormula(sumFormula);
+        return mathFormula ;
+    }
+
+
+    /***
+     * 权重更新方法
+     * @param actual
+     * @param f
+     * @param fsup
+     * @param fsub
+     * @param predict
+     * @param predictSup
+     * @param predictSub
+     * @param weightOutput
+     * @param weightOutputSup
+     * @param weightOutputSub
+     * @return
+     */
+    private MathFormula getWeightFormula(String actual ,String f, String fsup ,String fsub,
+                                         String predict , String predictSup , String predictSub ,
+                                         String weightOutput , String weightOutputSup , String weightOutputSub
+                                         ){
+        IMathFormula iMathFormula =  new OutWeightMathFormula();
+        OutWeightFormula outWeightFormula = new OutWeightFormula();
+        outWeightFormula.setActual(actual);
+        outWeightFormula.setF(f);
+        outWeightFormula.setFsup(fsup);
+        outWeightFormula.setFsub(fsub);
+        outWeightFormula.setPredict(predict);
+        outWeightFormula.setPredictSup(predictSup);
+        outWeightFormula.setPredictSub(predictSub);
+        outWeightFormula.setWeightOutput(weightOutput);
+        outWeightFormula.setWeightOutputSup(weightOutputSup);
+        outWeightFormula.setWeightOutputSub(weightOutputSub);
+        MathFormula mathFormula = iMathFormula.createMathFormula(outWeightFormula);
+        return mathFormula ;
+    }
+
+
+    /***
+     * 隐藏层
+     * @param iv
+     * @return
+     */
+    private MathFormula getHiddenWeightFormula(String f, String fsup ,String fsub,
+                                               String iv,String ivSub,String hiddenOut,String hiddenOutSup,String hiddenOutSub,
+                                               List<HiddenWeightContent> list){
+        IMathFormula iMathFormula =  new HiddenWeightMathFormula();
+        HiddenWeightFormula hiddenWeightFormula = new HiddenWeightFormula();
+
+        hiddenWeightFormula.setF(f);
+        hiddenWeightFormula.setFsup(fsup);
+        hiddenWeightFormula.setFsub(fsub);
+        hiddenWeightFormula.setIv(iv);
+        hiddenWeightFormula.setIvSub(ivSub);
+        hiddenWeightFormula.setHiddenOut(hiddenOut);
+        hiddenWeightFormula.setHiddenOutSup(hiddenOutSup);
+        hiddenWeightFormula.setHiddenOutSub(hiddenOutSub);
+        hiddenWeightFormula.setLists(list);
+
+
+        MathFormula mathFormula = iMathFormula.createMathFormula(hiddenWeightFormula);
+        return mathFormula ;
     }
 }
 

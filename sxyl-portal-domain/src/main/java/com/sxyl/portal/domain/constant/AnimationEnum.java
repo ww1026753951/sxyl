@@ -12,14 +12,28 @@ public enum AnimationEnum {
     COPY(1,"复制"),
     //移动
     MOVE(2,"移动"),
-    //变色
-    CHANGE_COLOR(3,"变色"),
+    //交换对象
+    SWAP(3,"交换"),
 
     //销毁
     DESTROY(4,"销毁"),
+    //移动
+    MOVE_FORMULA_RESULT(5,"移动公式结果并且刷新目标id"),
+    //复制公式
+    COPY_FORMULA_RESULT(6,"复制公式结果"),
+    //变色
+    CHANGE_COLOR(7,"变色"),
+    //展示显示
+    SHOW(8,"展示显示内容"),
+    //展示显示
+    HIDE(9,"隐藏内容"),
 
     //交换内容
     CHANGE_CONTENT(10,"交换内容"),
+    //刷新公式
+    FRESH_FORMULA(11,"刷新公式"),
+    //清空公式
+    CLEAR_FORMULA(12,"清空公式"),
 
     //乘法
     MULTIPLY(51,"乘法"),

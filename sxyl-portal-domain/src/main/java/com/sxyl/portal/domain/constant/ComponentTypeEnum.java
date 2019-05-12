@@ -13,7 +13,11 @@ public enum ComponentTypeEnum {
     //线的枚举
     LINE(5,"line"),
     //文字的附加样式
-    TSPAN(6,"tspan");
+    TSPAN(6,"tspan"),
+    //文字的附加样式
+    FORMULA(7,"formula"),
+    //文字的附加样式
+    RECT_AND_TEXT(100,"rect");
 
     private final int type;
     private final String desc;

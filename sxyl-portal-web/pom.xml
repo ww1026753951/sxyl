@@ -152,6 +152,11 @@
 				<version>2.1</version>
 				<configuration>
 					<warName>sxyl-portal-web</warName>
+                    <!--<packagingExcludes>-->
+                        <!--js/sxyl.js,-->
+                        <!--js/sxyl.graph.js,-->
+                        <!--js/animation/animation.base.js-->
+                    <!--</packagingExcludes>-->
 				</configuration>
 			</plugin>
             <plugin>

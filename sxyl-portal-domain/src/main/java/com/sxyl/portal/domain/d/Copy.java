@@ -22,7 +22,7 @@ public class Copy extends AnimationComponent implements Serializable {
     /****
      * copy data
      */
-    private boolean cdf;
+//    private boolean cdf;
 
     public Copy() {
     }
@@ -32,11 +32,11 @@ public class Copy extends AnimationComponent implements Serializable {
         this.tidEnd = tidEnd;
     }
 
-    public Copy(String sid, String tidEnd, boolean cdf) {
-        this.sid = sid;
-        this.tidEnd = tidEnd;
-        this.cdf = cdf;
-    }
+//    public Copy(String sid, String tidEnd, boolean cdf) {
+//        this.sid = sid;
+//        this.tidEnd = tidEnd;
+//        this.cdf = cdf;
+//    }
 
     public String getSid() {
         return sid;
@@ -54,13 +54,13 @@ public class Copy extends AnimationComponent implements Serializable {
         this.tidEnd = tidEnd;
     }
 
-    public boolean getCdf() {
-        return cdf;
-    }
-
-    public void setCdf(boolean cdf) {
-        this.cdf = cdf;
-    }
+//    public boolean getCdf() {
+//        return cdf;
+//    }
+//
+//    public void setCdf(boolean cdf) {
+//        this.cdf = cdf;
+//    }
 
     @Override
     public void setAnimationType() {

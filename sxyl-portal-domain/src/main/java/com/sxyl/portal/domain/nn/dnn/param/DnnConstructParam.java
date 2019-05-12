@@ -17,7 +17,9 @@ public class DnnConstructParam implements Serializable {
      */
     private DnnInputLayer dnnInputLayer;
 
-    //隐藏层结构
+    /***
+     * 隐藏层结构
+     */
     private List<DnnHiddenLayer> dnnHiddenLayerList;
 
     /****

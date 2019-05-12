@@ -21,6 +21,7 @@ public class Sigmoid extends AnimationComponent implements Serializable {
     private String cid;
 
 
+
     public Sigmoid() {
     }
 
@@ -49,4 +50,5 @@ public class Sigmoid extends AnimationComponent implements Serializable {
     public void setCid(String cid) {
         this.cid = cid;
     }
+
 }

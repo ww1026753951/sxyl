@@ -3,7 +3,9 @@ package com.sxyl.portal.domain.constant;
 public enum  ComponentCompositeEnum {
 
 
-    //水平的枚举
+    //NONE
+    NONE(0,"自定义,不做 x,y轴的相加,后台处理"),
+    //水平的枚举 , x的值不变,y值会增加
     HORIZONTAL(1,"水平的枚举"),
     //垂直的枚举
     VERTICAL(2,"垂直的枚举");

@@ -11,11 +11,22 @@ public class Destroy extends AnimationComponent implements Serializable {
 
     private String id;
 
+    private String[] ids;
+
     public Destroy() {
     }
 
     public Destroy(String id) {
         this.id = id;
+    }
+
+    public Destroy(String id, String ad) {
+        this.id = id;
+        super.setAd(ad);
+    }
+
+    public Destroy(String... id) {
+        this.ids = id;
     }
 
     public String getId() {
@@ -24,6 +35,14 @@ public class Destroy extends AnimationComponent implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String[] getIds() {
+        return ids;
+    }
+
+    public void setIds(String[] ids) {
+        this.ids = ids;
     }
 
     @Override

@@ -33,21 +33,27 @@
 //
 // }
 function go() {
-    var v = $("#sxylspeed").val();
-    if(v){
-        SXYL.speed = v;
-    }
+    // var v = $("#sxylspeed").val();
+    // if(v){
+    //     SXYL.speed = v;
+    // }
+    //
+    // var ob = $("#go-pause");
+    // if(parseInt(ob.data("type")) ==0){
+    //     window.clearInterval(SXYL.execute_i);
+    //     ob.html("继续");
+    //     ob.data("type" ,"1");
+    // }else {
+    //     SXYL.execute_i = setInterval(SXYL.ANIMATION.executeAnimation, SXYL.speed*1.2);
+    //     ob.html("暂停");
+    //     ob.data("type" ,"0");
+    // }
 
-    var ob = $("#go-pause");
-    if(parseInt(ob.data("type")) ==0){
-        window.clearInterval(SXYL.execute_i);
-        ob.html("继续");
-        ob.data("type" ,"1");
-    }else {
-        SXYL.execute_i = setInterval(SXYL.ANIMATION.executeAnimation, SXYL.speed*1.2);
-        ob.html("暂停");
-        ob.data("type" ,"0");
-    }
+    SXYL.DOM.swapElement({sid:"d1",tid:"d2"});
+
+    SXYL.DOM.swapElement({sid:"testCircle1",tid:"testCircle2"});
+
+
 
 }
 
@@ -86,18 +92,18 @@ function go() {
 
 ##    z = 半径除以 10    cx - z - 文本的宽度计算     cy + z
 
-##    <g id="g1">
-##        <circle id="testCircle" cx="100" cy="50" r="40" stroke="black" fill="blue"/>
-##        <text x="96" y="54" fill="red">S</text>
-##    </g>
+    <g id="g1">
+        <circle id="testCircle1" cx="100" cy="50" r="40" stroke="black" fill="blue"/>
+        <text id="d1" x="96" y="54" fill="red">S</text>
+    </g>
 ##
 ##    <line x1="128" y1="78" x2="300" y2="200" style="stroke:rgb(99,99,99);stroke-width:2"/>
 
 ##    292
-##    <g id="g2">
-##        <circle id="testCircle2" cx="300" cy="200" r="80" stroke="black" fill="white"/>
-##        <text id="d2" x="252" y="208" fill="red">llllllllllll</text>
-##    </g>
+    <g id="g2">
+        <circle id="testCircle2" cx="300" cy="200" r="80" stroke="black" fill="white"/>
+        <text id="d2" x="252" y="208" fill="red">llllllllllll</text>
+    </g>
 
 
 
@@ -145,28 +151,28 @@ function go() {
 
 
     var cy = 100;
-    $.ajax({
-        type: 'POST',
-        url: "/ml/dnnConstruct",
-        success: function (d) {
-            var parent = SXYL.GRAPH.getContext();
-            //初始化dom结构
-            SXYL.GRAPH.initPosition();
-            SXYL.GRAPH.drawByComponent(parent , d.group);
-
-            //初始化公式结构
-            SXYL.ANIMATION.cleanFormulaStep();
-            SXYL.ANIMATION.initFormulaStep(d.fa);
-
-            //执行步骤
-            SXYL.GRAPH.initPosition();
-            SXYL.ANIMATION.ALL_STEP = d.at;
-            SXYL.execute_i = setInterval(SXYL.ANIMATION.executeAnimation, SXYL.speed*1.2);
-
-            // SXYL.GRAPH.L(parent,"inputLayer1-0","outputLayer1-2")
-            // test_d();
-        }
-    });
+    // $.ajax({
+    //     type: 'POST',
+    //     url: "/ml/dnnConstruct",
+    //     success: function (d) {
+    //         var parent = SXYL.GRAPH.getContext();
+    //         //初始化dom结构
+    //         SXYL.GRAPH.initPosition();
+    //         SXYL.GRAPH.drawByComponent(parent , d.group);
+    //
+    //         //初始化公式结构
+    //         SXYL.ANIMATION.cleanFormulaStep();
+    //         SXYL.ANIMATION.initFormulaStep(d.fa);
+    //
+    //         //执行步骤
+    //         SXYL.GRAPH.initPosition();
+    //         SXYL.ANIMATION.ALL_STEP = d.at;
+    //         SXYL.execute_i = setInterval(SXYL.ANIMATION.executeAnimation, SXYL.speed*1.2);
+    //
+    //         // SXYL.GRAPH.L(parent,"inputLayer1-0","outputLayer1-2")
+    //         // test_d();
+    //     }
+    // });
 
 
     // function test_d() {
@@ -183,20 +189,20 @@ function go() {
 
 
 
-
-    MathJax.Hub.Register.StartupHook("End", function(){
-
-        var svg = d3.select('#sortAlg');
-        svg.selectAll('.tick').each(function(){
-
-            var self = d3.select(this),
-                    g = self.select('text>div>span>svg');
-
-            g.remove();
-            self.append(function(){
-                return g.node();
-            });
-        });
-
-    })
+    //
+    // MathJax.Hub.Register.StartupHook("End", function(){
+    //
+    //     var svg = d3.select('#sortAlg');
+    //     svg.selectAll('.tick').each(function(){
+    //
+    //         var self = d3.select(this),
+    //                 g = self.select('text>div>span>svg');
+    //
+    //         g.remove();
+    //         self.append(function(){
+    //             return g.node();
+    //         });
+    //     });
+    //
+    // })
 </script>

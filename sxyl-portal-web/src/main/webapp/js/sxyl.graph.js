@@ -3,8 +3,8 @@ SXYL.GRAPH = {
     y:0,
     addX:false,//x累加的标志位
     addY:false,//y累加的标志位
-    xStack:null,
-    yStack:null,
+    xStack:new Array(),
+    yStack:new Array(),
 
     //临时的x坐标,现在主要用于线上的文字
     currentX:undefined,
@@ -20,6 +20,15 @@ SXYL.GRAPH = {
         SXYL.GRAPH.yStack = new Array() ;
         SXYL.GRAPH.currentX = undefined;
         SXYL.GRAPH.currentY = undefined;
+    },
+    //formula true 代表可继续执行, false 代表锁住
+    formulaFlag : true ,
+    formulaCheck:function(){
+        if(SXYL.GRAPH.formulaFlag){
+            return true;
+        }else{
+            setTimeout(SXYL.GRAPH.formulaCheck, 1000);
+        }
     },
     /****
      * 初始化背景
@@ -50,32 +59,55 @@ SXYL.GRAPH = {
      *     value:矩形的值
      * }
      */
-    drawRect:function (o) {
-        //初始化左间距,默认为100
-        if(!o.marginLeft){
-            o.marginLeft = 100;
-        }else {
-            o.marginLeft = o.marginLeft + SXYL.DOM.defaultSpaceX ;
+    drawRect:function (parent,o) {
+        var pContent = parent ;
+        //兼容老版本，老版本没有传parent ,值传了o ,所以当 o为undefined 时
+        if(o == undefined){
+            o = parent;
+            pContent = SXYL.GRAPH.getContext();
         }
+        var fill = "red";
+        if(o.fill){
+            fill = o.fill;
+        }
+        //初始化左间距,默认为100
+        var left = o.ml;
+        if(!left){
+            left = 100;
+        }else {
+            left = left + SXYL.DOM.defaultSpaceX ;
+        }
+        var height = 0 ;
         //矩形的值
-        var v = (parseInt(o.value))*5;
-        var tarG = SXYL.GRAPH.getContext().append("g")
+        if(o.height){
+            height = o.height;
+        }else{
+            height = (parseInt(o.value))*5;
+        }
+        var top = 0 ;
+        if(o.t){
+            top = o.t;
+        }else{
+            top = (300 - height);
+        }
+
+        var tarG = pContent.append("g")
             .attr("id", o.id)
-            .attr("transform", "translate("+o.marginLeft+","+(300 - v)+")");
+            .attr("transform", "translate("+left+","+ top+")");
         tarG.append("rect")
             .attr("width", 40)
-            .attr("height", v)
-            .style("fill","red");
-        var y = v - 5 ;
+            .attr("height", height)
+            .style("fill",fill)
+            .style("stroke","black");
         tarG.append("text")
             .attr("x", 13)
-            .attr("y", y)
+            .attr("y", height-5)
             .text(o.value);
-        return {left:o.marginLeft}
+        return {left:left}
     },
 
     /****
-     * 画园
+     * 画圆
      * @param o
      * @param o.c 对象中园的对象内容
      * @param o.c.r 圆的半径
@@ -85,9 +117,12 @@ SXYL.GRAPH = {
     drawCircle:function (o) {
         //初始化左间距,默认为100
 
+
+
         //矩形的值
         var tarG = SXYL.GRAPH.getContext().append("g")
             .attr("id", o.id);
+
 
         tarG.append("circle")
             .attr("id", o.c.id)
@@ -168,10 +203,11 @@ SXYL.GRAPH = {
             .attr("x", x)
             .attr("y", y)
             .attr("style",o.sts)
-            .text(o.st); //o.st
-        if(o.d){
-            ob.datum(o.d);
-        }
+            .text(o.st)
+            .style("display",o.h?o.h:"inline"); //o.st
+        // if(o.d){
+        //     ob.datum(o.d);
+        // }
         //附加属性
         if(o.attr){
             for (var i =0 ; i <o.attr.length ; i ++){
@@ -203,7 +239,8 @@ SXYL.GRAPH = {
             var y1 = parseInt(o.y) + parseInt(o.y1);
             var y2 = parseInt(o.y) + parseInt(o.y2);
             tarG = parent.append("line").attr("x1",x1).attr("y1",y1).attr("id",o.id)
-                .attr("x2",x2).attr("y2",y2).attr("style","stroke:rgb(99,99,99);");
+                .attr("x2",x2).attr("y2",y2).attr("style","stroke:rgb(99,99,99);")
+                .style("display",o.h?o.h:"inline");
         }else {
             //different value
             var dv = different(o.sid,o.tid,o.lpt);
@@ -213,7 +250,8 @@ SXYL.GRAPH = {
             //     .attr("x2", parseFloat(tx)+parseFloat(targetX)).attr("y2",parseFloat(ty)+parseFloat(targetY)).attr("style","stroke:rgb(99,99,99);");
 
             tarG = parent.append("line").attr("x1",dv.sx).attr("y1",dv.sy).attr("id",o.id)
-                .attr("x2",dv.tx).attr("y2",dv.ty).attr("style","stroke:rgb(99,99,99);");
+                .attr("x2",dv.tx).attr("y2",dv.ty).attr("style","stroke:rgb(99,99,99);")
+                .style("display",o.h?o.h:"inline");
         }
 
 
@@ -292,6 +330,21 @@ SXYL.GRAPH = {
     },
 
     /***
+     * draw svg  公式标签
+     * @param parent
+     * @returns {*|void}
+     */
+    F:function(parent,o){
+        //文本 tspan的值
+        var fObject = $("#formula_object");
+        fObject.text(o.fc);
+        fObject.attr("rfc" , o.rfc)
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        return {ob:parent};
+
+    },
+
+    /***
      * draw svg  circle 标签
      * @param parent
      * @returns {*|void}
@@ -304,19 +357,8 @@ SXYL.GRAPH = {
             .attr("cy", o.y)//纵坐标
             .attr("r", o.r)//半径
             .attr("stroke", o.s?o.s:"black")//半径
-            .style("fill",o.f?o.f:"white");
-
-        // var ttt = parent.append("text")
-        //     .attr("x", o.x)
-        //     .attr("y", o.y).attr("style","text-anchor: middle")
-        //     .text(o.st);
-        //
-        // parent.append("text")
-        //     .attr("x", parseInt(o.x) - parseInt(o.r))
-        //     .attr("y", o.y).attr("style","text-anchor: end")
-        //     .text("W1=0"); //o.st
-
-
+            .style("fill",o.f?o.f:"white")
+            .style("display",o.h?o.h:"inline");
 
         return {
             ob:ob,
@@ -359,12 +401,10 @@ SXYL.GRAPH = {
         if(o.currentComponent){
             for (var j = 0;j < o.currentComponent.length;j++){
                 var childOb = o.currentComponent[j];
-
                 //如父元素为line ,则重新计算 x,y的值
                 if(o.ct == parseInt(SXYL.GRAPH.GRAPH_TYPE.LINE)){
                     SXYL.GRAPH.computePosition(o,childOb);
                 }
-
                 SXYL.GRAPH.drawByComponent(parent , childOb);
             }
         }
@@ -375,7 +415,7 @@ SXYL.GRAPH = {
         if(obParent.bottom && SXYL.GRAPH.addY){
             SXYL.GRAPH.y = obParent.bottom;
         }
-        if (o.ct== SXYL.GRAPH.GRAPH_TYPE.GROUP && o.compose){
+        if (o.ct== SXYL.GRAPH.GRAPH_TYPE.GROUP && o.compose && o.compose>0){
             //位置的栈赋值
             SXYL.GRAPH.xStack.push(SXYL.GRAPH.x);
             SXYL.GRAPH.yStack.push(SXYL.GRAPH.y);
@@ -388,13 +428,15 @@ SXYL.GRAPH = {
             }
         }
 
-        if(o.ct == SXYL.GRAPH.GRAPH_TYPE.GROUP ){
+        if(o.ct == SXYL.GRAPH.GRAPH_TYPE.GROUP  && o.compose && o.compose>0){
             if(SXYL.GRAPH.addX){
                 SXYL.GRAPH.x = SXYL.GRAPH.xStack.pop();
             }
             if(SXYL.GRAPH.addY){
                 SXYL.GRAPH.y = SXYL.GRAPH.yStack.pop();
             }
+            SXYL.GRAPH.addX = false;
+            SXYL.GRAPH.addY = false;
         }
         return ob ;
     },
@@ -462,13 +504,17 @@ SXYL.GRAPH.GRAPH_MAP = {
     2:{f:SXYL.GRAPH.T},
     4:{f:SXYL.GRAPH.C},
     5:{f:SXYL.GRAPH.L},
-    6:{f:SXYL.GRAPH.TS}
+    6:{f:SXYL.GRAPH.TS},
+    7:{f:SXYL.GRAPH.F},
+    100:{f:SXYL.GRAPH.drawRect}
+
 }
 
 /****
  * position Map
  */
 SXYL.GRAPH.POSITION_MAP = {
+    0:{addX:false , addY:false},
     1:{addX:true , addY:false},
     2:{addX:false, addY:true}
 }

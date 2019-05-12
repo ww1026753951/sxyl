@@ -4,8 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="思想摇篮 动画算法 算法动画">
+    <meta name="description" content="思想摇篮 动画算法 算法动画 排序 堆排序">
     <meta name="author" content="谷禾水">
+    <link rel="icon" href="/favicon.ico">
+    <title>动画算法,算法动画</title>
     <title>$!{dc.title}</title>
     <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="/css/bootstrap/3-col-portfolio.css" rel="stylesheet">
@@ -16,25 +18,27 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="#">Start Bootstrap</a>
+        <a class="navbar-brand" href="/portal">
+##            动画算法
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home
+                    <a class="nav-link" href="/portal">Home
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
+##                <li class="nav-item">
+##                    <a class="nav-link" href="#">About</a>
+##                </li>
+##                <li class="nav-item">
+##                    <a class="nav-link" href="#">Services</a>
+##                </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Services</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="mailto:ww1026753951@163.com">Contact</a>
                 </li>
             </ul>
         </div>
@@ -45,17 +49,17 @@
 <div class="container">
 
     <!-- Page Heading -->
-    <h1 class="my-4">Page Heading
-        <small>Secondary Text</small>
+    <h1 class="my-4">动画算法
+##        <small>作者:谷禾水</small>
     </h1>
 
     <div class="row">
         <div class="col-lg-4 col-sm-6 portfolio-item">
             <div class="card h-100">
-                <a href="/sort"><img class="card-img-top" src="/skin/algorithms/Sorting_quicksort_anim.gif" alt="" style="width: 100% " height="300px"></a>
+                <a href="/sort" target="_blank"><img class="card-img-top" src="/skin/algorithms/Sorting_quicksort_anim.gif" alt="" style="width: 100% " height="200px"></a>
                 <div class="card-body">
                     <h4 class="card-title">
-                        <a href="/sort">排序算法</a>
+                        <a href="/sort" target="_blank">排序算法</a>
                     </h4>
                     <p class="card-text">所谓排序，就是使一串记录，按照其中的某个或某些关键字的大小，递增或递减的排列起来的操作。排序算法，就是如何使得记录按照要求排列的方法。排序算法在很多领域得到相当地重视，尤其是在大量数据的处理方面。一个优秀的算法可以节省大量的资源。在各个领域中考虑到数据的各种限制和规范，要得到一个符合实际的优秀算法，得经过大量的推理和分析。</p>
                 </div>
@@ -63,34 +67,35 @@
         </div>
         <div class="col-lg-4 col-sm-6 portfolio-item">
             <div class="card h-100">
-                <a href="#"><img class="card-img-top" src="/skin/jvm/JVM-Architecture.png" alt=""  style="width: 400 " height="300px"></a>
+                <a href="/sort/heapSortPortal" target="_blank"><img class="card-img-top" src="/skin/algorithms/Heap-Sort.png" style="width: 100% " height="200px" alt=""></a>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a href="/sort/heapSortPortal"  target="_blank">堆排序</a>
+                    </h4>
+                    <p class="card-text">堆排序.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-sm-6 portfolio-item">
+            <div class="card h-100">
+                <a href="/ml/dnnPortal" target="_blank"><img class="card-img-top" src="/skin/nn/dnn.jpg" alt="深度学习" height="200px"></a>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a href="/ml/dnnPortal" target="_blank">深度学习(dnn)</a>
+                    </h4>
+                    <p class="card-text">深度学习</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6 portfolio-item">
+            <div class="card h-100">
+                <a href="#"><img class="card-img-top" src="/skin/jvm/JVM-Architecture.png" alt=""  style="width: 400 " height="200px"></a>
                 <div class="card-body">
                     <h4 class="card-title">
                         <a href="#">jvm(敬请期待)</a>
                     </h4>
                     <p class="card-text">JVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-6 portfolio-item">
-            <div class="card h-100">
-                <a href="/ml/dnnPortal"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-                <div class="card-body">
-                    <h4 class="card-title">
-                        <a href="#">深度学习(dnn)</a>
-                    </h4>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos quisquam, error quod sed cumque, odio distinctio velit nostrum temporibus necessitatibus et facere atque iure perspiciatis mollitia recusandae vero vel quam!</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-6 portfolio-item">
-            <div class="card h-100">
-                <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-                <div class="card-body">
-                    <h4 class="card-title">
-                        <a href="#">Project Four</a>
-                    </h4>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae.</p>
                 </div>
             </div>
         </div>
@@ -130,12 +135,12 @@
         <li class="page-item">
             <a class="page-link" href="#">1</a>
         </li>
-        <li class="page-item">
-            <a class="page-link" href="#">2</a>
-        </li>
-        <li class="page-item">
-            <a class="page-link" href="#">3</a>
-        </li>
+##        <li class="page-item">
+##            <a class="page-link" href="#">2</a>
+##        </li>
+##        <li class="page-item">
+##            <a class="page-link" href="#">3</a>
+##        </li>
         <li class="page-item">
             <a class="page-link" href="#" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
@@ -152,7 +157,7 @@
 
 <footer class="py-5 bg-dark">
     <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; 2018 $!{dc.domain} $!{dc.domainName} by 谷禾水 .All rights reserved</p>
+        <p class="m-0 text-center text-white">Copyright &copy; 2018-2019 $!{dc.domain} $!{dc.domainName} by <a href="mailto:ww1026753951@163.com">谷禾水</a> .All rights reserved</p>
         <p class="m-0 text-center text-white">版权声明：本站原创文章、作品，未经本人许可，任何人或机构不得以任何形式对本站内容进行复制作商业用途.</p>
     </div>
 </footer>

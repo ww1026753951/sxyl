@@ -1,5 +1,6 @@
 package com.sxyl.portal.service.nn.impl;
 
+import com.sxyl.portal.common.JUUID;
 import com.sxyl.portal.domain.constant.*;
 import com.sxyl.portal.domain.constant.graph.BaselineShiftEnum;
 import com.sxyl.portal.domain.graph.*;
@@ -19,6 +20,10 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
 
     //数值的 缓冲值
     private int VALUE_BUFFER = 20;
+
+
+    //数值的 缓冲值
+    private int ERROR_BUFFER = 22;
 
     //权重的上下标的buffer
     private int WEIGHT_SUB_BUFFER = -6 ;
@@ -86,16 +91,16 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
         }
 
         //bias的偏置量
-        DnnBiasNeuron dnnBiasNeuron = dnnInputLayer.getDnnBiasNeuron();
-        Circle circleBias = new Circle(dnnBiasNeuron.getId(), BIAS_R ,BIAS_COLOR);
-        circleBias.setMt(15);
-//        circleBias.setMl(40);
-        //圆心的文本
-        circleBias.addCurrentComponent(new Text(dnnBiasNeuron.getTextId() , 0,0,dnnBiasNeuron.getText() ,ShowTextPositionEnum.MIDDLE.getCode() ));
-
-        circleBias.addCurrentComponent(new Text(dnnBiasNeuron.getValueTextId(), 0,r + VALUE_BUFFER/3,
-                dnnBiasNeuron.getValueText(),ShowTextPositionEnum.MIDDLE.getCode()));
-        group.addChild(circleBias);
+//        DnnBiasNeuron dnnBiasNeuron = dnnInputLayer.getDnnBiasNeuron();
+//        Circle circleBias = new Circle(dnnBiasNeuron.getId(), BIAS_R ,BIAS_COLOR);
+//        circleBias.setMt(15);
+////        circleBias.setMl(40);
+//        //圆心的文本
+//        circleBias.addCurrentComponent(new Text(dnnBiasNeuron.getTextId() , 0,0,dnnBiasNeuron.getText() ,ShowTextPositionEnum.MIDDLE.getCode() ));
+//
+//        circleBias.addCurrentComponent(new Text(dnnBiasNeuron.getValueTextId(), 0,r + VALUE_BUFFER/3,
+//                dnnBiasNeuron.getValueText(),ShowTextPositionEnum.MIDDLE.getCode()));
+//        group.addChild(circleBias);
 
         return group;
     }
@@ -150,15 +155,15 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
             }
 
             //bias的偏置量
-            DnnBiasNeuron dnnBiasNeuron = dnnHiddenLayer.getDnnBiasNeuron();
-            Circle circleBias = new Circle(dnnBiasNeuron.getId(), BIAS_R ,BIAS_COLOR);
-            circleBias.setMt(30);
-//            circleBias.setMl(40);
-            //圆心的文本
-            circleBias.addCurrentComponent(new Text(dnnBiasNeuron.getTextId() , 0,0,dnnBiasNeuron.getText() ,ShowTextPositionEnum.MIDDLE.getCode() ));
-            circleBias.addCurrentComponent(new Text(dnnBiasNeuron.getValueTextId(), 0,r + VALUE_BUFFER/3,
-                    dnnBiasNeuron.getValueText(),ShowTextPositionEnum.MIDDLE.getCode()));
-            group.addChild(circleBias);
+//            DnnBiasNeuron dnnBiasNeuron = dnnHiddenLayer.getDnnBiasNeuron();
+//            Circle circleBias = new Circle(dnnBiasNeuron.getId(), BIAS_R ,BIAS_COLOR);
+//            circleBias.setMt(30);
+////            circleBias.setMl(40);
+//            //圆心的文本
+//            circleBias.addCurrentComponent(new Text(dnnBiasNeuron.getTextId() , 0,0,dnnBiasNeuron.getText() ,ShowTextPositionEnum.MIDDLE.getCode() ));
+//            circleBias.addCurrentComponent(new Text(dnnBiasNeuron.getValueTextId(), 0,r + VALUE_BUFFER/3,
+//                    dnnBiasNeuron.getValueText(),ShowTextPositionEnum.MIDDLE.getCode()));
+//            group.addChild(circleBias);
 
 
         }
@@ -211,11 +216,20 @@ public class NnConstructServiceImpl extends NnCommonService implements NnConstru
             circle.addCurrentComponent(new Text(dnnOutputNeuron.getActualTextId() ,r + VALUE_BUFFER,0,
                     dnnOutputNeuron.getActualText(),ShowTextPositionEnum.START.getCode()));
 
+            circle.addCurrentComponent(new Text(JUUID.getUUID() ,r + new Double(VALUE_BUFFER*1.8).intValue(),0,
+                    "=",ShowTextPositionEnum.START.getCode()));
+
+            circle.addCurrentComponent(new Text(dnnOutputNeuron.getActualValueTextId() ,r + ERROR_BUFFER*2,0,
+                    dnnOutputNeuron.getActualValueText(),ShowTextPositionEnum.START.getCode()));
+
             //损失函数
-            Text cost = new Text(dnnOutputNeuron.getCostValueTextId() ,r+ VALUE_BUFFER,r +VALUE_BUFFER,
-                    dnnOutputNeuron.getCostValueText(),ShowTextPositionEnum.START.getCode());
-            cost.setD(dnnOutputNeuron.getIndex());
-            circle.addCurrentComponent(cost);
+            circle.addCurrentComponent(new Text(dnnOutputNeuron.getCostTextId() ,r+ VALUE_BUFFER,r +VALUE_BUFFER,
+                    dnnOutputNeuron.getCostText(),ShowTextPositionEnum.START.getCode()));
+
+            circle.addCurrentComponent(new Text(dnnOutputNeuron.getCostValueTextId() ,r + ERROR_BUFFER*3,r +VALUE_BUFFER,
+                    dnnOutputNeuron.getCostValueText(),ShowTextPositionEnum.START.getCode()));
+//            cost.setD(dnnOutputNeuron.getIndex());
+//            circle.addCurrentComponent(cost);
 
             group.addChild(circle);
         }

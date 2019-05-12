@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
-
     /*.axis {*/
         /*font: 10px sans-serif;*/
     /*}*/
-
     /*.axis path,*/
     /*.axis line {*/
         /*fill: none;*/
@@ -14,11 +12,21 @@
     /*}*/
 
 </style>
+<head>
 
+    <script src="/js/math/MathJax.js?config=TeX-MML-AM_SVG"></script>
+    <script src="/js/math/latest.js?config=TeX-MML-AM_SVG" ></script>
+
+</head>
 <body>
 <span>$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$</span>
 
+<div id="MathDiv">
+    The answer you provided is: $$y = {y+1}$$.
+</div>
 
+<button onclick="mathjaxTest()" >sdfsdf
+</button>
 <script src="//d3js.org/d3.v3.js"></script>
 ##<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_SVG">
 ##
@@ -26,12 +34,16 @@
 
 ##<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG' ></script>
 ##<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_SVG' ></script>
+</body>
 
-
-<script src="/js/math/MathJax.js?config=TeX-MML-AM_SVG"></script>
-<script src="/js/math/latest.js?config=TeX-MML-AM_SVG" ></script>
 
 <script>
+
+    function mathjaxTest() {
+        // debugger
+        var math = MathJax.Hub.getAllJax("MathDiv")[0];
+        MathJax.Hub.Queue(["Text",math,"x+1"]);
+    }
 
     // MathJax.Hub.Config({
     //     tex2jax: {
@@ -103,24 +115,47 @@
                         // }
                 // );
 
+        // debugger
+        MathJax.Hub.Typeset(svg.node());
+        // debugger
+        // MathJax.Hub.Queue(["Typeset", MathJax.Hub, svg.node()]);
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        // svg.selectAll('.tick').each(function(){
+        //
+        //     debugger
+        //     // debugger
+        //     var self = d3.select(this),
+        //             g = self.select('text>div>span>svg');
+        //     g.remove();
+        //     self.append(function(){
+        //         return g.node();
+        //     });
+        // });
+
+        // debugger
+
+
+        // debugger
+        // a=2
         // svg.append("path")
         //         .attr("d", "M" + width/2 + "," + height/2 + "L" + (width/2 + x) + "," + (height/2 - y))
         //         .style("stroke","steelblue")
         //         .style("stroke-width","2px");
-        debugger;
+        // debugger;
     });
 
 
-    setTimeout(() => {
-
-
+    // setTimeout(() => {
+    //
+    //
     MathJax.Hub.Register.StartupHook("End", function() {
         setTimeout(() => {
 
+            debugger
 
             svg.selectAll('.tick').each(function(){
 
-                debugger
+                // debugger
             var self = d3.select(this),
                     g = self.select('text>div>span>svg');
             g.remove();
@@ -131,9 +166,10 @@
     }, 1000);
     });
 
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub, svg.node()]);
+    // MathJax.Hub.Queue(["Typeset", MathJax.Hub, svg.node()]);
 
     }, 1000);
 
 
+    // debugger
 </script>

@@ -28,6 +28,14 @@ public class Group extends GraphComponent implements Serializable {
      */
     private boolean cache;
 
+    public Group(){
+    }
+
+    public Group(String id , boolean cache){
+        super.setId(id);
+        this.cache = cache ;
+    }
+
     /****
      *分组内图画的对象
      */

@@ -1,7 +1,9 @@
 package com.sxyl.portal.service.nn;
 
+import com.sxyl.portal.common.JUUID;
 import com.sxyl.portal.domain.constant.formula.FormulaConstant;
 import com.sxyl.portal.domain.constant.graph.BaselineShiftEnum;
+import com.sxyl.portal.domain.d.*;
 import com.sxyl.portal.domain.graph.TSPAN;
 import com.sxyl.portal.domain.graph.Text;
 import org.apache.commons.lang.StringUtils;
@@ -77,6 +79,16 @@ public class NnCommonService {
      */
     protected String getFormulaId(){
         return "formula_id";
+    }
+
+
+
+    /***
+     * 获得公式id
+     * @return
+     */
+    protected String getFormulaObjectId(){
+        return "foreign_formula_object";
     }
 
 
@@ -409,6 +421,37 @@ public class NnCommonService {
             t.addChild(new TSPAN(sup, BaselineShiftEnum.LINE_SUPER.getCode() , dxSup ,dySup));
         }
         return t ;
+    }
+
+
+    /***
+     * 移动对象到公式毕竟更新公式
+     * @param total
+     * @param targetId
+     * @return
+     */
+    protected String copyObjectAndMove(AnimationTotal total ,String targetId){
+        String rid = JUUID.getUUID();
+        total.addComponent(new Copy( targetId,rid ));
+        total.addComponent(new Move(rid , getFormulaObjectId() )) ;
+        total.addComponent(new RefreshFormula(rid ));
+        return rid;
+    }
+
+    /***
+     * 计算公式结果,并且将结果转移到对象中
+     * @param total
+     * @param targetId
+     * @return
+     */
+    protected String copyFormulaResult(AnimationTotal total ,String targetId){
+        String resultUuid = JUUID.getUUID();
+        total.addComponent(new CopyFormulaResult(getFormulaObjectId() , resultUuid));
+        total.addComponent(new Move(resultUuid, targetId)) ;
+        total.addComponent(new ChangeContent(targetId, resultUuid));
+        //清空对象
+        total.addComponent(new ClearFormula(getFormulaObjectId()));
+        return resultUuid ;
     }
 
 }

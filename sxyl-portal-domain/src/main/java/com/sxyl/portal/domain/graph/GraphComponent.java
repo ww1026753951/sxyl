@@ -52,6 +52,11 @@ public abstract class GraphComponent implements Serializable {
      */
     private Integer d;
 
+    /***
+     *
+     */
+    private String h ;
+
 
     /****
      *分组内图画的对象, 不会增加到节点下面， 只会增加到同级上,
@@ -134,5 +139,13 @@ public abstract class GraphComponent implements Serializable {
 
     public void setAttr(List<Attr> attr) {
         this.attr = attr;
+    }
+
+    public String getH() {
+        return h;
+    }
+
+    public void setH(String h) {
+        this.h = h;
     }
 }

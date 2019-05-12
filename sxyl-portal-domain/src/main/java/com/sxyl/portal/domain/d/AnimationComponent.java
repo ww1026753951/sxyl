@@ -19,7 +19,7 @@ public abstract class AnimationComponent implements Serializable {
      * 动画描述的编码,
      * 对应 ExecutionSequence 中的
      */
-    private Integer ad;
+    private String ad;
 
     public void setAt(Integer at) {
         this.at = at;
@@ -32,11 +32,11 @@ public abstract class AnimationComponent implements Serializable {
         return at;
     }
 
-    public Integer getAd() {
+    public String getAd() {
         return ad;
     }
 
-    public void setAd(Integer ad) {
+    public void setAd(String ad) {
         this.ad = ad;
     }
 

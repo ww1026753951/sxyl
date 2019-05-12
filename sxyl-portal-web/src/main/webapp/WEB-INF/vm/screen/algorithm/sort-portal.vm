@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
+    <meta name="description" content="动画算法,算法动画,排序,冒泡排序,鸡尾酒排序,选择排序,插入排序,快速排序,归并排序">
     <meta name="author" content="">
     <link rel="icon" href="/favicon.ico">
     <title>动画算法,算法动画,排序</title>
@@ -66,6 +66,11 @@
                             归并排序
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" type="7" style="cursor: pointer">
+                            堆排序
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -83,36 +88,10 @@
                     <div id="step-content">
                     </div>
 
-                    <div><p><b>伪代码</b></p></div>
-##                    <pre><b>procedure</b> cocktailShakerSort( A <b>:</b> list of sortable items ) <b>defined as:</b>
-##  <b>do</b>
-##    swapped&nbsp;:= false
-##    <b>for each</b> i <b>in</b> 0 <b>to</b> length( A ) - 2 <b>do:</b>
-##      <b>if</b> A[ i ] &gt; A[ i + 1 ] <b>then</b> <span style="color:green">// test whether the two elements are in the wrong order</span>
-##        swap( A[ i ], A[ i + 1 ] ) <span style="color:green">// let the two elements change places</span>
-##        swapped&nbsp;:= true
-##      <b>end if</b>
-##    <b>end for</b>
-##    <b>if not</b> swapped <b>then</b>
-##      <span style="color:green">// we can exit the outer loop here if no swaps occurred.</span>
-##      <b>break do-while loop</b>
-##    <b>end if</b>
-##    swapped&nbsp;:= false
-##    <b>for each</b> i <b>in</b> length( A ) - 2 <b>to</b> 0 <b>do:</b>
-##      <b>if</b> A[ i ] &gt; A[ i + 1 ] <b>then</b>
-##        swap( A[ i ], A[ i + 1 ] )
-##        swapped&nbsp;:= true
-##      <b>end if</b>
-##    <b>end for</b>
-##  <b>while</b> swapped <span style="color:green">// if no elements have been swapped, then the list is sorted</span>
-##<b>end procedure</b>
-##</pre>
-
-
-
-                    <div id="pseudo-code">
-
-                    </div>
+##                    <div><p><b>伪代码</b></p></div>
+##                    <div id="pseudo-code">
+##
+##                    </div>
                 </div>
             </div>
         </main>
@@ -129,9 +108,9 @@
 <!-- Bootstrap JS -->
 <script src="/js/bootstrap/bootstrap.min.js" ></script>
 
-<script src="/js/sxyl.graph.min.js"></script>
+<script src="/js/sxyl.graph.js"></script>
 <!-- Icons -->
-<script src="/js/sort/sort-common.min.js"></script>
+<script src="/js/sort/sort-common.js"></script>
 
 ##具体的排序算法
 <script src="/js/sort/s.min.js"></script>

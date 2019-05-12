@@ -53,10 +53,27 @@ SXYL.ANIMATION={
         1:{f:SXYL.DOM.copyElement},
         //移动对象
         2:{f:SXYL.DOM.moveElement},
+        //交换对象对象
+        3:{f:SXYL.DOM.swapElement},
         //销毁对象
         4:{f:SXYL.DOM.destroyElement},
-        //销毁对象
+        //移动公式对象结果
+        5:{f:SXYL.DOM.moveFormulaResult},
+
+        //拷贝对象结果
+        6:{f:SXYL.DOM.copyFormulaResult},
+
+        //变色
+        7:{f:SXYL.DOM.changeColor},
+
+        8:{f:SXYL.DOM.show},
+
+        //赋值对象内容
         10:{f:SXYL.DOM.changeElement},
+        //刷新公式
+        11:{f:SXYL.DOM.refreshFormula},
+        //清空公式
+        12:{f:SXYL.DOM.clearFormula},
         //累计乘积方法
         51:{f:SXYL.DOM.multiplyElement},
         //求和方法
@@ -80,19 +97,20 @@ SXYL.ANIMATION={
      * 执行操作步骤
      */
     executeAnimation : function () {
+        debugger
         var executeStep = SXYL.ANIMATION.ALL_STEP.acs;
 
         for (var i = SXYL.step_no ; i< executeStep.length  ; i++){
             var stepObject = executeStep[i];
             var type = stepObject.at;
 
+            if(stepObject.ad != undefined){
+                $("#step-content").html(stepObject.ad);
+            }
+
             var ob = SXYL.ANIMATION.AT_MAP[type];
             if(ob){
                 ob.f(stepObject);
-                // if(i==1){
-                //     return;
-                // }
-
             }
             SXYL.step_no++;
             if(SXYL.step_no == executeStep.length){
