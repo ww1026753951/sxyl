@@ -196,7 +196,6 @@ SXYL.GRAPH = {
 
         }
 
-        // debugger;
         //文本的值
         var ob = parent.append("text")
             .attr("id", o.id)

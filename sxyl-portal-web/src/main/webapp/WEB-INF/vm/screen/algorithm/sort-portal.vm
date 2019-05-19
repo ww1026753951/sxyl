@@ -108,9 +108,9 @@
 <!-- Bootstrap JS -->
 <script src="/js/bootstrap/bootstrap.min.js" ></script>
 
-<script src="/js/sxyl.graph.js"></script>
+<script src="/js/sxyl.graph.min.js"></script>
 <!-- Icons -->
-<script src="/js/sort/sort-common.js"></script>
+<script src="/js/sort/sort-common.min.js"></script>
 
 ##具体的排序算法
 <script src="/js/sort/s.min.js"></script>

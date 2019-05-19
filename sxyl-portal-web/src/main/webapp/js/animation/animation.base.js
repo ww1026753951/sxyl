@@ -97,7 +97,6 @@ SXYL.ANIMATION={
      * 执行操作步骤
      */
     executeAnimation : function () {
-        debugger
         var executeStep = SXYL.ANIMATION.ALL_STEP.acs;
 
         for (var i = SXYL.step_no ; i< executeStep.length  ; i++){

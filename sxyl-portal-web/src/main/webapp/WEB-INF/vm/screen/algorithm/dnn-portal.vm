@@ -166,11 +166,11 @@
 ##                        等号左边的损失函数为 变量 ,
                         <span>$$Error(all) = \sum\frac{1}{2}(y - \hat{y})^2$$</span>
 
-                        <span>$$\frac{\partial Error(all)}{\partial W^2} = \frac{\partial Error(all)}{\partial out^2}\frac{\partial out^2}{\partial net^2}\frac{\partial net^2}{\partial W^2} $$</span>
+                        <span>$$\frac{\partial Error(all)}{\partial W^2} = \frac{\partial Error(all)}{\partial a^2}\frac{\partial a^2}{\partial z^2}\frac{\partial z^2}{\partial W^2} $$</span>
                         <span>$$W^2 = W^2 - \frac{\partial Error(all)}{\partial W^2}$$</span>
 ##                        <span>$$\frac{\partial Error(Total)}{\partial W^1} = \frac{1}{m}sum_f(X;W)-y$$</span>
 
-                        <span>$$\frac{\partial Error(all)}{\partial W^1} = \frac{\partial Error(all)}{\partial out^1}\frac{\partial out^1}{\partial net^1}\frac{\partial net^1}{\partial W^1} $$</span>
+                        <span>$$\frac{\partial Error(all)}{\partial W^1} = \frac{\partial Error(all)}{\partial a^1}\frac{\partial a^1}{\partial z^1}\frac{\partial z^1}{\partial W^1} $$</span>
                         <span>$$W^1 = W^1 - \frac{\partial Error(all)}{\partial W^1}$$</span>
 
 

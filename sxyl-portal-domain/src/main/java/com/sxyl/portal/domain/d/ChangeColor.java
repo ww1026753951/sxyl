@@ -34,6 +34,11 @@ public class ChangeColor extends AnimationComponent implements Serializable {
     }
 
 
+
+
+
+
+
     public String[] getIds() {
         return ids;
     }

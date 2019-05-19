@@ -8,7 +8,7 @@
     <meta name="description" content="冒泡排序"/>
     <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <script src="/js/d3/d3.min.js"></script>
-    <script src="/js/sxyl.js"></script>
+    <script src="/js/sxyl.min.js"></script>
 ##    <script src="/js/pck/sxyl.min.js"></script>
 </head>
 <script>

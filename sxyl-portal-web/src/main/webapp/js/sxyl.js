@@ -246,7 +246,7 @@ SXYL.DOM.changeElementXY = function (id , x , y) {
  * @param o ,   x = o.x  , y = o.y  modifiedX = o.mx, modifiedY = o.my
  */
 SXYL.DOM.changeElementXYByObject = function (id , o) {
-    debugger
+
     var speed = o.speed;
     if(!speed){
         speed = 50 ;
@@ -280,7 +280,6 @@ SXYL.DOM.getDomXY = function (id) {
  * @param o.id 元素id
  */
 SXYL.DOM.moveElement = function(o){
-    // debugger
     var sid = d3.select("#"+o.id ) ;
     var xyDom = getXY(o.tid);
 

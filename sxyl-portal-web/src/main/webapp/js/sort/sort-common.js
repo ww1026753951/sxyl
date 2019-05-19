@@ -68,7 +68,6 @@ SXYL.SORT = {
 
     //runType  0:开始  1:暂停  2:继续
     run:function (f,speed) {
-        debugger
         var runType = $("#run-pause").attr("run-type");
         if(runType==0){
             $("#run-pause").attr("run-type" , 1) ;

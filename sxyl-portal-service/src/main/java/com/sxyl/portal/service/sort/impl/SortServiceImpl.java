@@ -62,43 +62,52 @@ public class SortServiceImpl implements SortService {
         for(int k=i*2+1;k<length;k=k*2+1){//从i结点的左子结点开始，也就是2i+1处开始
             if(minHeap){
 
-                if(k+1<length && arr.get(k).getValue().intValue() > arr.get(k+1).getValue().intValue()){//如果左子结点小于右子结点，k指向右子结点
+                if(k+1<length && arr.get(k).getValue().intValue() > arr.get(k+1).getValue().intValue()){//如果左子结点大于右子结点，k指向右子结点
                     k++;
                 }
                 //比较俩个元素
-                animationTotal.addComponent(new ChangeColor("red" , arr.get(k).getCid(),an.getCid()));
+                ChangeColor changeColor = new ChangeColor("red" , arr.get(k).getCid(),an.getCid());
+                changeColor.setAd(String.format("比较父节点元素与子节点元素"));
+                animationTotal.addComponent(changeColor);
 
-                if(arr.get(k).getValue().intValue() < an.getValue().intValue()){//如果子节点大于父节点，将子节点值赋给父节点（不用进行交换）
+                if(arr.get(k).getValue().intValue() < an.getValue().intValue()){//如果子节点小于父节点，将子节点值赋给父节点（不用进行交换）
                     animationTotal.addComponent(new Swap( new String[]{arr.get(k).getCid(),arr.get(k).getValueTextId()},
-                            new String[]{an.getCid(),an.getValueTextId()}));
+                            new String[]{an.getCid(),an.getValueTextId()},"由于子节点小于父节点,则交换位置"));
 
                     arr.set(i , arr.get(k));
                     i = k;
-                    animationTotal.addComponent(new ChangeColor("white" , arr.get(k).getCid(),an.getCid()));
-
+                    ChangeColor changeColor1 = new ChangeColor("white" , arr.get(k).getCid(),an.getCid());
+                    changeColor1.setAd("");
+                    animationTotal.addComponent(changeColor1);
                 }else{
-                    animationTotal.addComponent(new ChangeColor("white" , arr.get(k).getCid(),an.getCid()));
+                    ChangeColor changeColor1 = new ChangeColor("white" , arr.get(k).getCid(),an.getCid());
+                    changeColor1.setAd("");
+                    animationTotal.addComponent(changeColor1);
                     break;
                 }
-
             }else {
-
                 if(k+1<length && arr.get(k).getValue().intValue() < arr.get(k+1).getValue().intValue()){//如果左子结点小于右子结点，k指向右子结点
                     k++;
                 }
                 //比较俩个元素
-                animationTotal.addComponent(new ChangeColor("red" , arr.get(k).getCid(),an.getCid()));
+                ChangeColor changeColor = new ChangeColor("red" , arr.get(k).getCid(),an.getCid());
+                changeColor.setAd(String.format("比较父节点元素与子节点元素"));
+                animationTotal.addComponent(changeColor);
 
                 if(arr.get(k).getValue().intValue() > an.getValue().intValue()){//如果子节点大于父节点，将子节点值赋给父节点（不用进行交换）
                     animationTotal.addComponent(new Swap( new String[]{arr.get(k).getCid(),arr.get(k).getValueTextId()},
-                            new String[]{an.getCid(),an.getValueTextId()}));
+                            new String[]{an.getCid(),an.getValueTextId()} , "由于子节点大于父节点,则交换位置"));
 
                     arr.set(i , arr.get(k));
                     i = k;
-                    animationTotal.addComponent(new ChangeColor("white" , arr.get(k).getCid(),an.getCid()));
+                    ChangeColor changeColor1 = new ChangeColor("white" , arr.get(k).getCid(),an.getCid());
+                    changeColor1.setAd("");
+                    animationTotal.addComponent(changeColor1);
 
                 }else{
-                    animationTotal.addComponent(new ChangeColor("white" , arr.get(k).getCid(),an.getCid()));
+                    ChangeColor changeColor1 = new ChangeColor("white" , arr.get(k).getCid(),an.getCid());
+                    changeColor1.setAd("");
+                    animationTotal.addComponent(changeColor1);
                     break;
                 }
             }
@@ -318,7 +327,7 @@ public class SortServiceImpl implements SortService {
         for (int i=0 ;i< arrayNodes.size() ; i++){
             ArrayNode arrayNode = arrayNodes.get(i);
             animationTotal.addComponent(new Move(arrayNode.getRid() , arrayNode.getCid(),
-                    "生成满二叉树"
+                    "将数组生成完全二叉树"
             ));
             animationTotal.addComponent(new Destroy(arrayNode.getRid() ));
 

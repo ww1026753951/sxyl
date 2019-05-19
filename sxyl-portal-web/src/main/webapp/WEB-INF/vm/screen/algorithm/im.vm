@@ -132,12 +132,12 @@ function go() {
 <script src="/js/d3/d3.min.js"></script>
 <script src="/js/jquery/jquery-3.2.1.min.js" ></script>
 
-<script src="/js/sxyl.js"></script>
+<script src="/js/sxyl.min.js"></script>
 
 
 
-<script src="/js/sxyl.graph.js"></script>
-<script src="/js/animation/animation.base.js"></script>
+<script src="/js/sxyl.graph.min.js"></script>
+<script src="/js/animation/animation.base.min.js"></script>
 <script>
 
 
