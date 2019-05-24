@@ -28,7 +28,7 @@ public class MachineLearningController extends BaseController {
     private NnParamService nnParamService ;
 
     /***
-     * 首页跳转 
+     * 首页跳转  
      * @return
      * @throws Exception
      */
