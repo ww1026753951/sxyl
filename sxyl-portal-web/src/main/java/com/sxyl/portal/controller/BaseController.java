@@ -26,7 +26,7 @@ public class BaseController extends MultiActionController {
     };
 
     /****
-     * 根据域名获取
+     * 根据域名获取2
      * @return
      */
     protected DomainContent getDomainByReferer(HttpServletRequest request){
