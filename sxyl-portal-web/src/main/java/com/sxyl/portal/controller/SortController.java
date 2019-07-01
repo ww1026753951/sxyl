@@ -45,7 +45,7 @@ public class SortController extends BaseController{
 
 
     /***
-     * 首页跳转
+     *
      * @return
      * @throws Exception
      */
@@ -59,7 +59,7 @@ public class SortController extends BaseController{
     }
 
     /***
-     * 首页跳转
+     *
      * @return
      * @throws Exception
      */

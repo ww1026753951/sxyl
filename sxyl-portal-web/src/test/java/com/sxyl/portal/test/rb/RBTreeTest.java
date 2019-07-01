@@ -3,7 +3,9 @@ package com.sxyl.portal.test.rb;
 import com.sxyl.portal.domain.tree.rb.RBTree;
 
 public class RBTreeTest {
-    private static final int a[] = {10, 40, 30, 60, 90, 70, 20, 50, 80};
+//    private static final int a[] = {10, 40, 30, 60, 90, 70, 20, 50, 80};
+//private static final int a[] = new int[]{11,2,21,56,34,12,56,78,12,23};
+    private static final int a[] = new int[]{13,8,17,1,11,15,25,6,22,27};
     private static final boolean mDebugInsert = true;    // "插入"动作的检测开关(false，关闭；true，打开)
     private static final boolean mDebugDelete = true;    // "删除"动作的检测开关(false，关闭；true，打开)
 
@@ -12,8 +14,9 @@ public class RBTreeTest {
         RBTree<Integer> tree=new RBTree<Integer>();
 
         System.out.printf("== 原始数据: ");
-        for(i=0; i<ilen; i++)
+        for(i=0; i<ilen; i++){
             System.out.printf("%d ", a[i]);
+        }
         System.out.printf("\n");
 
         for(i=0; i<ilen; i++) {

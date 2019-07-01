@@ -168,6 +168,10 @@ SXYL.GRAPH = {
         if(SXYL.GRAPH.currentY){
             y = SXYL.GRAPH.currentY;
         }
+        var fill = o.f;
+        if(! fill){
+            fill='black';
+        }
         // var children = document.getElementById(t).childNodes;
         // var rect = children[children.length -1].getBoundingClientRect();
 
@@ -202,6 +206,7 @@ SXYL.GRAPH = {
             .attr("x", x)
             .attr("y", y)
             .attr("style",o.sts)
+            .attr("fill",fill)
             .text(o.st)
             .style("display",o.h?o.h:"inline"); //o.st
         // if(o.d){

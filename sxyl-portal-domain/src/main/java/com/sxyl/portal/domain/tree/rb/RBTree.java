@@ -1,4 +1,10 @@
 package com.sxyl.portal.domain.tree.rb;
+
+import com.sxyl.portal.domain.sort.ArrayNode;
+
+import static com.sxyl.portal.domain.tree.rb.RBTreeColor.BLACK;
+import static com.sxyl.portal.domain.tree.rb.RBTreeColor.RED;
+
 /**
  * Java 语言: 红黑树
  *
@@ -9,35 +15,37 @@ public class RBTree<T extends Comparable<T>> {
 
     private RBTNode<T> mRoot;    // 根结点
 
-    private static final boolean RED   = false;
-    private static final boolean BLACK = true;
 
-    public class RBTNode<T extends Comparable<T>> {
-        boolean color;        // 颜色
-        T key;                // 关键字(键值)
-        RBTNode<T> left;    // 左孩子
-        RBTNode<T> right;    // 右孩子
-        RBTNode<T> parent;    // 父结点
-
-        public RBTNode(T key, boolean color, RBTNode<T> parent, RBTNode<T> left, RBTNode<T> right) {
-            this.key = key;
-            this.color = color;
-            this.parent = parent;
-            this.left = left;
-            this.right = right;
-        }
-
-        public T getKey() {
-            return key;
-        }
-
-        public String toString() {
-            return ""+key+(this.color==RED?"(R)":"B");
-        }
-    }
+//    public class RBTNode<T extends Comparable<T>> {
+//        boolean color;        // 颜色
+//        T key;                // 关键字(键值)
+//        RBTNode<T> left;    // 左孩子
+//        RBTNode<T> right;    // 右孩子
+//        RBTNode<T> parent;    // 父结点
+//
+//        public RBTNode(T key, boolean color, RBTNode<T> parent, RBTNode<T> left, RBTNode<T> right) {
+//            this.key = key;
+//            this.color = color;
+//            this.parent = parent;
+//            this.left = left;
+//            this.right = right;
+//        }
+//
+//        public T getKey() {
+//            return key;
+//        }
+//
+//        public String toString() {
+//            return ""+key+(this.color==RED?"(R)":"B");
+//        }
+//    }
 
     public RBTree() {
         mRoot=null;
+    }
+
+    public RBTNode getRoot(){
+        return mRoot;
     }
 
     private RBTNode<T> parentOf(RBTNode<T> node) {
@@ -449,6 +457,13 @@ public class RBTree<T extends Comparable<T>> {
     }
 
 
+    public void insert(ArrayNode arrayNode , T key) {
+        RBTNode<T> node=new RBTNode<T>(key ,BLACK,null,null,null);
+        node.setCid(arrayNode.getCid());
+        // 如果新建结点失败，则返回。
+        if (node != null)
+            insert(node);
+    }
     /*
      * 红黑树删除修正函数
      *

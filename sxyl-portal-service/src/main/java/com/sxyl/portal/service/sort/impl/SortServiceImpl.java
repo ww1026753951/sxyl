@@ -10,6 +10,7 @@ import com.sxyl.portal.domain.graph.*;
 import com.sxyl.portal.domain.sort.ArrayNode;
 import com.sxyl.portal.domain.tree.BinaryTreeNode;
 import com.sxyl.portal.domain.tree.TreeConstruct;
+import com.sxyl.portal.service.CommonService;
 import com.sxyl.portal.service.sort.SortService;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Queue;
 
 @Service
-public class SortServiceImpl implements SortService {
+public class SortServiceImpl extends CommonService implements SortService {
 
 
     // 圆的半径
@@ -289,11 +290,11 @@ public class SortServiceImpl implements SortService {
 
         if (root.getLeftNode() != null) {
             //左节点的线
-            g.addChild(createLine(root.getCid() , root.getLeftNode().getCid()));
+            g.addChild(createLine(root.getCid() , root.getLeftNode().getCid() , true));
         }
         if (root.getRightNode() != null) {
             //右节点的线
-            g.addChild(createLine(root.getCid() , root.getRightNode().getCid()));
+            g.addChild(createLine(root.getCid() , root.getRightNode().getCid() , true));
         }
 
         createLineConstruct(g, root.getLeftNode());
@@ -303,19 +304,6 @@ public class SortServiceImpl implements SortService {
         return g ;
     }
 
-    private Line createLine(String s  , String t){
-        Line l = new Line();
-        l.setId(s +"-"+ t);
-        l.setSid(s);
-        l.setTid(t);
-        l.setH(DisplayEnum.NONE.getContent());
-        l.setLpt(new Integer[]{LinePositionEnum.CIRCLE_CENTER.getCode(),
-                LinePositionEnum.RADIUS.getCode(),
-                LinePositionEnum.CIRCLE_CENTER.getCode(),
-                LinePositionEnum.RADIUS.getCode()});
-
-        return l ;
-    }
 
     /***
      * 获取动画步骤的对象

@@ -82,6 +82,13 @@ public class Text extends GraphComponent implements Serializable {
 
 
     /****
+     * 填充颜色
+     * fill
+     */
+    private String f;
+
+
+    /****
      *分组内图画的对象
      */
     private List<GraphComponent> child;
@@ -202,6 +209,14 @@ public class Text extends GraphComponent implements Serializable {
 
     public void setRatio(Double ratio) {
         this.ratio = ratio;
+    }
+
+    public String getF() {
+        return f;
+    }
+
+    public void setF(String f) {
+        this.f = f;
     }
 
     public Integer getXt() {

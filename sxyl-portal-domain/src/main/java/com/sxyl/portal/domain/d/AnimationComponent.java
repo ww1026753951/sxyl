@@ -17,7 +17,8 @@ public abstract class AnimationComponent implements Serializable {
     /****
      * AnimationDescCode
      * 动画描述的编码,
-     * 对应 ExecutionSequence 中的
+     * 对应 ExecutionSequence 中的文案
+     *
      */
     private String ad;
 

@@ -10,10 +10,6 @@ public class BinaryTreeNode implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-//    /***
-//     * id , 唯一标识
-//     */
-//    private String id ;
 
     /***
      * 对应array 的 id

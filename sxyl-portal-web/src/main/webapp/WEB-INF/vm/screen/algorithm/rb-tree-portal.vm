@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="思想摇篮 动画算法 算法动画">
+    <meta name="author" content="谷禾水">
+    <link rel="icon" href="/favicon.ico">
+    <title>动画算法,算法动画,红黑树</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" >
+##    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap/dashboard.css" >
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap-reboot.min.css" >
+    <script src="/js/d3/d3.min.js"></script>
+    <script src="/js/jquery/jquery-3.2.1.min.js" ></script>
+    <script src="/js/sxyl.min.js"></script>
+
+
+    <script src="/js/sxyl.graph.js"></script>
+    <script src="/js/sort/sort-common.min.js"></script>
+    <script src="/js/animation/animation.base.min.js"></script>
+
+    <script src="/js/math/MathJax.js?config=TeX-MML-AM_SVG"></script>
+##    <script src="/js/math/latest.js?config=TeX-MML-AM_SVG1" ></script>
+
+
+    <script src="/js/vendor/popper.min.js" ></script>
+    <!-- Bootstrap JS -->
+    <script src="/js/bootstrap/bootstrap.min.js" ></script>
+
+    <script src="/js/bootstrap/jquery-bootstrap-modal-steps.js" ></script>
+
+    <style>
+        body{
+            font-size: 90%;
+        }
+        text{
+            font-size: 95%;
+        }
+        tspan{
+            font-size: 80%;
+        }
+
+        .sidebar-sticky a:hover{
+            background: #C0C0C0;
+        }
+        .modal {
+            top: -50px;
+            left: -600px;
+        }
+        sub, sup {
+            font-size: 30%;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline;
+        }
+        sub {  bottom: -0.5em; }
+        sup {
+            left: -0.5em;
+            /*top: 0.5em;*/
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <main role="main" class="col-md-12" style="padding-top:10px">
+            <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+                <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                    <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+                </div>
+                <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                    <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+                </div>
+            </div>
+
+        ##操作面板的vm模块
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-0 pb-2 mb-1 border-bottom">
+                <div class="btn-toolbar mb-3 mb-md-0  col-md-3">
+                    <div class="btn-group mr-2">
+                        <button id="run" class="btn btn-sm btn-outline-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
+                                <path id="play-path" d="M0 0v6l6-3-6-3z" transform="translate(1 1)" />
+                            </svg>
+                            <span id="run-pause" run-type="0">播放</span>
+                        </button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-sm btn-outline-secondary" id="reset" >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 8 8">
+                                <path d="M4 0c-2.2 0-4 1.8-4 4s1.8 4 4 4c1.1 0 2.12-.43 2.84-1.16l-.72-.72c-.54.54-1.29.88-2.13.88-1.66 0-3-1.34-3-3s1.34-3 3-3c.83 0 1.55.36 2.09.91l-1.09 1.09h3v-3l-1.19 1.19c-.72-.72-1.71-1.19-2.81-1.19z" />
+                            </svg>
+                            随机重置
+                        </button>
+                        &nbsp;&nbsp;
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#myModal">
+                            <span>自定义设置</span>
+                        </button>
+
+                    </div>
+                </div>
+                <div class="btn-toolbar mb-3 mb-md-0  col-md-3">
+                    <div class="btn-group mr-2">
+                        <p class="m-2"><b>速度:</b></p>
+                        <label class="radio-inline m-2" >
+                            <input type="radio" name="speedRadioOptions" id="speed0.5" value="0.5" > 0.5 <!-- onclick="SXYL.SORT.changeSpeed(bubbleSort)"-->
+                        </label>
+                        <label class="radio-inline m-2" >
+                            <input type="radio" name="speedRadioOptions" id="speed1" value="1" checked="checked"> 1
+                        </label>
+                        <label class="radio-inline m-2" >
+                            <input type="radio" name="speedRadioOptions" id="speed2" value="2"> 2
+                        </label>
+                        <label class="radio-inline  m-2">
+                            <input type="radio" name="speedRadioOptions" id="speed5" value="2.5"> 2.5
+                        </label>
+                    </div>
+                </div>
+                <div class="btn-toolbar mb-6 mb-md-0  col-md-6">
+                    <div><b>推排序简介：</b></div>
+                    <div>
+                        堆排序简介, 稍后更新
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="algorithm-content" class="row">
+                <div id="graph-content" class="col-lg-9 col-sm-9 ">
+                    <svg width="1200" height="600" id="sortAlg">
+                    </svg>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    <div>
+
+                    </div>
+                    <div id="step-content">
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="width: 800px">
+            <div class="modal-header">
+##                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+##                <h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+            </div>
+            <div class="modal-body"style="width: 800px;height: 300px">
+
+                <div class="form-group">
+                    <label>自定义数组</label>
+                    <input type="text" id ="arrayStr" class="form-control" placeholder="自定义数组,逗号分隔">
+                </div>
+                <br><br>
+                <div class="checkbox">
+                    <input type="radio" name="heapType" value="1" checked>大顶堆
+                    <input type="radio" name="heapType" value="2">小顶堆
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="changeBySelf(false)">提交更改</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+##<script src="/js/vendor/jquery-slim.min.js" ></script>
+<!-- Popper.JS -->
+
+
+<script>
+    var play_first = true ;
+    //播放的事件
+    $('#run').bind('click', function () {
+        SXYL.SORT.run(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.SORT.getSpeed()));
+    });
+    //重置的事件
+    $('#reset').bind('click', function () {
+        changeBySelf(true);
+    });
+
+    //速度变化的事件
+    $('input[type=radio][name=speedRadioOptions]').change(function() {
+        SXYL.SORT.changeSpeed(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed());
+    });
+
+    $('#myModal').modalSteps();
+    loadData(true);
+
+    function changeBySelf(random) {
+        //清楚元素
+        d3.select("#sortAlg").selectAll("g").remove();
+        //按钮变为初始化
+        SXYL.SORT.changeToStart();
+        SXYL.GRAPH.initPosition();
+        SXYL.step_no = 0;
+        loadData(random);
+
+    }
+    function loadData(random) {
+        var minHeap = false;
+        var arrayStr = "";
+        if(random){
+
+        }else{
+            arrayStr = $("#arrayStr").val();
+            var checkedValue = $('input[name="heapType"]:checked').val();
+            if(checkedValue){
+                if(checkedValue == 2){
+                    minHeap = true;
+                }
+            }
+        }
+
+
+        $.ajax({
+            type: 'POST',
+            url: "/tree/rbTreeConstruct",
+            data : {
+                arrayStr:arrayStr,
+                minHeap:minHeap
+            },
+            success: function (d) {
+                var parent = SXYL.GRAPH.getContext();
+                debugger
+                //初始化dom结构
+                SXYL.GRAPH.drawByComponent(parent , d.group);
+                SXYL.ANIMATION.ALL_STEP = d.at;
+            }
+        });
+    }
+
+
+
+</script>
+</body>
+
+</html>
