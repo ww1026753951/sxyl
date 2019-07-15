@@ -19,6 +19,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static com.sxyl.portal.domain.tree.rb.RBTreeColor.BLACK;
+import static com.sxyl.portal.domain.tree.rb.RBTreeColor.RED;
+
 @Service
 public class RBTreeServiceImpl extends CommonService implements RBTreeService {
 
@@ -26,6 +29,18 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
 
     // 圆的半径
     private final int r = 20;
+
+
+    private final int defaultMt = 20 ;
+    //rate
+    double rate = 0.5;
+
+    //层与层的高度
+    int height = 80 ;
+
+    int defaultBuffer = 250 ;
+
+    int defaultML = 600 ;
 
     @Override
     public TreeConstruct getRbSortConstruct(int[] arrays) {
@@ -39,17 +54,8 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
          */
         List<ArrayNode> arrayNodes = createArrayNode(arrays) ;
 
-//        for(int i=0; i<arrays.length; i++) {
-//            tree.insert(arrays[i]);
-//            // 设置mDebugInsert=true,测试"添加函数"
-//        }
-//        RBTree
-
-
         for(ArrayNode arrayNode : arrayNodes) {
-
             tree.insert(arrayNode , arrayNode.getValue());
-            // 设置mDebugInsert=true,测试"添加函数"
         }
 
         //dnn动画
@@ -62,10 +68,115 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
 
         group = createLineConstruct(group ,  tree.getRoot());
 
-        return new TreeConstruct(group , animationTotal );
+        return new TreeConstruct(arrayNodes , group , animationTotal);
     }
 
 
+
+    @Override
+    public TreeConstruct insertRbNode(List<ArrayNode> arrayNodeList, int node) {
+
+
+        RBTree<Integer> tree=new RBTree<Integer>();
+
+        //构造树结构
+        for(ArrayNode arrayNode : arrayNodeList) {
+            tree.insert(arrayNode , arrayNode.getValue());
+        }
+
+
+        RBTNode temp ;
+        Map<String , RBTNode> treeMap = new HashMap<>(arrayNodeList.size());
+
+        //层序遍历
+        Queue<RBTNode> nodeQueue = new ArrayDeque<>();
+        //层序遍历，赋值buffer和宽度
+        int currentIndex = 0 ;//当前层节点的序号
+        int nextLevel = 0;//记录下一层需要打印的节点的数量
+        int currentLevel = 1;    //记录当前层需要打印的节点的数量
+
+        int level = 1;
+
+        tree.getRoot().setWidth(defaultML);
+        nodeQueue.add(tree.getRoot());
+
+        int buffer = defaultBuffer;
+        while ((temp = nodeQueue.poll()) != null) {
+            currentIndex = currentIndex + 1 ;
+            if (temp.getLeft() != null) {
+                //赋值左节点的宽度
+                temp.getLeft().setWidth( temp.getWidth() - buffer );
+                temp.getLeft().setBuffer(buffer);
+                temp.getLeft().setLevel(level + 1);
+                nodeQueue.add(temp.getLeft());
+                nextLevel++;
+            }
+            if (temp.getRight() != null) {
+                //赋值右节点 的宽度
+                temp.getRight().setWidth(temp.getWidth() + buffer);
+                temp.getRight().setBuffer(buffer);
+                temp.getRight().setLevel(level + 1);
+                nodeQueue.add(temp.getRight());
+                nextLevel++;
+            }
+            currentLevel--;
+            if(currentLevel == 0) {
+                level = level + 1;
+                currentIndex = 0;
+                buffer =  new Double(buffer*rate).intValue();
+                currentLevel = nextLevel;
+                nextLevel = 0;
+            }
+//            temp.setLevel(level );
+
+            if(temp.getBuffer()==null){
+                temp.setBuffer(defaultBuffer);
+            }
+            if(temp.getWidth()== null){
+                temp.setWidth(defaultML);
+            }
+            if(temp.getLevel() == null) {
+                temp.setLevel(1);
+            }
+
+            treeMap.put(temp.getCid() , temp);
+        }
+
+
+        ArrayNode arrayNode = createSingleArrayNode(node);
+
+        tree.setNodeMap(treeMap);
+
+
+        //开启获取动画的功能
+        tree.setAnimationFlag(true);
+
+        //新增节点
+        RBTNode<Integer> rbNode=new RBTNode<Integer>(node ,RED,null,null,null);
+        rbNode.setCid(arrayNode.getCid());
+        rbNode.setNodeTextId(arrayNode.getValueTextId());
+
+
+
+        //生产对象，顺便赋值 宽，高， buffer 等
+        Group group = this.getSingleAndTreeConstruct(tree , rbNode , treeMap) ;
+
+
+        //插入节点
+        tree.insert(arrayNode , rbNode);
+
+        TreeConstruct treeConstruct = new TreeConstruct();
+
+        treeConstruct.setGroup(group);
+        //设置数组列表
+        arrayNodeList.add(arrayNode);
+        treeConstruct.setArrayLists(arrayNodeList);
+
+
+        //设置动画
+        treeConstruct.setAt(tree.getAnimationTotal());
+        return treeConstruct;
+    }
 
 
     /***
@@ -83,6 +194,17 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         return arrayNodes;
     }
 
+    /***
+     * 返回节点
+     * @param array
+     * @return
+     */
+    private ArrayNode createSingleArrayNode(int array){
+        return new ArrayNode(JUUID.getUUID() ,JUUID.getUUID() , JUUID.getUUID() , new Integer(array));
+    }
+
+
+
 
 
 
@@ -97,7 +219,7 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         Group all = new Group();
 
 //        all.setMl(500);
-        all.setMt(20);
+        all.setMt(defaultMt);
         all.setCompose(ComponentCompositeEnum.NONE.getType());
 
         Group array = new Group();
@@ -111,9 +233,8 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         all.addChild(array);
 
 
-        int buffer = 250;
+        int buffer = defaultBuffer;
         int defaultML = 600 ;
-        double rate = 0.5;
 
         //层序遍历
         Queue<RBTNode> nodeQueue = new ArrayDeque<>();
@@ -132,31 +253,20 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         Integer left ;
         while ((temp = nodeQueue.poll()) != null) {
             currentIndex = currentIndex + 1 ;
-//            if (currentIndex % 2 != 0 ) {
-//                parentWidth = nodeWidthQueue.poll() ;
-//                left = parentWidth - buffer;
-//                nodeWidthQueue.add(left.intValue());
-//            } else {
-//                left = parentWidth + buffer;
-//                nodeWidthQueue.add(left.intValue());
-//            }
-
-//            left = temp.getParent().getWidth()
 
 
-            //todo
-//            Circle circle = create(group , temp , left);
-
-            Circle circle = create(group , temp , temp.getWidth());
+            Circle circle = create(group , temp , temp.getWidth() , 0);
             if (temp.getLeft() != null) {
                 //赋值左节点的宽度
                 temp.getLeft().setWidth( temp.getWidth() - buffer );
+                temp.getLeft().setBuffer(buffer);
                 nodeQueue.add(temp.getLeft());
                 nextLevel++;
             }
             if (temp.getRight() != null) {
                 //赋值右节点 的宽度
                 temp.getRight().setWidth(temp.getWidth() + buffer);
+                temp.getRight().setBuffer(buffer);
                 nodeQueue.add(temp.getRight());
                 nextLevel++;
             }
@@ -164,7 +274,7 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
             currentLevel--;
             if(currentLevel == 0) {
                 currentIndex = 0;
-                group.setMt(80);
+                group.setMt(height);
                 buffer =  new Double(buffer*rate).intValue();
                 group.setCompose(ComponentCompositeEnum.NONE.getType());
                 all.addChild(group);
@@ -177,12 +287,64 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
     }
 
 
+    /****
+     * 获取单个元素的结构和
+     * @param rbtNode
+     * @return
+     */
+    private Group getSingleAndTreeConstruct(RBTree rbTree , RBTNode rbtNode , Map<String , RBTNode> rbtNodeMap) {
+        Group all = new Group();
+
+        RBTNode parent = rbtNode.getParent();
+        //找寻插入节点
+        if(parent==null){
+            parent = rbTree.findInsertNode(rbtNode);
+        }
+        RBTNode mapParentNode = rbtNodeMap.get(parent.getCid());
+        //获取缓冲数值
+        int buffer = mapParentNode.getBuffer();
+        if(mapParentNode.getLevel() > 1){
+            buffer =  new Double(buffer*rate).intValue();
+        }
+        int width = mapParentNode.getWidth();
+
+
+        int cmp = rbtNode.getKey().compareTo(parent.getKey());
+        if (cmp < 0){
+            width = width - buffer;
+        }
+        else{
+            width = width + buffer ;
+        }
+        if(parent.getLeft() != null){
+            if(parent.getLeft().equals(rbtNode)){
+
+            }
+        }
+
+        if (parent.getRight() != null) {
+            if(parent.getRight().equals(rbtNode)){
+
+            }
+        }
+        //设置宽 和 buffer
+        rbtNode.setWidth(width);
+        rbtNode.setBuffer(buffer);
+        rbtNode.setLevel(parent.getLevel() + 1);
+        //设置元
+        create(all , rbtNode , width , (mapParentNode.getLevel()+1)*height + defaultMt);
+
+        all.addChild(createLine(parent.getCid() , rbtNode.getCid() , false));
+
+        return all;
+    }
+
     /***
      * 创建圆
      * @param group
      * @param node
      */
-    public Circle create(Group group , RBTNode node , Integer x) {
+    public Circle create(Group group , RBTNode node , Integer x , Integer y) {
 
         Circle circle = new Circle( node.getCid(), r ,"blue");
 
@@ -194,7 +356,8 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
 
 //        circle.setH(DisplayEnum.NONE.getContent());
         circle.setX(x);
-        Text text = new Text(node.getNodeTextId() , x,0, node.getKey().toString() , ShowTextPositionEnum.MIDDLE.getCode());
+        circle.setY(y);
+        Text text = new Text(node.getNodeTextId() , x,y, node.getKey().toString() , ShowTextPositionEnum.MIDDLE.getCode());
         text.setF("white");
 //        text.setH(DisplayEnum.NONE.getContent());
         circle.addCurrentComponent(text);
@@ -215,20 +378,21 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         }
 
         if (root.getLeft() != null) {
-            //左节点的线
+            //左节点的线 , sid 是父节点，   tid是子节点
             g.addChild(createLine(root.getCid() , root.getLeft().getCid() , false));
         }
         if (root.getRight() != null) {
-            //右节点的线
+            //右节点的线, sid 是父节点，   tid是子节点
             g.addChild(createLine(root.getCid() , root.getRight().getCid() , false));
         }
-
         createLineConstruct(g, root.getLeft());
         createLineConstruct(g, root.getRight());
-
         return g ;
     }
 
 
+
+
+//    private void
 
 }

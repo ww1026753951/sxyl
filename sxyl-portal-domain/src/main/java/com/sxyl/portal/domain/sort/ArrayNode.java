@@ -5,8 +5,6 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@Data
-@AllArgsConstructor
 public class ArrayNode implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -33,4 +31,45 @@ public class ArrayNode implements Serializable {
     private Integer value;
 
 
+    public ArrayNode() {
+    }
+
+    public ArrayNode(String rid, String cid, String valueTextId, Integer value) {
+        this.rid = rid;
+        this.cid = cid;
+        this.valueTextId = valueTextId;
+        this.value = value;
+    }
+
+    public String getRid() {
+        return rid;
+    }
+
+    public void setRid(String rid) {
+        this.rid = rid;
+    }
+
+    public String getCid() {
+        return cid;
+    }
+
+    public void setCid(String cid) {
+        this.cid = cid;
+    }
+
+    public String getValueTextId() {
+        return valueTextId;
+    }
+
+    public void setValueTextId(String valueTextId) {
+        this.valueTextId = valueTextId;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
+    }
 }

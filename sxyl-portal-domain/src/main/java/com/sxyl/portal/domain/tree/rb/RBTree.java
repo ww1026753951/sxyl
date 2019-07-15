@@ -1,6 +1,19 @@
 package com.sxyl.portal.domain.tree.rb;
 
+import com.sxyl.portal.domain.d.AnimationTotal;
+import com.sxyl.portal.domain.d.ChangeColor;
+import com.sxyl.portal.domain.d.Move;
+import com.sxyl.portal.domain.d.MultiMove;
+import com.sxyl.portal.domain.graph.Circle;
+import com.sxyl.portal.domain.graph.GraphComponent;
+import com.sxyl.portal.domain.graph.Line;
+import com.sxyl.portal.domain.graph.Text;
 import com.sxyl.portal.domain.sort.ArrayNode;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.sxyl.portal.domain.tree.rb.RBTreeColor.BLACK;
 import static com.sxyl.portal.domain.tree.rb.RBTreeColor.RED;
@@ -13,7 +26,31 @@ import static com.sxyl.portal.domain.tree.rb.RBTreeColor.RED;
 
 public class RBTree<T extends Comparable<T>> {
 
+
+    // 圆的半径
+    private final int r = 20;
+
     private RBTNode<T> mRoot;    // 根结点
+
+    private boolean animationFlag = false;
+
+
+    private AnimationTotal animationTotal = new AnimationTotal();
+
+
+    private Map<String ,RBTNode> nodeMap = new HashMap<>();
+
+
+    private final int defaultMt = 20 ;
+
+
+    //rate
+    double rate = 0.5;
+
+
+
+    //层与层的高度
+    int height = 80 ;
 
 
 //    public class RBTNode<T extends Comparable<T>> {
@@ -61,12 +98,24 @@ public class RBTree<T extends Comparable<T>> {
         return !isRed(node);
     }
     private void setBlack(RBTNode<T> node) {
-        if (node!=null)
+        if (node!=null){
+
             node.color = BLACK;
+            if(animationFlag){
+                //将元素变为黑色
+                animationTotal.addComponent(new ChangeColor("black",node.getCid()));
+            }
+
+        }
     }
     private void setRed(RBTNode<T> node) {
-        if (node!=null)
+        if (node!=null){
             node.color = RED;
+            if(animationFlag){
+                //将元素变为红色
+                animationTotal.addComponent(new ChangeColor("red",node.getCid()));
+            }
+        }
     }
     private void setParent(RBTNode<T> node, RBTNode<T> parent) {
         if (node!=null)
@@ -265,6 +314,8 @@ public class RBTree<T extends Comparable<T>> {
         // 设置x的右孩子为y
         RBTNode<T> y = x.right;
 
+        //左旋的动画
+        leftAnimation(x , y) ;
         // 将 “y的左孩子” 设为 “x的右孩子”；
         // 如果y的左孩子非空，将 “x” 设为 “y的左孩子的父亲”
         x.right = y.left;
@@ -306,22 +357,32 @@ public class RBTree<T extends Comparable<T>> {
         // 设置x是当前节点的左孩子。
         RBTNode<T> x = y.left;
 
+
+        //设置动画
+        this.rightAnimation(x , y);
+
         // 将 “x的右孩子” 设为 “y的左孩子”；
         // 如果"x的右孩子"不为空的话，将 “y” 设为 “x的右孩子的父亲”
         y.left = x.right;
-        if (x.right != null)
+        if (x.right != null){
             x.right.parent = y;
+        }
 
         // 将 “y的父亲” 设为 “x的父亲”
         x.parent = y.parent;
 
         if (y.parent == null) {
-            this.mRoot = x;            // 如果 “y的父亲” 是空节点，则将x设为根节点
+            // 如果 “y的父亲” 是空节点，则将x设为根节点
+            this.mRoot = x;
         } else {
-            if (y == y.parent.right)
-                y.parent.right = x;    // 如果 y是它父节点的右孩子，则将x设为“y的父节点的右孩子”
-            else
-                y.parent.left = x;    // (y是它父节点的左孩子) 将x设为“x的父节点的左孩子”
+            if (y == y.parent.right){
+                // 如果 y是它父节点的右孩子，则将x设为“y的父节点的右孩子”
+                y.parent.right = x;
+            }
+            else{
+                // (y是它父节点的左孩子) 将x设为“x的父节点的左孩子”
+                y.parent.left = x;
+            }
         }
 
         // 将 “y” 设为 “x的右孩子”
@@ -331,6 +392,431 @@ public class RBTree<T extends Comparable<T>> {
         y.parent = x;
     }
 
+
+    /*
+    * 对红黑树的节点(x)进行左旋转
+    *
+    * 左旋示意图(对节点x进行左旋)：
+    *      px                              px
+    *     /                               /
+    *    x                               y
+    *   /  \      --(左旋)-.           / \                #
+    *  lx   y                          x  ry
+    *     /   \                       /  \
+    *    ly   ry                     lx  ly
+    *
+    *
+    */
+    private void leftAnimation(RBTNode<T> x , RBTNode<T> y){
+        if (animationFlag){
+            MultiMove multiMove = new MultiMove();
+            List<GraphComponent> list = new ArrayList<>();
+
+            multiMove.setGcs(list);
+            animationTotal.addComponent(multiMove);
+
+            RBTNode domX = nodeMap.get(x.getCid());
+            RBTNode domY = nodeMap.get(y.getCid());
+
+            //x的基础属性
+            int xLevel = domX.getLevel();
+            int xWidth = domX.getWidth();
+            int xBuffer = domX.getBuffer();
+            //y的基础属性
+            int yLevel = domY.getLevel();
+            int yWidth = domY.getWidth();
+            int yBuffer = domY.getBuffer();
+
+
+            int xNewLevel = xLevel + 1;
+            int xNewWidth = xWidth - yBuffer;
+            int xNewBuffer = domY.getBuffer();
+
+
+            int yNewLevel = yLevel - 1;
+            int yNewWidth = yWidth -  yBuffer;
+            int yNewBuffer = domX.getBuffer();
+
+            //lx 的三个属性
+            int lxNewLevel = 0 ; int lxNewWidth = 0 ; int lxNewBuffer = 0 ;int lxNewY = 0 ;
+            //ly 的三个属性
+            int lyLevel = 0 ; int lyWidth = 0 ; int lyBuffer = 0 ;
+            //ry 的三个属性
+            int ryLevel = 0 ; int ryWidth = 0 ; int ryBuffer = 0 ;
+
+
+
+            //x的移动
+            Circle xCircle = new Circle();
+            //x 的值
+            xCircle.setId(domX.getCid());
+            xCircle.setX(xNewWidth);
+            xCircle.setY(compute(xNewLevel));
+            Text text = new Text();
+            text.setId(domX.getNodeTextId());
+            text.setX(xNewWidth);
+            text.setY(compute(xNewLevel));
+            list.add(xCircle);
+            list.add(text);
+
+
+            // y
+
+            Circle yCircle = new Circle();
+            yCircle.setId(domY.getCid());
+            yCircle.setY((domY.getLevel() - 1)*height + defaultMt);
+            yCircle.setX(domY.getWidth() -  domY.getBuffer());
+            Text yText = new Text();
+            yText.setId(domY.getNodeTextId());
+            yText.setY((domY.getLevel() - 1)*height + defaultMt);
+            yText.setX(domY.getWidth() - domY.getBuffer());
+            list.add(yCircle);
+            list.add(yText);
+
+
+            Line xyLine = new Line();
+            xyLine.setId(xCircle.getId()+"-" + yCircle.getId());
+            xyLine.setX1(xCircle.getX());
+            xyLine.setY1(xCircle.getY() - r);
+            xyLine.setX2(yCircle.getX());
+            xyLine.setY2(yCircle.getY() + r);
+            list.add(xyLine);
+
+
+            //可能为新节点， 所以不能用当前元素的 x y 计算 ,改用 y的值计算
+            if(y.right != null){
+
+                RBTNode domRY = nodeMap.get(y.right.getCid());
+                int ryX = domY.getWidth();
+                int ryY = (domY.getLevel())*height + defaultMt;
+                int ryNewLevel = domY.getLevel() ;
+                int ryNewBuffer = domY.getBuffer();
+
+                Circle ryCircle = new Circle();
+                ryCircle.setId(domRY.getCid());
+                ryCircle.setX(ryX);
+                ryCircle.setY(ryY);
+                list.add(ryCircle);
+                Text ryText = new Text();
+                ryText.setId(domRY.getNodeTextId());
+                ryText.setY(ryY);
+                ryText.setX(ryX);
+                list.add(ryText);
+
+                Line yryLine = new Line();
+                yryLine.setId(yCircle.getId()+"-" + ryCircle.getId());
+                yryLine.setX1(yCircle.getX());
+                yryLine.setY1(yCircle.getY() + r);
+                yryLine.setX2(ryCircle.getX());
+                yryLine.setY2(ryCircle.getY() - r);
+                list.add(yryLine);
+
+                refreshYRightRotateChild(list , domRY , ryNewLevel ,ryX , ryNewBuffer , ryY) ;
+            }
+
+
+            //不知道是不是为新节点
+            if(y.left != null){
+                RBTNode domLY = nodeMap.get(y.left.getCid());
+                //用计算后的 x 宽度当buffer用
+                int lyX = xCircle.getX() + domLY.getBuffer();
+                int lyY = (domLY.getLevel())*height + defaultMt;
+
+                Circle lyCircle = new Circle();
+                lyCircle.setId(domLY.getCid());
+                lyCircle.setX(lyX);
+                lyCircle.setY(lyY);
+                list.add(lyCircle);
+                Text lxText = new Text();
+                lxText.setId(domLY.getNodeTextId());
+                lxText.setX(lyX);
+                lxText.setY(lyY);
+                list.add(lxText);
+
+                //y的父节点变为 x的父节点 ,此处比较重要，  因为父节点变换了
+                Line y_x_xryLine = new Line();
+                y_x_xryLine.setId(yCircle.getId()+"-" + lyCircle.getId());
+                y_x_xryLine.setX1(xCircle.getX());
+                y_x_xryLine.setY1(xCircle.getY() + r);
+                y_x_xryLine.setX2(lyCircle.getX());
+                y_x_xryLine.setY2(lyCircle.getY() - r);
+                list.add(y_x_xryLine);
+
+            }
+
+            //如果 x有左节点,则递归处理
+            if(x.left != null){
+                RBTNode domLX = nodeMap.get(x.left.getCid());
+                lxNewBuffer = new Double(domLX.getBuffer()*rate).intValue() ;
+                lxNewLevel = domLX.getLevel() + 1;
+                lxNewWidth = domLX.getWidth() - lxNewBuffer ;
+                lxNewY = compute(lxNewLevel);
+
+
+                Circle lxCircle = new Circle();
+                lxCircle.setId(domLX.getCid());
+                lxCircle.setX(lxNewWidth);
+                lxCircle.setY(lxNewY);
+                list.add(lxCircle);
+
+                Text lxText = new Text();
+                lxText.setId(domLX.getNodeTextId());
+                lxText.setX(lxNewWidth);
+                lxText.setY(lxNewY);
+                list.add(lxText);
+
+                Line xlxLine = new Line();
+                xlxLine.setId(xCircle.getId()+"-" + lxCircle.getId());
+                xlxLine.setX1(xCircle.getX());
+                xlxLine.setY1( xCircle.getY()+ r);
+                xlxLine.setX2(lxCircle.getX());
+                xlxLine.setY2( lxCircle.getY() - r);
+                list.add(xlxLine);
+
+                refreshLeftRotateChild(list , domLX ,lxNewLevel , lxNewWidth,lxNewBuffer,lxNewY );
+
+            }
+            //重新刷新map里的x值
+            refreshMap(x.getCid() , xNewLevel,xNewWidth,xNewBuffer);
+            //重新刷新map里的y值
+            refreshMap(y.getCid(),yNewLevel,yNewWidth,yNewBuffer);
+
+        }
+    }
+
+    /***
+     * 刷新子节点
+     * @param parentNode
+     * @param parentNewLevel
+     * @param parentNewWidth
+     * @param parentNewBuffer
+     */
+    private void refreshLeftRotateChild(List<GraphComponent> list , RBTNode parentNode, int parentNewLevel , int parentNewWidth,
+                                        int parentNewBuffer , int parentNewY){
+        if(parentNode.left!=null){
+            int xNewBuffer = new Double(parentNode.left.getBuffer()*rate).intValue() ;
+            int xNewLevel = parentNewLevel + 1;
+            int xNewWidth = parentNode.left.getWidth() - xNewBuffer ;
+            int xNewY = compute(xNewLevel);
+            //重新刷新map里的x值
+            refreshMap(parentNode.left.getCid() , xNewLevel,xNewWidth,xNewBuffer);
+
+            Line yryLine = new Line();
+            yryLine.setId(parentNode.getCid()+"-" + parentNode.left.getCid());
+            yryLine.setX1(parentNewWidth);
+            yryLine.setY1(parentNewY + r);
+            yryLine.setX2(xNewWidth);
+            yryLine.setY2(xNewY - r);
+            list.add(yryLine);
+            refreshLeftRotateChild(list , parentNode.left ,xNewLevel,
+                    xNewWidth , xNewBuffer ,xNewY);
+        }
+
+        if (parentNode.right != null) {
+            int xRightNewBuffer = new Double(parentNode.right.getBuffer()*rate).intValue() ;
+            int xRightNewLevel = parentNewLevel + 1 ;
+            int xNewWidth = parentNode.right.getWidth() - xRightNewBuffer ;
+            int xNewY = compute(xRightNewLevel);
+            //重新刷新map里的x值
+            refreshMap(parentNode.right.getCid() , xRightNewLevel,xNewWidth,xRightNewBuffer);
+            refreshLeftRotateChild(list , parentNode.right ,xRightNewLevel,
+                    xNewWidth , xRightNewBuffer ,xNewY);
+        }
+    }
+
+
+    /***
+     * 刷新子节点 ,  y 的 right 的节点的子节点刷新
+     * @param parentNode
+     * @param parentNewLevel
+     * @param parentNewWidth
+     * @param parentNewBuffer
+     */
+    private void refreshYRightRotateChild(List<GraphComponent> list , RBTNode parentNode, int parentNewLevel , int parentNewWidth,
+                                        int parentNewBuffer , int parentNewY){
+        if(parentNode.left!=null){
+            int yNewBuffer = new Double(parentNode.getBuffer()*rate).intValue() ;
+            int yNewLevel = parentNewLevel + 1;
+            //此处扣减用老的buffer
+            int yNewWidth = parentNewWidth - parentNode.getBuffer() ;
+            int yNewY = compute(yNewLevel);
+            //重新刷新map里的x值
+            refreshMap(parentNode.left.getCid() , yNewLevel,yNewWidth,yNewBuffer);
+
+
+            Circle yryCircle = new Circle();
+            yryCircle.setId(parentNode.left.getCid());
+            yryCircle.setX(yNewWidth);
+            yryCircle.setY(yNewY);
+            list.add(yryCircle);
+
+            Text yryText = new Text();
+            yryText.setId(parentNode.left.getNodeTextId());
+            yryText.setX(yNewWidth);
+            yryText.setY(yNewY);
+            list.add(yryText);
+
+
+            Line yryLine = new Line();
+            yryLine.setId(parentNode.getCid()+"-" + parentNode.left.getCid());
+            yryLine.setX1(parentNewWidth);
+            yryLine.setY1(parentNewY + r);
+            yryLine.setX2(yNewWidth);
+            yryLine.setY2(yNewY - r);
+            list.add(yryLine);
+            refreshYRightRotateChild(list , parentNode.left ,yNewLevel,
+                    yNewWidth , yNewBuffer ,yNewY);
+        }
+
+        if (parentNode.right != null) {
+            int xRightNewBuffer =  new Double(parentNode.getBuffer()*rate).intValue() ; ;
+            int xRightNewLevel = parentNewLevel + 1 ;
+            int xNewWidth = parentNewWidth + parentNode.getBuffer() ;
+            int xNewY = compute(xRightNewLevel);
+            //重新刷新map里的x值
+            refreshMap(parentNode.right.getCid() , xRightNewLevel,xNewWidth,xRightNewBuffer);
+
+            Circle yryCircle = new Circle();
+            yryCircle.setId(parentNode.right.getCid());
+            yryCircle.setX(xNewWidth);
+            yryCircle.setY(xNewY);
+            list.add(yryCircle);
+
+            Text yryText = new Text();
+            yryText.setId(parentNode.right.getNodeTextId());
+            yryText.setX(xNewWidth);
+            yryText.setY(xNewY);
+            list.add(yryText);
+
+            Line yryLine = new Line();
+            yryLine.setId(parentNode.getCid()+"-" + parentNode.right.getCid());
+            yryLine.setX1(parentNewWidth);
+            yryLine.setY1(parentNewY + r);
+            yryLine.setX2(xNewWidth);
+            yryLine.setY2(xNewY - r);
+            list.add(yryLine);
+
+            refreshYRightRotateChild(list , parentNode.right ,xRightNewLevel,
+                    xNewWidth , xRightNewBuffer ,xNewY);
+        }
+    }
+
+    /*
+    * 对红黑树的节点(y)进行右旋转 ,设置动画
+    *
+    * 右旋示意图(对节点y进行左旋)：
+    *            py                               py
+    *           /                                /
+    *          y                                x
+    *         /  \      --(右旋)-.            /  \                     #
+    *        x   ry                           lx   y
+    *       / \                                   / \                   #
+    *      lx  rx                                rx  ry
+    *
+    */
+    private void rightAnimation(RBTNode<T> x , RBTNode<T> y){
+        if (animationFlag){
+            MultiMove multiMove = new MultiMove();
+            List<GraphComponent> list = new ArrayList<>();
+
+            multiMove.setGcs(list);
+            animationTotal.addComponent(multiMove);
+
+            RBTNode domX = nodeMap.get(x.getCid());
+            RBTNode domY = nodeMap.get(y.getCid());
+
+
+
+
+            //x的基础属性
+            int xLevel = domX.getLevel();
+            int xWidth = domX.getWidth();
+            int xBuffer = domX.getBuffer();
+            //y的基础属性
+            int yLevel = domY.getLevel();
+            int yWidth = domY.getWidth();
+            int yBuffer = domY.getBuffer();
+
+
+            int xNewLevel = xLevel - 1;
+            int xNewWidth = domY.getWidth();
+            int xNewBuffer = domY.getBuffer();
+            int xNewY = compute(xNewLevel) ;
+
+
+            int yNewLevel = yLevel + 1;
+            int yNewWidth = domY.getWidth()+ domX.getBuffer();
+            int yNewBuffer = domX.getBuffer();
+            int yNewY = compute(yNewLevel);
+
+            //x的移动
+            Circle xCircle = new Circle();
+            //x 的值
+            xCircle.setId(domX.getCid());
+            xCircle.setX(xNewWidth);
+            xCircle.setY(xNewY);
+            Text text = new Text();
+            text.setId(domX.getNodeTextId());
+            text.setX(xNewWidth);
+            text.setY(xNewY);
+            list.add(xCircle);
+            list.add(text);
+
+            // y
+            Circle yCircle = new Circle();
+            yCircle.setId(domY.getCid());
+            yCircle.setX(yNewWidth);
+            yCircle.setY(yNewY);
+            Text yText = new Text();
+            yText.setId(domY.getNodeTextId());
+            yText.setX(yNewWidth);
+            yText.setY(yNewY);
+            list.add(yCircle);
+            list.add(yText);
+
+
+            Line xyLine = new Line();
+            xyLine.setId(yCircle.getId()+"-" + xCircle.getId());
+            xyLine.setX1(yNewWidth);
+            xyLine.setY1(yNewY - r);
+            xyLine.setX2(xNewWidth);
+            xyLine.setY2(xNewY + r);
+            list.add(xyLine);
+
+
+            //lx
+            if(x.left != null){
+                RBTNode domLX = nodeMap.get(x.left.getCid());
+                Circle lxCircle = new Circle();
+                lxCircle.setId(domLX.getCid());
+                lxCircle.setX(domX.getWidth());
+                lxCircle.setY((domX.getLevel())*height + defaultMt);
+
+                Text lyText = new Text();
+                lyText.setId(domLX.getNodeTextId());
+                lyText.setX(domX.getWidth());
+                lyText.setY((domX.getLevel())*height + defaultMt);
+                list.add(lxCircle);
+                list.add(lyText);
+                Line lxxLine = new Line();
+                lxxLine.setId(xCircle.getId()+ "-" + lxCircle.getId());
+                lxxLine.setX1(xCircle.getX());
+                lxxLine.setY1(xCircle.getY() + r);
+                lxxLine.setX2(lxCircle.getX());
+                lxxLine.setY2(lxCircle.getY() - r);
+                list.add(lxxLine);
+            }
+
+            if(y.right != null){
+                RBTNode domRY = nodeMap.get(y.right.getCid());
+                Circle ryCircle = new Circle();
+                ryCircle.setId(domRY.getCid());
+                ryCircle.setX(domRY.getWidth() + domRY.getBuffer());
+                ryCircle.setY((domRY.getLevel() +  1 )*height + defaultMt);
+                list.add(ryCircle);
+            }
+        }
+    }
     /*
      * 红黑树插入修正函数
      *
@@ -342,7 +828,6 @@ public class RBTree<T extends Comparable<T>> {
      */
     private void insertFixUp(RBTNode<T> node) {
         RBTNode<T> parent, gparent;
-
         // 若“父节点存在，并且父节点的颜色是红色”
         while (((parent = parentOf(node))!=null) && isRed(parent)) {
             gparent = parentOf(parent);
@@ -352,9 +837,9 @@ public class RBTree<T extends Comparable<T>> {
                 // Case 1条件：叔叔节点是红色
                 RBTNode<T> uncle = gparent.right;
                 if ((uncle!=null) && isRed(uncle)) {
-                    setBlack(uncle);
                     setBlack(parent);
                     setRed(gparent);
+                    setBlack(uncle);
                     node = gparent;
                     continue;
                 }
@@ -376,9 +861,9 @@ public class RBTree<T extends Comparable<T>> {
                 // Case 1条件：叔叔节点是红色
                 RBTNode<T> uncle = gparent.left;
                 if ((uncle!=null) && isRed(uncle)) {
-                    setBlack(uncle);
                     setBlack(parent);
                     setRed(gparent);
+                    setBlack(uncle);
                     node = gparent;
                     continue;
                 }
@@ -398,9 +883,32 @@ public class RBTree<T extends Comparable<T>> {
                 leftRotate(gparent);
             }
         }
-
         // 将根节点设为黑色
         setBlack(this.mRoot);
+    }
+
+    /***
+     * 寻找插入节点
+     * @param node
+     * @return
+     */
+    public RBTNode findInsertNode(RBTNode<T> node){
+        int cmp;
+        RBTNode<T> y = null;
+        RBTNode<T> x = this.mRoot;
+
+        // 1. 将红黑树当作一颗二叉查找树，将节点添加到二叉查找树中。
+        // 通过x 为null的判断    。根据入参的值和节点比较， 然后将x 设置为子节点的值， 如果子节点为null， 则跳出判断比较， 说明node值应该放在此位置
+        while (x != null) {
+            y = x;
+            cmp = node.key.compareTo(x.key);
+            if (cmp < 0)
+                x = x.left;
+            else
+                x = x.right;
+        }
+
+        return y;
     }
 
     /*
@@ -411,10 +919,12 @@ public class RBTree<T extends Comparable<T>> {
      */
     private void insert(RBTNode<T> node) {
         int cmp;
+        //
         RBTNode<T> y = null;
         RBTNode<T> x = this.mRoot;
 
         // 1. 将红黑树当作一颗二叉查找树，将节点添加到二叉查找树中。
+        // 通过x 为null的判断    。根据入参的值和节点比较， 然后将x 设置为子节点的值， 如果子节点为null， 则跳出判断比较， 说明node值应该放在此位置
         while (x != null) {
             y = x;
             cmp = node.key.compareTo(x.key);
@@ -424,16 +934,23 @@ public class RBTree<T extends Comparable<T>> {
                 x = x.right;
         }
 
+        //将节点的父节点设置为 y ,即上面最后查询的末级节点
         node.parent = y;
         if (y!=null) {
+            //判断，如果小于父节点则放入到左节点， 如果大于父节点则放入到右侧节点
             cmp = node.key.compareTo(y.key);
-            if (cmp < 0)
+            if (cmp < 0){
                 y.left = node;
-            else
+            }
+            else{
                 y.right = node;
+            }
         } else {
             this.mRoot = node;
         }
+
+
+
 
         // 2. 设置节点的颜色为红色
         node.color = RED;
@@ -456,13 +973,26 @@ public class RBTree<T extends Comparable<T>> {
             insert(node);
     }
 
+    public void insert(ArrayNode arrayNode , RBTNode<T> node) {
+        this.getNodeMap().put(arrayNode.getCid() , node);
+
+        // 如果新建结点失败，则返回。
+        if (node != null){
+            insert(node);
+        }
+    }
 
     public void insert(ArrayNode arrayNode , T key) {
         RBTNode<T> node=new RBTNode<T>(key ,BLACK,null,null,null);
         node.setCid(arrayNode.getCid());
+        node.setNodeTextId(arrayNode.getValueTextId());
+
+        this.getNodeMap().put(arrayNode.getCid() , node);
+
         // 如果新建结点失败，则返回。
-        if (node != null)
+        if (node != null){
             insert(node);
+        }
     }
     /*
      * 红黑树删除修正函数
@@ -703,5 +1233,44 @@ public class RBTree<T extends Comparable<T>> {
     public void print() {
         if (mRoot != null)
             print(mRoot, mRoot.key, 0);
+    }
+
+    public boolean getAnimationFlag() {
+        return animationFlag;
+    }
+
+    public void setAnimationFlag(boolean animationFlag) {
+        this.animationFlag = animationFlag;
+    }
+
+    public AnimationTotal getAnimationTotal() {
+        return animationTotal;
+    }
+
+    public void setAnimationTotal(AnimationTotal animationTotal) {
+        this.animationTotal = animationTotal;
+    }
+
+    public Map<String, RBTNode> getNodeMap() {
+        return nodeMap;
+    }
+
+    public void setNodeMap(Map<String, RBTNode> nodeMap) {
+        this.nodeMap = nodeMap;
+    }
+
+    private int compute(int level){
+//        return (level - 1)*height + defaultMt ;
+        return level*height + defaultMt ;
+    }
+
+    private void refreshMap(String cid , int level , int width,int buffer){
+        RBTNode rbtNode = this.getNodeMap().get(cid);
+        if(rbtNode != null){
+            rbtNode.setWidth(width);
+            rbtNode.setLevel(level);
+            rbtNode.setBuffer(buffer);
+            this.getNodeMap().put(cid , rbtNode);
+        }
     }
 }

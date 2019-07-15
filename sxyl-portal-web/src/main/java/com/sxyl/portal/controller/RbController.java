@@ -1,17 +1,20 @@
 package com.sxyl.portal.controller;
 
 import com.sxyl.portal.domain.DomainContent;
+import com.sxyl.portal.domain.sort.ArrayNode;
 import com.sxyl.portal.domain.tree.TreeConstruct;
+import com.sxyl.portal.domain.tree.rb.RBInsertVo;
 import com.sxyl.portal.service.sort.RBTreeService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: create by wei.wang
@@ -54,47 +57,44 @@ public class RbController extends BaseController {
     @RequestMapping("/rbTreeConstruct")
     @ResponseBody
     public Object dnnConstruct(int[] arrays,String arrayStr){
-//        int arraySize = 12 ;
-//        try {
-//            if(StringUtils.isNotBlank(arrayStr)){
-//                String[] str = arrayStr.split(",");
-//                if(str.length > 0){
-//                    arrays = new int[str.length];
-//                }
-//                for (int i = 0 ; i < str.length ; i ++){
-//                    String s = str[i];
-//                    if(NumberUtils.isNumber(s)){
-//                        arrays[i] = new Integer(s);
-//                    }else {
-//                        arrays[i] = 0 ;
-//                    }
-//                }
-//            }
-//        }catch (Exception e){
-//
-//        }
-
-//        if(arrays==null || arrays.length ==0){
-//            arrays=new int[arraySize];
-//            for (int i=0 ; i<arraySize;i++){
-//                arrays[i] = (int)(1+Math.random()*30);
-//            }
-//        }
-
-
-//        arrays = new int[]{11,2,21,56,34,12,56,78,12,23};
-
-//        arrays = new int[]{13,8,17,1,11,15,25,6,22,27,21,35};
-//        arrays = new int[]{13,8,17,1,11,15,25,6,22,27,21,35};
 
 
 
-        arrays = new int[]{7,3,18,10,22,8,11,26};
+// 10,15,85,70,20,60,30,50
 
-        arrays = new int[]{7,3,18,10,22,8,11,26,2,6,13};
+
+//        arrays = new int[]{7,3,18,10,22,8,11,26,2,6,5,4,3};
+
+//        arrays = new int[]{55};
+
+
+        //7,3,18,10,22,8,11,26,2,6,13
+        //经典多次旋转的例子  new int[]{7,3,18,10,22,8,11,26};
+
+
+        //另外一个例子   10,15,85,70,20,60,30
+//        arrays = new int[]{7,3,18,10,22,8,11,26,2,6,5};
+        arrays = new int[]{100,110,120,130,140,150,160};
 
 
         TreeConstruct treeConstruct = rbTreeService.getRbSortConstruct(arrays );
         return treeConstruct;
     }
+
+    /***
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/insertRbNode")
+    @ResponseBody
+    public Object insertRbNode( @RequestBody RBInsertVo rbInsertVo) throws Exception{
+
+        TreeConstruct treeConstruct = rbTreeService.insertRbNode(rbInsertVo.getArrayNodeList() ,rbInsertVo.getNode() );
+//        return treeConstruct;
+//        rbInsertVo.getArrayNodeList();
+
+        return treeConstruct;
+    }
+
 }

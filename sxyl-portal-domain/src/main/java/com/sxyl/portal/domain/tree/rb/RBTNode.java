@@ -14,7 +14,9 @@ public class RBTNode<T extends Comparable<T>> {
      */
     private String cid;
 
-    // 颜色
+    /***
+     * 颜色
+     */
     boolean color;
 
     /***
@@ -26,6 +28,16 @@ public class RBTNode<T extends Comparable<T>> {
      * 宽度
      */
     private Integer width ;
+
+    /***
+     * 当前元素的buffer, 用于宽度减去的值
+     */
+    private Integer buffer;
+
+    /**
+     * 节点的层次
+     */
+    private Integer level;
 
     // 关键字(键值)
     T key;

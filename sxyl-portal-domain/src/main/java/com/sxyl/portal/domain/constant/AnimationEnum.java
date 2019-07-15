@@ -34,6 +34,8 @@ public enum AnimationEnum {
     FRESH_FORMULA(11,"刷新公式"),
     //清空公式
     CLEAR_FORMULA(12,"清空公式"),
+    //批量移动
+    MULTI_MOVE(13,"批量移动"),
 
     //乘法
     MULTIPLY(51,"乘法"),

@@ -14,12 +14,12 @@
     <link rel="stylesheet" href="/css/bootstrap/bootstrap-reboot.min.css" >
     <script src="/js/d3/d3.min.js"></script>
     <script src="/js/jquery/jquery-3.2.1.min.js" ></script>
-    <script src="/js/sxyl.min.js"></script>
+    <script src="/js/sxyl.js"></script>
 
 
     <script src="/js/sxyl.graph.js"></script>
-    <script src="/js/sort/sort-common.min.js"></script>
-    <script src="/js/animation/animation.base.min.js"></script>
+    <script src="/js/sort/sort-common.js"></script>
+    <script src="/js/animation/animation.base.js"></script>
 
     <script src="/js/math/MathJax.js?config=TeX-MML-AM_SVG"></script>
 ##    <script src="/js/math/latest.js?config=TeX-MML-AM_SVG1" ></script>
@@ -99,6 +99,10 @@
                             <span>自定义设置</span>
                         </button>
 
+                        <button type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" data-target="#insertModal">
+                            <span>插入</span>
+                        </button>
+
                     </div>
                 </div>
                 <div class="btn-toolbar mb-3 mb-md-0  col-md-3">
@@ -121,7 +125,7 @@
                 <div class="btn-toolbar mb-6 mb-md-0  col-md-6">
                     <div><b>推排序简介：</b></div>
                     <div>
-                        堆排序简介, 稍后更新
+                        红黑树简介, 稍后更新
                     </div>
                 </div>
             </div>
@@ -174,6 +178,27 @@
 </div>
 
 
+<div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="width: 800px">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body"style="width: 800px;height: 300px">
+
+                <div class="form-group">
+                    <label>数字</label>
+                    <input type="text" id ="nodeValue" class="form-control" placeholder="自定义数组,逗号分隔">
+                </div>
+                <br><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="insert()">提交更改</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -182,7 +207,7 @@
 
 
 <script>
-    var play_first = true ;
+    var rbArray = {} ;
     //播放的事件
     $('#run').bind('click', function () {
         SXYL.SORT.run(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.SORT.getSpeed()));
@@ -195,6 +220,10 @@
     //速度变化的事件
     $('input[type=radio][name=speedRadioOptions]').change(function() {
         SXYL.SORT.changeSpeed(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed());
+    });
+    //重置的事件
+    $('#insert').bind('click', function () {
+        insert();
     });
 
     $('#myModal').modalSteps();
@@ -238,7 +267,37 @@
                 debugger
                 //初始化dom结构
                 SXYL.GRAPH.drawByComponent(parent , d.group);
+//                SXYL.ANIMATION.ALL_STEP = d.at;
+
+                rbArray["data"] = d.arrayLists;
+                SXYL.GRAPH.initPosition();
+
+            }
+        });
+    }
+
+    function insert() {
+        debugger
+        $.ajax({
+            type: 'POST',
+            contentType:"application/json",
+            url: "/tree/insertRbNode",
+            data : JSON.stringify({
+                arrayNodeList:rbArray["data"],
+                node:$("#nodeValue").val()
+            }),
+            success: function (d) {
+                var parent = SXYL.GRAPH.getContext();
+                debugger
+                SXYL.GRAPH.drawByComponent(parent , d.group);
+                rbArray["data"] = d.arrayLists;
+                SXYL.step_no = 0 ;
+
+
                 SXYL.ANIMATION.ALL_STEP = d.at;
+                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.SORT.getSpeed()));
+
+//
             }
         });
     }

@@ -74,6 +74,8 @@ SXYL.ANIMATION={
         11:{f:SXYL.DOM.refreshFormula},
         //清空公式
         12:{f:SXYL.DOM.clearFormula},
+        //批量移动
+        13:{f:SXYL.DOM.multiMove},
         //累计乘积方法
         51:{f:SXYL.DOM.multiplyElement},
         //求和方法

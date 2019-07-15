@@ -153,10 +153,10 @@
 				<configuration>
 					<warName>sxyl-portal-web</warName>
                     <packagingExcludes>
-                        js/sxyl.js,
-                        js/sort/sort-common.js,
-                        js/sxyl.graph.js,
-                        js/animation/animation.base.js
+                        <!--js/sxyl.js,-->
+                        <!--js/sort/sort-common.js,-->
+                        <!--js/sxyl.graph.js,-->
+                        <!--js/animation/animation.base.js-->
                     </packagingExcludes>
 				</configuration>
 			</plugin>

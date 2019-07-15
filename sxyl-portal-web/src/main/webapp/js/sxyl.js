@@ -280,6 +280,8 @@ SXYL.DOM.getDomXY = function (id) {
  * @param o.id 元素id
  */
 SXYL.DOM.moveElement = function(o){
+
+    debugger
     var sid = d3.select("#"+o.id ) ;
     var xyDom = getXY(o.tid);
 
@@ -297,6 +299,9 @@ SXYL.DOM.moveElement = function(o){
     var tarName = $("#"+o.id)[0].tagName;
     if(tarName == "g"){
         SXYL.DOM.changeElementXYByObject(o.sid,{x:x,y:y,speed:SXYL.speed})
+    }else if(tarName == "circle"){
+        sid.transition().duration(SXYL.speed)
+            .attr("cx",x).attr("cy",y);
     }else {
         sid.transition().duration(SXYL.speed)
             .attr("x",x).attr("y",y);
@@ -312,10 +317,22 @@ SXYL.DOM.moveElement = function(o){
     function getXY(tid) {
         var x = 0 ;
         var y = 0 ;
-        if(tid){
-            var tidOb = d3.select("#"+tid ) ;
-            x = tidOb.attr("x");
-            y = tidOb.attr("y");
+        var tagName = $("#"+tid)[0].tagName;
+
+        if(tagName=="circle"){
+            if(tid){
+                var tidOb = d3.select("#"+tid ) ;
+                x = tidOb.attr("cx");
+                y = tidOb.attr("cy");
+            }
+
+
+        }else{
+            if(tid){
+                var tidOb = d3.select("#"+tid ) ;
+                x = tidOb.attr("x");
+                y = tidOb.attr("y");
+            }
         }
         return {x:x,y:y}
     }
@@ -711,3 +728,35 @@ SXYL.DOM.clearFormula = function (o) {
     MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 }
 
+/***
+ * 批量移动
+ * @param o
+ */
+SXYL.DOM.multiMove=function (o) {
+    debugger
+    var gcs = o.gcs;
+    for (var i=0;i<gcs.length ; i++){
+        var ob = gcs[i];
+        //如果是圆的图形
+        if(ob.ct == SXYL.GRAPH.GRAPH_TYPE.CIRCLE){
+
+            var sid = d3.select("#"+ob.id ) ;
+            sid.transition().duration(1000).attr("cx",ob.x).attr("cy",ob.y);
+
+        }
+        if(ob.ct == SXYL.GRAPH.GRAPH_TYPE.TEXT){
+            var sid = d3.select("#"+ob.id ) ;
+            sid.transition().duration(1000).attr("x",ob.x).attr("y",ob.y);
+        }
+
+        if(ob.ct == SXYL.GRAPH.GRAPH_TYPE.LINE){
+            debugger
+            var sid = d3.select("#"+ob.id ) ;
+            sid.transition().duration(1000).attr("x1",ob.x1).attr("y1",ob.y1).attr("x2",ob.x2).attr("y2",ob.y2);
+
+        }
+    }
+
+    debugger;
+
+}

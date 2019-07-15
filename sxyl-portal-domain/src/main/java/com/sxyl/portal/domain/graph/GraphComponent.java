@@ -53,9 +53,16 @@ public abstract class GraphComponent implements Serializable {
     private Integer d;
 
     /***
-     *
+     * 是否隐藏的样式表
      */
     private String h ;
+
+    /***
+     * 相对位置还是绝对位置
+     *
+     * true 为绝对位置
+     */
+    private boolean pt ;
 
 
     /****
@@ -147,5 +154,13 @@ public abstract class GraphComponent implements Serializable {
 
     public void setH(String h) {
         this.h = h;
+    }
+
+    public boolean isPt() {
+        return pt;
+    }
+
+    public void setPt(boolean pt) {
+        this.pt = pt;
     }
 }

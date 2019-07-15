@@ -17,7 +17,7 @@ SXYL.GRAPH = {
         SXYL.GRAPH.x=0;
         SXYL.GRAPH.y=0;
         SXYL.GRAPH.xStack = new Array();
-        SXYL.GRAPH.yStack = new Array() ;
+        SXYL.GRAPH.yStack = new Array();
         SXYL.GRAPH.currentX = undefined;
         SXYL.GRAPH.currentY = undefined;
     },
@@ -496,6 +496,7 @@ SXYL.GRAPH = {
  */
 SXYL.GRAPH.GRAPH_TYPE = {
     GROUP:1,
+    TEXT:2,
     CIRCLE:4,
     LINE:5
 }
