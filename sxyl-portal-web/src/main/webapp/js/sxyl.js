@@ -732,8 +732,7 @@ SXYL.DOM.clearFormula = function (o) {
  * 批量移动
  * @param o
  */
-SXYL.DOM.multiMove=function (o) {
-    debugger
+SXYL.DOM.multiMove = function (o) {
     var gcs = o.gcs;
     for (var i=0;i<gcs.length ; i++){
         var ob = gcs[i];
@@ -754,9 +753,38 @@ SXYL.DOM.multiMove=function (o) {
             var sid = d3.select("#"+ob.id ) ;
             sid.transition().duration(1000).attr("x1",ob.x1).attr("y1",ob.y1).attr("x2",ob.x2).attr("y2",ob.y2);
 
+            if(ob.tid){
+                debugger
+                sid.attr("id",ob.tid);
+            }
         }
     }
-
     debugger;
+}
 
+/***
+ * 变化属性
+ */
+SXYL.DOM.changeAttr = function (o) {
+
+
+    var list = o.list;
+    for (var i=0;i<list.length ; i++){
+
+        var ob = list[i];
+
+        var sid = d3.select("#"+ob.id ) ;
+
+        //获取map
+        var obMap = ob.map;
+
+        if(obMap){
+            sid.transition().duration(1000);
+            Object.keys(obMap).forEach(function(key){
+                sid.attr(key,obMap[key]);
+            });
+        }
+
+
+    }
 }

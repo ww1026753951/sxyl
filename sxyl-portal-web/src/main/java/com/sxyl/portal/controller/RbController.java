@@ -1,20 +1,15 @@
 package com.sxyl.portal.controller;
 
 import com.sxyl.portal.domain.DomainContent;
-import com.sxyl.portal.domain.sort.ArrayNode;
 import com.sxyl.portal.domain.tree.TreeConstruct;
-import com.sxyl.portal.domain.tree.rb.RBInsertVo;
+import com.sxyl.portal.domain.tree.rb.RBExecuteVo;
 import com.sxyl.portal.service.sort.RBTreeService;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author: create by wei.wang
@@ -74,8 +69,18 @@ public class RbController extends BaseController {
 
         //另外一个例子   10,15,85,70,20,60,30
 //        arrays = new int[]{7,3,18,10,22,8,11,26,2,6,5};
-        arrays = new int[]{100,110,120,130,140,150,160};
 
+
+        //arrays = new int[]{100,110,120,130,140,150,160};
+
+        //new int[]{90,100,110,120,130,140,150,160,170,180}
+
+//        arrays = new int[]{7,3,18,10,22,8,11,26,2,6,38,45,26,99,67,82,43}; //30
+//        arrays = new int[]{12 , 1,9 ,2  , 0 ,  11  , 7   ,19  , 4 ,  15 ,  18 ,  5  , 14  , 13 ,  10   ,16  , 6   ,3 ,  8  , 17};
+        arrays = new int[]{12 , 1,9 ,2  , 0 ,  11  , 7   ,19  , 4 ,    18 ,  5  , 14  , 13 ,  10   ,16  , 6   ,3 ,  8  , 17};
+
+
+        arrays = getArrays(arrays , arrayStr);
 
         TreeConstruct treeConstruct = rbTreeService.getRbSortConstruct(arrays );
         return treeConstruct;
@@ -83,17 +88,29 @@ public class RbController extends BaseController {
 
     /***
      *
+     *
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/insertRbNode")
     @ResponseBody
-    public Object insertRbNode( @RequestBody RBInsertVo rbInsertVo) throws Exception{
+    public Object insertRbNode( @RequestBody RBExecuteVo rbExecuteVo) throws Exception{
+        TreeConstruct treeConstruct = rbTreeService.insertRbNode(rbExecuteVo.getArrayNodeList() ,rbExecuteVo.getNode() );
+        return treeConstruct;
+    }
 
-        TreeConstruct treeConstruct = rbTreeService.insertRbNode(rbInsertVo.getArrayNodeList() ,rbInsertVo.getNode() );
-//        return treeConstruct;
-//        rbInsertVo.getArrayNodeList();
 
+
+    /***
+     *
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/delRbNode")
+    @ResponseBody
+    public Object delRbNode( @RequestBody RBExecuteVo rbExecuteVo) throws Exception{
+        TreeConstruct treeConstruct = rbTreeService.delRbNode(rbExecuteVo.getArrayNodeList() ,rbExecuteVo.getNode() ,rbExecuteVo.getExecuteHistory() );
         return treeConstruct;
     }
 

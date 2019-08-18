@@ -3,6 +3,7 @@ package com.sxyl.portal.domain.tree;
 import com.sxyl.portal.domain.d.AnimationTotal;
 import com.sxyl.portal.domain.graph.Group;
 import com.sxyl.portal.domain.sort.ArrayNode;
+import com.sxyl.portal.domain.sort.NodeExecuteStep;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -32,6 +33,13 @@ public class TreeConstruct implements Serializable {
      * 动画的组件
      */
     private AnimationTotal at ;
+
+    /***
+     * 操作步骤处理
+     */
+    private List<NodeExecuteStep> executeSteps ;
+
+
 
     public TreeConstruct() {
     }
@@ -69,5 +77,13 @@ public class TreeConstruct implements Serializable {
 
     public void setAt(AnimationTotal at) {
         this.at = at;
+    }
+
+    public List<NodeExecuteStep> getExecuteSteps() {
+        return executeSteps;
+    }
+
+    public void setExecuteSteps(List<NodeExecuteStep> executeSteps) {
+        this.executeSteps = executeSteps;
     }
 }

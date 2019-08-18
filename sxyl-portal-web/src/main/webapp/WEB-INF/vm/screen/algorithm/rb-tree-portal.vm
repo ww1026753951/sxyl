@@ -31,6 +31,8 @@
 
     <script src="/js/bootstrap/jquery-bootstrap-modal-steps.js" ></script>
 
+##    <script src="/js/bootstrap/bootstrap-input-spinner.js"></script>
+
     <style>
         body{
             font-size: 90%;
@@ -60,6 +62,9 @@
             left: -0.5em;
             /*top: 0.5em;*/
         }
+
+
+
     </style>
 </head>
 
@@ -77,10 +82,41 @@
                 </div>
             </div>
 
+            <div id ="arrayHtml"></div>
         ##操作面板的vm模块
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-0 pb-2 mb-1 border-bottom">
+
+
                 <div class="btn-toolbar mb-3 mb-md-0  col-md-3">
+
+                    <div class="form-group">
+                        <label>操作类型</label>
+                        <select id="mode-type" class="form-control" >
+                            <option value="1">新增</option>
+                            <option value="2">删除</option>
+                            <option value="3">查询</option>
+                        </select>
+                    </div>
+
                     <div class="btn-group mr-2">
+
+##                        <div class="dropdown">
+##                            <button type="button" class="btn" data-toggle="dropdown">
+##                                Dropdown button
+##                            </button>
+##                            <div class="dropdown-menu">
+##                                <a class="dropdown-item" href="#">Link 1</a>
+##                                <a class="dropdown-item" href="#">Link 2</a>
+##                                <a class="dropdown-item" href="#">Link 3</a>
+##                            </div>
+##                        </div>
+
+##                        <select class="custom-select d-block w-100" >
+##                            <option value >新增</option>
+##                            <option>删除</option>
+##                            <option>查询</option>
+##                        </select>
+
                         <button id="run" class="btn btn-sm btn-outline-secondary">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
                                 <path id="play-path" d="M0 0v6l6-3-6-3z" transform="translate(1 1)" />
@@ -100,7 +136,7 @@
                         </button>
 
                         <button type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" data-target="#insertModal">
-                            <span>插入</span>
+                            <span id="insertOrDel">新增</span>
                         </button>
 
                     </div>
@@ -108,27 +144,22 @@
                 <div class="btn-toolbar mb-3 mb-md-0  col-md-3">
                     <div class="btn-group mr-2">
                         <p class="m-2"><b>速度:</b></p>
-                        <label class="radio-inline m-2" >
-                            <input type="radio" name="speedRadioOptions" id="speed0.5" value="0.5" > 0.5 <!-- onclick="SXYL.SORT.changeSpeed(bubbleSort)"-->
-                        </label>
-                        <label class="radio-inline m-2" >
-                            <input type="radio" name="speedRadioOptions" id="speed1" value="1" checked="checked"> 1
-                        </label>
-                        <label class="radio-inline m-2" >
-                            <input type="radio" name="speedRadioOptions" id="speed2" value="2"> 2
-                        </label>
-                        <label class="radio-inline  m-2">
-                            <input type="radio" name="speedRadioOptions" id="speed5" value="2.5"> 2.5
-                        </label>
+
+                        <input type="number" value="3" min="1" max="5" step="1"/>
+
                     </div>
                 </div>
-                <div class="btn-toolbar mb-6 mb-md-0  col-md-6">
-                    <div><b>推排序简介：</b></div>
+                <div class="btn-toolbar mb-4 mb-md-0  col-md-6">
+                    <div><b>红黑树简介：</b></div>
                     <div>
                         红黑树简介, 稍后更新
                     </div>
                 </div>
+
+
             </div>
+
+
 
 
             <div id="algorithm-content" class="row">
@@ -163,10 +194,10 @@
                     <input type="text" id ="arrayStr" class="form-control" placeholder="自定义数组,逗号分隔">
                 </div>
                 <br><br>
-                <div class="checkbox">
-                    <input type="radio" name="heapType" value="1" checked>大顶堆
-                    <input type="radio" name="heapType" value="2">小顶堆
-                </div>
+##                <div class="checkbox">
+##                    <input type="radio" name="heapType" value="1" checked>大顶堆
+##                    <input type="radio" name="heapType" value="2">小顶堆
+##                </div>
 
             </div>
             <div class="modal-footer">
@@ -193,7 +224,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="insert()">提交更改</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="insertEvent()">提交更改</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
@@ -221,10 +252,44 @@
     $('input[type=radio][name=speedRadioOptions]').change(function() {
         SXYL.SORT.changeSpeed(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed());
     });
-    //重置的事件
-    $('#insert').bind('click', function () {
-        insert();
-    });
+    function insertEvent() {
+        var modelVal = parseInt($('#mode-type').val());
+
+        if(modelVal == 1){
+
+            insert();
+        }else if(modelVal == 2){
+
+            del();
+        }
+    }
+    //新增的事件
+//    $('#insert').bind('click', function () {
+//
+//
+//
+//
+//    });
+
+
+    $('#mode-type').bind('change' , function (a,b,c,d,e) {
+
+        var modelVal = parseInt($('#mode-type').val());
+        var showText=''
+        if(modelVal == 1){
+            showText='新增';
+        }else if(modelVal == 2){
+            showText='删除';
+        }else if(modelVal == 3){
+            showText='查询';
+        }
+
+        $('#insertOrDel').html(showText);
+
+
+    })
+
+
 
     $('#myModal').modalSteps();
     loadData(true);
@@ -240,18 +305,20 @@
 
     }
     function loadData(random) {
-        var minHeap = false;
+//        var minHeap = false;
+
+
         var arrayStr = "";
         if(random){
 
         }else{
             arrayStr = $("#arrayStr").val();
-            var checkedValue = $('input[name="heapType"]:checked').val();
-            if(checkedValue){
-                if(checkedValue == 2){
-                    minHeap = true;
-                }
-            }
+//            var checkedValue = $('input[name="heapType"]:checked').val();
+//            if(checkedValue){
+//                if(checkedValue == 2){
+//                    minHeap = true;
+//                }
+//            }
         }
 
 
@@ -259,12 +326,10 @@
             type: 'POST',
             url: "/tree/rbTreeConstruct",
             data : {
-                arrayStr:arrayStr,
-                minHeap:minHeap
+                arrayStr:arrayStr
             },
             success: function (d) {
                 var parent = SXYL.GRAPH.getContext();
-                debugger
                 //初始化dom结构
                 SXYL.GRAPH.drawByComponent(parent , d.group);
 //                SXYL.ANIMATION.ALL_STEP = d.at;
@@ -277,18 +342,24 @@
     }
 
     function insert() {
-        debugger
+        var v = $("#nodeValue").val();
+        if(!v){
+            v = randomVal(0,100);
+            alert(v);
+        }
+        $("#arrayHtml").text($("#arrayHtml").text()+","+v);
+
+
         $.ajax({
             type: 'POST',
             contentType:"application/json",
             url: "/tree/insertRbNode",
             data : JSON.stringify({
                 arrayNodeList:rbArray["data"],
-                node:$("#nodeValue").val()
+                node:v
             }),
             success: function (d) {
                 var parent = SXYL.GRAPH.getContext();
-                debugger
                 SXYL.GRAPH.drawByComponent(parent , d.group);
                 rbArray["data"] = d.arrayLists;
                 SXYL.step_no = 0 ;
@@ -300,7 +371,51 @@
 //
             }
         });
+
+        function randomVal(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min
+        }
     }
+
+    function del() {
+
+        var v = $("#nodeValue").val();
+
+        if(!v){
+            alert('请选择节点删除!');
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            contentType:"application/json",
+            url: "/tree/delRbNode",
+            data : JSON.stringify({
+                arrayNodeList:rbArray["data"],
+                executeHistory:rbArray["es"],
+                node:v
+            }),
+            success: function (d) {
+                var parent = SXYL.GRAPH.getContext();
+                if(d.group){
+                    SXYL.GRAPH.drawByComponent(parent , d.group);
+                }
+                rbArray["data"] = d.arrayLists;
+                rbArray["es"] = d.executeSteps;
+
+                SXYL.step_no = 0 ;
+
+
+                SXYL.ANIMATION.ALL_STEP = d.at;
+                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.SORT.getSpeed()));
+
+//
+            }
+        });
+
+    }
+
+//    $("input[type='number']").inputSpinner();
 
 
 

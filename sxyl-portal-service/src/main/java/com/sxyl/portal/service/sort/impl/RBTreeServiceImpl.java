@@ -1,13 +1,11 @@
 package com.sxyl.portal.service.sort.impl;
 
 import com.sxyl.portal.common.JUUID;
-import com.sxyl.portal.domain.constant.ComponentCompositeEnum;
-import com.sxyl.portal.domain.constant.DisplayEnum;
-import com.sxyl.portal.domain.constant.LinePositionEnum;
-import com.sxyl.portal.domain.constant.ShowTextPositionEnum;
+import com.sxyl.portal.domain.constant.*;
 import com.sxyl.portal.domain.d.AnimationTotal;
 import com.sxyl.portal.domain.graph.*;
 import com.sxyl.portal.domain.sort.ArrayNode;
+import com.sxyl.portal.domain.sort.NodeExecuteStep;
 import com.sxyl.portal.domain.tree.BinaryTreeNode;
 import com.sxyl.portal.domain.tree.TreeConstruct;
 import com.sxyl.portal.domain.tree.rb.RBTNode;
@@ -16,6 +14,7 @@ import com.sxyl.portal.domain.tree.rb.RBTreeColor;
 import com.sxyl.portal.service.CommonService;
 import com.sxyl.portal.service.sort.RBTreeService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -178,6 +177,60 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         return treeConstruct;
     }
 
+    @Override
+    public TreeConstruct delRbNode(List<ArrayNode> arrayNodeList, int node,List<NodeExecuteStep> nodeExecuteStepList) {
+
+
+        RBTree<Integer> tree=new RBTree<Integer>();
+
+
+        //构造树结构
+        for(ArrayNode arrayNode : arrayNodeList) {
+            tree.insert(arrayNode , arrayNode.getValue());
+        }
+
+        /***
+         * 处理操作历史的逻辑，此处应该只有删除
+         */
+        if (CollectionUtils.isEmpty(nodeExecuteStepList)){
+            nodeExecuteStepList = new ArrayList<>();
+        }else {
+            for (NodeExecuteStep nodeExecuteStep : nodeExecuteStepList){
+                if(nodeExecuteStep.getType() == ExecuteEnum.DELETE.getType()){
+                    tree.remove(nodeExecuteStep.getValue());
+                }
+            }
+        }
+
+        /***
+         * 层序遍历树生成结构 ,赋值宽和高
+         */
+        getArrayAndTreeConstruct(arrayNodeList , tree);
+
+        //开启获取动画的功能
+        tree.setAnimationFlag(true);
+        String cid = tree.remove(node);
+
+
+
+        TreeConstruct treeConstruct = new TreeConstruct();
+        treeConstruct.setArrayLists(arrayNodeList);
+
+        //设置动画
+        treeConstruct.setAt(tree.getAnimationTotal());
+
+        //增加删除节点
+        NodeExecuteStep nodeExecuteStep = new NodeExecuteStep();
+        nodeExecuteStep.setValue(node);
+        nodeExecuteStep.setCid(cid);
+        nodeExecuteStep.setType(ExecuteEnum.DELETE.getType());
+        nodeExecuteStepList.add(nodeExecuteStep);
+        treeConstruct.setExecuteSteps(nodeExecuteStepList);
+
+
+        return treeConstruct;
+    }
+
 
     /***
      * 根据数组构建列表
@@ -188,7 +241,8 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         List<ArrayNode> arrayNodes = new ArrayList<>();
         ArrayNode arrayNode ;
         for (int i : arrays){
-            arrayNode = new ArrayNode(JUUID.getUUID() ,JUUID.getUUID() , JUUID.getUUID() , new Integer(i)) ;
+//            arrayNode = new ArrayNode(JUUID.getUUID() ,JUUID.getUUID() , JUUID.getUUID() , new Integer(i)) ;
+            arrayNode = new ArrayNode(JUUID.getUUID() ,"array-"+i +"-"+JUUID.getUUID() , JUUID.getUUID() , new Integer(i)) ;
             arrayNodes.add(arrayNode);
         }
         return arrayNodes;
@@ -200,7 +254,8 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
      * @return
      */
     private ArrayNode createSingleArrayNode(int array){
-        return new ArrayNode(JUUID.getUUID() ,JUUID.getUUID() , JUUID.getUUID() , new Integer(array));
+        return new ArrayNode(JUUID.getUUID() ,"array-"+array +"-"+JUUID.getUUID() , JUUID.getUUID() , new Integer(array));
+//        return new ArrayNode(JUUID.getUUID() ,JUUID.getUUID() , JUUID.getUUID() , new Integer(array));
     }
 
 
@@ -233,8 +288,10 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         all.addChild(array);
 
 
+        int level = 1;
         int buffer = defaultBuffer;
         int defaultML = 600 ;
+
 
         //层序遍历
         Queue<RBTNode> nodeQueue = new ArrayDeque<>();
@@ -258,6 +315,7 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
             Circle circle = create(group , temp , temp.getWidth() , 0);
             if (temp.getLeft() != null) {
                 //赋值左节点的宽度
+                temp.getLeft().setLevel(level + 1);
                 temp.getLeft().setWidth( temp.getWidth() - buffer );
                 temp.getLeft().setBuffer(buffer);
                 nodeQueue.add(temp.getLeft());
@@ -265,6 +323,7 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
             }
             if (temp.getRight() != null) {
                 //赋值右节点 的宽度
+                temp.getRight().setLevel(level + 1);
                 temp.getRight().setWidth(temp.getWidth() + buffer);
                 temp.getRight().setBuffer(buffer);
                 nodeQueue.add(temp.getRight());
@@ -273,6 +332,7 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
 
             currentLevel--;
             if(currentLevel == 0) {
+                level = level + 1;
                 currentIndex = 0;
                 group.setMt(height);
                 buffer =  new Double(buffer*rate).intValue();
@@ -281,6 +341,17 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
                 group = new Group();
                 currentLevel = nextLevel;
                 nextLevel = 0;
+
+
+                if(temp.getBuffer()==null){
+                    temp.setBuffer(defaultBuffer);
+                }
+                if(temp.getWidth()== null){
+                    temp.setWidth(defaultML);
+                }
+                if(temp.getLevel() == null) {
+                    temp.setLevel(1);
+                }
             }
         }
         return all;

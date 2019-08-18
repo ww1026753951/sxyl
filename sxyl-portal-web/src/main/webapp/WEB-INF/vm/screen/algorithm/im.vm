@@ -62,6 +62,8 @@ function go() {
 <div>
     速度:<input id="sxylspeed" value="200">
     <button id="go-pause" type="button" onclick="go()" data-type="0">暂停</button>
+
+    <input type="number" value="3" min="1" max="5" step="1"/>
 ##    <button type="button" onclick="goon()">继续</button>
 </div>
 

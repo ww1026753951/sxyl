@@ -4,6 +4,7 @@ package com.sxyl.portal.controller;
 import com.sxyl.portal.domain.DomainContent;
 import com.sxyl.portal.domain.DomainContentMap;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import javax.annotation.Resource;
@@ -62,5 +63,45 @@ public class BaseController extends MultiActionController {
     }
 
 
+    /***
+     * 获取数组信息
+     * @param arrays
+     * @param arrayStr
+     */
+    protected int[] getArrays(int[] arrays,String arrayStr){
+        int arraySize = 12 ;
+        try {
+            if(StringUtils.isNotBlank(arrayStr)){
+                String[] str = arrayStr.split(",");
+                if(str.length > 0){
+                    arrays = new int[str.length];
+                }
+                for (int i = 0 ; i < str.length ; i ++){
+                    String s = str[i];
+                    if(NumberUtils.isNumber(s)){
+                        arrays[i] = new Integer(s);
+                    }else {
+                        arrays[i] = 0 ;
+                    }
+                }
+            }
+        }catch (Exception e){
+
+        }
+
+        if(arrays==null || arrays.length ==0){
+//            List<Integer> random = new ArrayList<>();
+            arrays=new int[arraySize];
+            for (int i=0 ; i<arraySize;i++){
+                arrays[i] = (int)(1+Math.random()*30);
+//                random.add((int)(1+Math.random()*30));
+            }
+
+
+        }
+
+
+        return arrays ;
+    }
 
 }

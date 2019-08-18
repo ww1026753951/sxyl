@@ -432,14 +432,15 @@ public class RedBlackTree {
         RedBlackTree b = new RedBlackTree();
 
 
-        int[] arrays = new int[]{17,8,25,1,13,22,27,6,11,15,21};
-        int[] arraysb = new int[]{13,8,17,1,11,15,25,6,22,27,21};
+        int[] arrays = new int[]{7,3,18,10,22,8,11,26,2,6,38,45,26,99,67,82,43};
+        int[] arraysb = new int[]{7,3,18,10,22,8,11,26,2,6,45,26,99,67,82,43};
 
 
 
         for (int i : arrays){
             a.insert(i);
         }
+        a.deleteNode(38);
 
 
 
