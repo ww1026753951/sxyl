@@ -17,6 +17,11 @@ public class ChangeAttrDetail  implements Serializable {
 
     private String id ;
 
+    /***
+     * 变更属性类型
+     */
+    private int ct;
+
     private Map<String,String> map = new HashMap<>();
 
 
@@ -36,6 +41,14 @@ public class ChangeAttrDetail  implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getCt() {
+        return ct;
+    }
+
+    public void setCt(int ct) {
+        this.ct = ct;
     }
 
     public Map<String, String> getMap() {

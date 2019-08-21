@@ -749,17 +749,14 @@ SXYL.DOM.multiMove = function (o) {
         }
 
         if(ob.ct == SXYL.GRAPH.GRAPH_TYPE.LINE){
-            debugger
             var sid = d3.select("#"+ob.id ) ;
             sid.transition().duration(1000).attr("x1",ob.x1).attr("y1",ob.y1).attr("x2",ob.x2).attr("y2",ob.y2);
 
             if(ob.tid){
-                debugger
                 sid.attr("id",ob.tid);
             }
         }
     }
-    debugger;
 }
 
 /***
@@ -775,13 +772,23 @@ SXYL.DOM.changeAttr = function (o) {
 
         var sid = d3.select("#"+ob.id ) ;
 
+        //类型
+        var type = ob.ct;
+
         //获取map
         var obMap = ob.map;
 
+        debugger
         if(obMap){
             sid.transition().duration(1000);
             Object.keys(obMap).forEach(function(key){
-                sid.attr(key,obMap[key]);
+                if(type ==2 ){
+
+                    sid.attr(key,sid.attr()+";"+obMap[key]);
+                }else{
+
+                    sid.attr(key,obMap[key]);
+                }
             });
         }
 

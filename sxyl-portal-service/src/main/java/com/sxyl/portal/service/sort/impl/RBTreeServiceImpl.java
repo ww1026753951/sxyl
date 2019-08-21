@@ -11,8 +11,11 @@ import com.sxyl.portal.domain.tree.TreeConstruct;
 import com.sxyl.portal.domain.tree.rb.RBTNode;
 import com.sxyl.portal.domain.tree.rb.RBTree;
 import com.sxyl.portal.domain.tree.rb.RBTreeColor;
+import com.sxyl.portal.domain.tree.rb.v.Node;
 import com.sxyl.portal.service.CommonService;
+import com.sxyl.portal.service.ExecutionSequenceService;
 import com.sxyl.portal.service.sort.RBTreeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -40,6 +43,9 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
     int defaultBuffer = 250 ;
 
     int defaultML = 600 ;
+
+    @Autowired
+    private ExecutionSequenceService executionSequenceService ;
 
     @Override
     public TreeConstruct getRbSortConstruct(int[] arrays) {
@@ -73,14 +79,40 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
 
 
     @Override
-    public TreeConstruct insertRbNode(List<ArrayNode> arrayNodeList, int node) {
+    public TreeConstruct insertRbNode(List<ArrayNode> arrayNodeList, int node, List<NodeExecuteStep> nodeExecuteStepList) {
 
 
         RBTree<Integer> tree=new RBTree<Integer>();
 
+        /**
+         * 设置执行步骤的文案
+         */
+        tree.setStepExecute(executionSequenceService.getExecutionSequenceByType(RBTreeStepConstant.TYPE));
+
         //构造树结构
         for(ArrayNode arrayNode : arrayNodeList) {
             tree.insert(arrayNode , arrayNode.getValue());
+        }
+
+
+        /***
+         * 处理操作历史的逻辑，此处应该只有删除
+         */
+        if (CollectionUtils.isEmpty(nodeExecuteStepList)){
+            nodeExecuteStepList = new ArrayList<>();
+        }else {
+            for (NodeExecuteStep nodeExecuteStep : nodeExecuteStepList){
+                if(nodeExecuteStep.getType() == ExecuteEnum.DELETE.getType()){
+                    tree.remove(nodeExecuteStep.getValue());
+                }else if(nodeExecuteStep.getType() == ExecuteEnum.INSERT.getType()){
+
+                    ArrayNode arrayNode = new ArrayNode();
+                    arrayNode.setCid(nodeExecuteStep.getCid());
+                    arrayNode.setValue(nodeExecuteStep.getValue());
+                    arrayNode.setValueTextId(nodeExecuteStep.getValueTextId());
+                    tree.insert(arrayNode , nodeExecuteStep.getValue());
+                }
+            }
         }
 
 
@@ -168,12 +200,23 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
 
         treeConstruct.setGroup(group);
         //设置数组列表
-        arrayNodeList.add(arrayNode);
+//        arrayNodeList.add(arrayNode);
         treeConstruct.setArrayLists(arrayNodeList);
 
 
         //设置动画
         treeConstruct.setAt(tree.getAnimationTotal());
+
+
+
+        //增加删除节点
+        NodeExecuteStep nodeExecuteStep = new NodeExecuteStep();
+        nodeExecuteStep.setValue(node);
+        nodeExecuteStep.setCid(arrayNode.getCid());
+        nodeExecuteStep.setValueTextId(arrayNode.getValueTextId());
+        nodeExecuteStep.setType(ExecuteEnum.INSERT.getType());
+        nodeExecuteStepList.add(nodeExecuteStep);
+        treeConstruct.setExecuteSteps(nodeExecuteStepList);
         return treeConstruct;
     }
 
@@ -183,6 +226,11 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
 
         RBTree<Integer> tree=new RBTree<Integer>();
 
+
+        /**
+         * 设置执行步骤的文案
+         */
+        tree.setStepExecute(executionSequenceService.getExecutionSequenceByType(RBTreeStepConstant.TYPE));
 
         //构造树结构
         for(ArrayNode arrayNode : arrayNodeList) {
@@ -198,6 +246,13 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
             for (NodeExecuteStep nodeExecuteStep : nodeExecuteStepList){
                 if(nodeExecuteStep.getType() == ExecuteEnum.DELETE.getType()){
                     tree.remove(nodeExecuteStep.getValue());
+                }else if(nodeExecuteStep.getType() == ExecuteEnum.INSERT.getType()){
+
+                    ArrayNode arrayNode = new ArrayNode();
+                    arrayNode.setCid(nodeExecuteStep.getCid());
+                    arrayNode.setValue(nodeExecuteStep.getValue());
+                    arrayNode.setValueTextId(nodeExecuteStep.getValueTextId());
+                    tree.insert(arrayNode , nodeExecuteStep.getValue());
                 }
             }
         }
@@ -209,7 +264,7 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
 
         //开启获取动画的功能
         tree.setAnimationFlag(true);
-        String cid = tree.remove(node);
+        RBTNode delNode = tree.remove(node);
 
 
 
@@ -222,7 +277,8 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         //增加删除节点
         NodeExecuteStep nodeExecuteStep = new NodeExecuteStep();
         nodeExecuteStep.setValue(node);
-        nodeExecuteStep.setCid(cid);
+        nodeExecuteStep.setCid(delNode.getCid());
+        nodeExecuteStep.setValueTextId(delNode.getNodeTextId());
         nodeExecuteStep.setType(ExecuteEnum.DELETE.getType());
         nodeExecuteStepList.add(nodeExecuteStep);
         treeConstruct.setExecuteSteps(nodeExecuteStepList);
@@ -461,9 +517,5 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         return g ;
     }
 
-
-
-
-//    private void
 
 }

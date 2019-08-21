@@ -31,4 +31,9 @@ public class NodeExecuteStep implements Serializable {
      * 对象的cid
      */
     private String cid;
+
+    /***
+     * 对象的textId
+     */
+    private String valueTextId;
 }

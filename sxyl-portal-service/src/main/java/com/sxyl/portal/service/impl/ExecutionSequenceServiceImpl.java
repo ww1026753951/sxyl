@@ -1,6 +1,7 @@
 package com.sxyl.portal.service.impl;
 
 import com.sxyl.portal.domain.ExecutionSequence;
+import com.sxyl.portal.domain.constant.RBTreeStepConstant;
 import com.sxyl.portal.domain.nn.dnn.param.DnnConstructParam;
 import com.sxyl.portal.domain.nn.dnn.result.DnnConstruct;
 import com.sxyl.portal.service.ExecutionSequenceService;
@@ -10,10 +11,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class ExecutionSequenceServiceImpl implements ExecutionSequenceService {
 
+
+    /***
+     * 红黑树的步骤说明
+     */
+    Map<String , String> rbTreeSequence = new ConcurrentHashMap<String , String>();
 
     Map<String , List<ExecutionSequence>> stepSequence = new HashMap<String, List<ExecutionSequence>>(){{
         put("1", getBubbleStep());
@@ -102,5 +109,52 @@ public class ExecutionSequenceServiceImpl implements ExecutionSequenceService {
 
 
         return list ;
+    }
+
+    @Override
+    public ExecutionSequence getExecutionSequenceByTypeAndCode(String type, String code, Map<String, String> replace) {
+
+        ExecutionSequence executionSequence = new ExecutionSequence();
+
+        Map<String,String> executeMap = getRbTreeSequenceMap();
+
+        String step =executeMap.get(type+code);
+
+
+        for (Map.Entry<String, String> entry : replace.entrySet()) {
+
+            step.replaceAll(entry.getKey() , entry.getValue());
+        }
+
+        executionSequence.setStepDesc(step);
+        return executionSequence;
+    }
+
+    @Override
+    public Map<String, String> getExecutionSequenceByType(String type) {
+        return getRbTreeSequenceMap();
+    }
+
+    private Map<String,String> getRbTreeSequenceMap(){
+
+
+
+
+        if (rbTreeSequence.size() ==0){
+
+            //找寻删除节点步骤
+            rbTreeSequence.put( RBTreeStepConstant.FIND_DEL_NODE , "搜索到删除节点 {DEL-NODE},并将其标注为删除节点。{DEL-NODE}");
+
+
+            //交换删除和替换节点
+            rbTreeSequence.put( RBTreeStepConstant.SWITCH_DEL_REPLACE_NODE , "将删除节点{DEL-NODE}和替换节点{REPLACE-NODE}交换位置。");
+
+
+        }
+
+
+        return rbTreeSequence;
+
+
     }
 }

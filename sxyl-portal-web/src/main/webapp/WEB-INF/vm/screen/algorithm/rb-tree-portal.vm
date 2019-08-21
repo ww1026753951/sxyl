@@ -31,7 +31,11 @@
 
     <script src="/js/bootstrap/jquery-bootstrap-modal-steps.js" ></script>
 
+
+    <script src="/js/bg.js" ></script>
+
 ##    <script src="/js/bootstrap/bootstrap-input-spinner.js"></script>
+
 
     <style>
         body{
@@ -89,14 +93,7 @@
 
                 <div class="btn-toolbar mb-3 mb-md-0  col-md-3">
 
-                    <div class="form-group">
-                        <label>操作类型</label>
-                        <select id="mode-type" class="form-control" >
-                            <option value="1">新增</option>
-                            <option value="2">删除</option>
-                            <option value="3">查询</option>
-                        </select>
-                    </div>
+
 
                     <div class="btn-group mr-2">
 
@@ -117,6 +114,8 @@
 ##                            <option>查询</option>
 ##                        </select>
 
+
+
                         <button id="run" class="btn btn-sm btn-outline-secondary">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
                                 <path id="play-path" d="M0 0v6l6-3-6-3z" transform="translate(1 1)" />
@@ -124,31 +123,33 @@
                             <span id="run-pause" run-type="0">播放</span>
                         </button>
                         &nbsp;&nbsp;
-                        <button class="btn btn-sm btn-outline-secondary" id="reset" >
+                        <button class="btn btn-sm btn-outline-secondary" id="reset"   data-toggle="modal" data-target="#myModal" >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 8 8">
                                 <path d="M4 0c-2.2 0-4 1.8-4 4s1.8 4 4 4c1.1 0 2.12-.43 2.84-1.16l-.72-.72c-.54.54-1.29.88-2.13.88-1.66 0-3-1.34-3-3s1.34-3 3-3c.83 0 1.55.36 2.09.91l-1.09 1.09h3v-3l-1.19 1.19c-.72-.72-1.71-1.19-2.81-1.19z" />
                             </svg>
-                            随机重置
+                            自定义树
                         </button>
                         &nbsp;&nbsp;
-                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#myModal">
-                            <span>自定义设置</span>
-                        </button>
+
 
                         <button type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" data-target="#insertModal">
-                            <span id="insertOrDel">新增</span>
+                            <span id="insertTreeNode">新增</span>
+                        </button>
+
+                        &nbsp;&nbsp;
+                        <button type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" data-target="#delModal">
+                            <span id="delTreeNode">删除</span>
                         </button>
 
                     </div>
                 </div>
-                <div class="btn-toolbar mb-3 mb-md-0  col-md-3">
-                    <div class="btn-group mr-2">
-                        <p class="m-2"><b>速度:</b></p>
 
-                        <input type="number" value="3" min="1" max="5" step="1"/>
-
-                    </div>
-                </div>
+##                <div class="btn-toolbar mb-3 mb-md-0  col-md-3">
+##                    <div class="btn-group mr-2">
+##                        <p class="m-2"><b>速度:</b></p>
+##                        <input type="number" value="3" min="1" max="5" step="1"/>
+##                    </div>
+##                </div>
                 <div class="btn-toolbar mb-4 mb-md-0  col-md-6">
                     <div><b>红黑树简介：</b></div>
                     <div>
@@ -164,7 +165,7 @@
 
             <div id="algorithm-content" class="row">
                 <div id="graph-content" class="col-lg-9 col-sm-9 ">
-                    <svg width="1200" height="600" id="sortAlg">
+                    <svg id="sortAlg" width="1200" height="600">
                     </svg>
                 </div>
                 <div class="col-lg-3 col-sm-3">
@@ -176,6 +177,16 @@
 
                 </div>
             </div>
+
+
+##
+            <footer class="py-0 bg-white">
+                <div class="container">
+                    <p class="m-0 text-center text-black-50">Copyright &copy; 2018-2019 $!{dc.domain} $!{dc.domainName} by <a href="mailto:ww1026753951@163.com">谷禾水</a> .All rights reserved</p>
+                    <p class="m-0 text-center text-black-50">版权声明：本站原创文章、作品，未经本人许可，任何人或机构不得以任何形式对本站内容进行复制作商业用途.</p>
+                </div>
+            </footer>
+
         </main>
     </div>
 </div>
@@ -184,8 +195,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="width: 800px">
             <div class="modal-header">
-##                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-##                <h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+
             </div>
             <div class="modal-body"style="width: 800px;height: 300px">
 
@@ -194,18 +204,41 @@
                     <input type="text" id ="arrayStr" class="form-control" placeholder="自定义数组,逗号分隔">
                 </div>
                 <br><br>
-##                <div class="checkbox">
-##                    <input type="radio" name="heapType" value="1" checked>大顶堆
-##                    <input type="radio" name="heapType" value="2">小顶堆
-##                </div>
+
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="changeBySelf(false)">提交更改</button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="width: 800px">
+            <div class="modal-header">
+
+            </div>
+            <div class="modal-body"style="width: 800px;height: 300px">
+
+                <div class="form-group">
+                    <label>删除节点</label>
+                    <input type="text" id ="delNodeValue" class="form-control" placeholder="删除节点">
+                </div>
+                <br><br>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="del()">删除节点</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -218,16 +251,16 @@
 
                 <div class="form-group">
                     <label>数字</label>
-                    <input type="text" id ="nodeValue" class="form-control" placeholder="自定义数组,逗号分隔">
+                    <input type="text" id ="nodeValue" class="form-control" placeholder="新增节点">
                 </div>
                 <br><br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="insertEvent()">提交更改</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="insert()">新增节点</button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
+        </div>
+    </div>
 </div>
 
 <!-- Bootstrap core JavaScript
@@ -252,24 +285,7 @@
     $('input[type=radio][name=speedRadioOptions]').change(function() {
         SXYL.SORT.changeSpeed(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed());
     });
-    function insertEvent() {
-        var modelVal = parseInt($('#mode-type').val());
 
-        if(modelVal == 1){
-
-            insert();
-        }else if(modelVal == 2){
-
-            del();
-        }
-    }
-    //新增的事件
-//    $('#insert').bind('click', function () {
-//
-//
-//
-//
-//    });
 
 
     $('#mode-type').bind('change' , function (a,b,c,d,e) {
@@ -301,25 +317,15 @@
         SXYL.SORT.changeToStart();
         SXYL.GRAPH.initPosition();
         SXYL.step_no = 0;
-        loadData(random);
+        loadData();
 
     }
-    function loadData(random) {
+    function loadData() {
 //        var minHeap = false;
 
 
-        var arrayStr = "";
-        if(random){
+        var arrayStr = $("#arrayStr").val();
 
-        }else{
-            arrayStr = $("#arrayStr").val();
-//            var checkedValue = $('input[name="heapType"]:checked').val();
-//            if(checkedValue){
-//                if(checkedValue == 2){
-//                    minHeap = true;
-//                }
-//            }
-        }
 
 
         $.ajax({
@@ -356,12 +362,14 @@
             url: "/tree/insertRbNode",
             data : JSON.stringify({
                 arrayNodeList:rbArray["data"],
+                executeHistory:rbArray["es"],
                 node:v
             }),
             success: function (d) {
                 var parent = SXYL.GRAPH.getContext();
                 SXYL.GRAPH.drawByComponent(parent , d.group);
                 rbArray["data"] = d.arrayLists;
+                rbArray["es"] = d.executeSteps;
                 SXYL.step_no = 0 ;
 
 
@@ -379,7 +387,7 @@
 
     function del() {
 
-        var v = $("#nodeValue").val();
+        var v = $("#delNodeValue").val();
 
         if(!v){
             alert('请选择节点删除!');
@@ -405,17 +413,23 @@
 
                 SXYL.step_no = 0 ;
 
-
                 SXYL.ANIMATION.ALL_STEP = d.at;
                 SXYL.SORT.start(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.SORT.getSpeed()));
 
-//
             }
         });
 
     }
 
-//    $("input[type='number']").inputSpinner();
+
+    watermark({watermark_txt0:'动画算法',watermark_txt1:"谷禾水",watermark_txt2:" "});
+
+
+    //        alert($(window).width());
+    //        alert();
+    var contentHeight = ($(window).height()) - 150;
+    debugger
+    $("#sortAlg").attr("height",contentHeight)
 
 
 

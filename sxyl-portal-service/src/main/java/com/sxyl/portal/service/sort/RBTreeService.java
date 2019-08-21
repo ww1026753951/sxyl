@@ -23,7 +23,7 @@ public interface RBTreeService {
      * @param node
      * @return
      */
-    TreeConstruct insertRbNode(List<ArrayNode> arrayNodeList, int node);
+    TreeConstruct insertRbNode(List<ArrayNode> arrayNodeList, int node , List<NodeExecuteStep> nodeExecuteStepList);
 
 
     /****

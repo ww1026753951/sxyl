@@ -1,5 +1,7 @@
 package com.sxyl.portal.domain.tree.rb;
 
+import com.sxyl.portal.domain.constant.ChangeAttrEnum;
+import com.sxyl.portal.domain.constant.RBTreeStepConstant;
 import com.sxyl.portal.domain.d.*;
 import com.sxyl.portal.domain.graph.Circle;
 import com.sxyl.portal.domain.graph.GraphComponent;
@@ -49,6 +51,11 @@ public class RBTree<T extends Comparable<T>> {
 
     //层与层的高度
     int height = 80 ;
+
+    /***
+     * 执行步骤
+     */
+    private Map<String , String> stepExecute = new HashMap<>();
 
 
 //    public class RBTNode<T extends Comparable<T>> {
@@ -803,65 +810,11 @@ public class RBTree<T extends Comparable<T>> {
             }
 
 
-            //x的移动
-//            Circle xCircle = new Circle();
-//            //x 的值
-//            xCircle.setId(domX.getCid());
-//            xCircle.setX(xNewWidth);
-//            xCircle.setY(xNewY);
-//            Text text = new Text();
-//            text.setId(domX.getNodeTextId());
-//            text.setX(xNewWidth);
-//            text.setY(xNewY);
-//            list.add(xCircle);
-//            list.add(text);
-//
-//            // y
-//            Circle yCircle = new Circle();
-//            yCircle.setId(domY.getCid());
-//            yCircle.setX(yNewWidth);
-//            yCircle.setY(yNewY);
-//            Text yText = new Text();
-//            yText.setId(domY.getNodeTextId());
-//            yText.setX(yNewWidth);
-//            yText.setY(yNewY);
-//            list.add(yCircle);
-//            list.add(yText);
-
-//
-//            Line xyLine = new Line();
-//            xyLine.setId(yCircle.getId()+"-" + xCircle.getId());
-//            xyLine.setX1(yNewWidth);
-//            xyLine.setY1(yNewY - r);
-//            xyLine.setX2(xNewWidth);
-//            xyLine.setY2(xNewY + r);
-//            list.add(xyLine);
 
 
             //lx
             if(x.left != null){
-//                RBTNode domLX = nodeMap.get(x.left.getCid());
-//
-//
-//
-//                Circle lxCircle = new Circle();
-//                lxCircle.setId(domLX.getCid());
-//                lxCircle.setX(domX.getWidth());
-//                lxCircle.setY((domX.getLevel())*height + defaultMt);
-//
-//                Text lyText = new Text();
-//                lyText.setId(domLX.getNodeTextId());
-//                lyText.setX(domX.getWidth());
-//                lyText.setY((domX.getLevel())*height + defaultMt);
-//                list.add(lxCircle);
-//                list.add(lyText);
-//                Line lxxLine = new Line();
-//                lxxLine.setId(xCircle.getId()+ "-" + lxCircle.getId());
-//                lxxLine.setX1(xCircle.getX());
-//                lxxLine.setY1(xCircle.getY() + r);
-//                lxxLine.setX2(lxCircle.getX());
-//                lxxLine.setY2(lxCircle.getY() - r);
-//                list.add(lxxLine);
+
 
 
                 RBTNode domLX = nodeMap.get(x.left.getCid());
@@ -883,14 +836,6 @@ public class RBTree<T extends Comparable<T>> {
             }
 
             if(y.right != null){
-//                RBTNode domRY = nodeMap.get(y.right.getCid());
-//                Circle ryCircle = new Circle();
-//                ryCircle.setId(domRY.getCid());
-//                ryCircle.setX(domRY.getWidth() + domRY.getBuffer());
-//                ryCircle.setY((domRY.getLevel() +  1 )*height + defaultMt);
-//                list.add(ryCircle);
-
-
                 RBTNode domRY = nodeMap.get(y.right.getCid());
                 int ryNewBuffer = new Double(domRY.getBuffer()*rate).intValue() ;
                 int ryNewLevel = domRY.getLevel() + 1;
@@ -1238,6 +1183,30 @@ public class RBTree<T extends Comparable<T>> {
         if (animationFlag){
             changeAttr.setList(changeList);
             animationTotal.addComponent(changeAttr);
+
+
+
+
+            //删除标记虚化
+            ChangeAttr delNodeChangeAttr = new ChangeAttr();
+            List<ChangeAttrDetail> delNodeSignList = new ArrayList<>();
+//            String delNodeText = "搜索到删除节点%s,并将其标注为删除节点。";
+            //虚化 删除样式
+            ChangeAttrDetail cad = new ChangeAttrDetail(node.getCid());
+            cad.addValue("style" , "opacity:0.1");
+            cad.setCt(ChangeAttrEnum.ADD.getType());
+            delNodeSignList.add(cad);
+            //虚化 删除样式
+            ChangeAttrDetail textCad = new ChangeAttrDetail(node.getNodeTextId());
+            textCad.addValue("style" , "opacity:0.1");
+            textCad.setCt(ChangeAttrEnum.ADD.getType());
+            delNodeSignList.add(cad);
+            Map<String,String> replace=new HashMap<>();
+            replace.put(RBTreeStepConstant.PLACEHOLDER_DEL_NODE , node.getKey().toString()) ;
+            delNodeChangeAttr.setAd(this.getDesc(RBTreeStepConstant.FIND_DEL_NODE , replace));
+            delNodeChangeAttr.setList(delNodeSignList);
+            animationTotal.addComponent(delNodeChangeAttr);
+
         }
 
 
@@ -1262,7 +1231,10 @@ public class RBTree<T extends Comparable<T>> {
             }
             if (animationFlag){
                 //将后继结点设置为替换颜色
-                animationTotal.addComponent(new ChangeColor("green",replace.getCid()));
+                ChangeColor cc = new ChangeColor("green",replace.getCid());
+                cc.setAd(String.format("删除节点为%s,寻找删除节点的后继结点%s,将后继节点标志为绿色。" , node.getKey() , replace.getKey() ));
+
+                animationTotal.addComponent(cc);
 
                 if(node.parent != null){
                     //修改线的id start
@@ -1297,7 +1269,6 @@ public class RBTree<T extends Comparable<T>> {
 
 
 
-            List<GraphComponent> list = new ArrayList<>();
             RBTNode targetNode ;
             // "node节点"不是根节点(只有根节点不存在父节点)
             //将父节点的  子节点引用修改为 替换节点
@@ -1319,12 +1290,20 @@ public class RBTree<T extends Comparable<T>> {
 
 
             if (animationFlag){
+
+                List<GraphComponent> list = new ArrayList<>();
                 //增加圆的动画,将后继结点替换到删除节点上,  动画部分
                 this.addCircleAndTextAnimation(list,replace.getCid(), replace.getNodeTextId(),node.getWidth() , compute(node.getLevel()));
                 //将删除节点与替换节点互换位置
                 this.addCircleAndTextAnimation(list,node.getCid(), node.getNodeTextId(),replace.getWidth() , compute(replace.getLevel()));
                 MultiMove multiMove = new MultiMove();
                 multiMove.setGcs(list);
+
+//                String multiMoveText="";
+                Map<String,String> replaceMap = new HashMap();
+                replaceMap.put(RBTreeStepConstant.PLACEHOLDER_DEL_NODE , node.getKey().toString()) ;
+                replaceMap.put(RBTreeStepConstant.PLACEHOLDER_REPLACE_NODE , replace.getKey().toString()) ;
+                multiMove.setAd(this.getDesc(RBTreeStepConstant.SWITCH_DEL_REPLACE_NODE,replaceMap));
                 this.animationTotal.addComponent(multiMove);
 
                 int tLevel = targetNode.getLevel();
@@ -1367,8 +1346,10 @@ public class RBTree<T extends Comparable<T>> {
                     this.addCircleAndTextAnimation(listChild,node.getCid(), node.getNodeTextId(),child.getWidth() , compute(child.getLevel()));
                     MultiMove multiMove = new MultiMove();
                     multiMove.setGcs(listChild);
-                    this.animationTotal.addComponent(multiMove);
 
+                    String childText ="将删除节点 %s 和替换节点 %s 交换位置。";
+                    multiMove.setAd(String.format(childText , node.getKey() , child.getKey()));
+                    this.animationTotal.addComponent(multiMove);
 
                     int nLevel = node.getLevel();
                     int nWidth = node.getWidth();
@@ -1379,12 +1360,13 @@ public class RBTree<T extends Comparable<T>> {
                     int cBuffer = child.getBuffer();
 
 
-
-                    //todo  node 的parent 不是最新的
-                    addChangeLineId(changeList ,replace.getCid() , node.getCid() , replace.getCid() , child.getCid() );
-
+                    //todo  node 的parent 不是最新的  todo  修改项目
+                    addChangeLineId(changeList ,replace.getParent().getCid() , node.getCid() , replace.getParent().getCid() , child.getCid() );
                     addChangeLineId(changeList ,node.getCid() , child.getCid() , child.getCid() , node.getCid() );
 
+                    if(replace == node.right){
+                        addChangeLineId(changeList ,replace.getCid() , node.getCid() , replace.getCid() , child.getCid() );
+                    }
                     //刷新map
                     refreshMap(child.getCid() , nLevel  , nWidth , nBuffer);
                     refreshMap(node.getCid() , cLevel , cWidth , cBuffer);
@@ -1527,16 +1509,14 @@ public class RBTree<T extends Comparable<T>> {
      *     tree 红黑树的根结点
      *     z 删除的结点
      */
-    public String remove(T key) {
+    public RBTNode remove(T key) {
         RBTNode<T> node;
 
-        String res =null;
         if ((node = search(mRoot, key)) != null){
             //获取cid
-            res = node.getCid();
             remove(node);
         }
-        return res ;
+        return node ;
     }
 
     /*
@@ -1717,6 +1697,37 @@ public class RBTree<T extends Comparable<T>> {
         //删除节点已经被放到最末端 ,所以只需要删除
         destroy.add(delPid + "-" + cid);
         String[] c = destroy.toArray(new String[destroy.size()]);
-        this.animationTotal.addComponent(new Destroy(c));
+        Destroy d = new Destroy(c);
+        String delText = "删除节点%s";
+        d.setAd(String.format(delText , rbtNode.getKey()));
+        this.animationTotal.addComponent(d);
+    }
+
+
+
+    public Map<String, String> getStepExecute() {
+        return stepExecute;
+    }
+
+    public void setStepExecute(Map<String, String> stepExecute) {
+        this.stepExecute = stepExecute;
+    }
+
+
+    /***
+     * 获取描述信息
+     * @param code
+     * @param replace
+     * @return
+     */
+    private String getDesc(String code , Map<String,String> replace){
+
+        String step =getStepExecute().get(code);
+
+        for (Map.Entry<String, String> entry : replace.entrySet()) {
+
+            step = step.replace(entry.getKey() , entry.getValue());
+        }
+        return step ;
     }
 }
