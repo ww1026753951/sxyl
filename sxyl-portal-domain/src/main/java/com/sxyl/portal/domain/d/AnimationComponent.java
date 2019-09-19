@@ -22,6 +22,11 @@ public abstract class AnimationComponent implements Serializable {
      */
     private String ad;
 
+    /***
+     * don'tShowAnimation
+     */
+    private boolean ds;
+
     public void setAt(Integer at) {
         this.at = at;
     }
@@ -39,6 +44,15 @@ public abstract class AnimationComponent implements Serializable {
 
     public void setAd(String ad) {
         this.ad = ad;
+    }
+
+
+    public boolean getDs() {
+        return ds;
+    }
+
+    public void setDs(boolean ds) {
+        this.ds = ds;
     }
 
     /****

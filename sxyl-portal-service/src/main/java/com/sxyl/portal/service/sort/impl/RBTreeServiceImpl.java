@@ -333,15 +333,15 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         all.setMt(defaultMt);
         all.setCompose(ComponentCompositeEnum.NONE.getType());
 
-        Group array = new Group();
-        array.setCompose(ComponentCompositeEnum.HORIZONTAL.getType());
-        int ml=50;
-        for (ArrayNode arrayNode : arrayNodes){
-            ml = ml + 50;
-            array.addChild(new RectAndText(arrayNode.getRid() , arrayNode.getValue(), 30,30 ,ml,"white"));
-        }
+//        Group array = new Group();
+//        array.setCompose(ComponentCompositeEnum.HORIZONTAL.getType());
+//        int ml=50;
+//        for (ArrayNode arrayNode : arrayNodes){
+//            ml = ml + 50;
+//            array.addChild(new RectAndText(arrayNode.getRid() , arrayNode.getValue(), 30,30 ,ml,"white"));
+//        }
 
-        all.addChild(array);
+//        all.addChild(array);
 
 
         int level = 1;

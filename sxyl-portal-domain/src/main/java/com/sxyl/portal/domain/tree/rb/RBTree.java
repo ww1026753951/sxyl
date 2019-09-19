@@ -58,6 +58,9 @@ public class RBTree<T extends Comparable<T>> {
     private Map<String , String> stepExecute = new HashMap<>();
 
 
+    private Map<String,String> replaceMap = new HashMap<>();
+
+
 //    public class RBTNode<T extends Comparable<T>> {
 //        boolean color;        // 颜色
 //        T key;                // 关键字(键值)
@@ -107,8 +110,12 @@ public class RBTree<T extends Comparable<T>> {
 
             node.color = BLACK;
             if(animationFlag){
+                Map nodeMap = new HashMap();
                 //将元素变为黑色
-                animationTotal.addComponent(new ChangeColor("black",node.getCid()));
+                ChangeColor changeColor = new ChangeColor("black",node.getCid());
+                nodeMap.put(RBTreeStepConstant.NODE , node.getKey().toString());
+                changeColor.setAd(this.getDesc(RBTreeStepConstant.REPLACE_NODE_COLOR , nodeMap ));
+                animationTotal.addComponent(changeColor);
             }
 
         }
@@ -118,7 +125,12 @@ public class RBTree<T extends Comparable<T>> {
             node.color = RED;
             if(animationFlag){
                 //将元素变为红色
-                animationTotal.addComponent(new ChangeColor("red",node.getCid()));
+                ChangeColor changeColor = new ChangeColor("red",node.getCid()) ;
+
+                Map nodeMap = new HashMap();
+                nodeMap.put(RBTreeStepConstant.NODE , node.getKey().toString());
+                changeColor.setAd(this.getDesc(RBTreeStepConstant.REPLACE_NODE_COLOR , nodeMap ));
+                animationTotal.addComponent(changeColor);
             }
         }
     }
@@ -133,10 +145,19 @@ public class RBTree<T extends Comparable<T>> {
 
             if(animationFlag){
                 if(color == RED){
-                    animationTotal.addComponent(new ChangeColor("red",node.getCid()));
-                }else {
+                    ChangeColor changeColor = new ChangeColor("red",node.getCid()) ;
+                    Map nodeMap = new HashMap();
+                    nodeMap.put(RBTreeStepConstant.NODE , node.getKey().toString());
 
-                    animationTotal.addComponent(new ChangeColor("black",node.getCid()));
+                    changeColor.setAd(this.getDesc(RBTreeStepConstant.REPLACE_NODE_COLOR , nodeMap ));
+
+                    animationTotal.addComponent(changeColor);
+                }else {
+                    ChangeColor changeColor = new ChangeColor("black",node.getCid());
+                    Map nodeMap = new HashMap();
+                    nodeMap.put(RBTreeStepConstant.NODE , node.getKey().toString());
+                    changeColor.setAd(this.getDesc(RBTreeStepConstant.REPLACE_NODE_COLOR , nodeMap ));
+                    animationTotal.addComponent(changeColor);
                 }
             }
         }
@@ -435,7 +456,10 @@ public class RBTree<T extends Comparable<T>> {
 
             multiMove.setGcs(list);
 
+            replaceMap.put(RBTreeStepConstant.X_NODE , x.getKey().toString());
+            replaceMap.put(RBTreeStepConstant.Y_NODE , y.getKey().toString());
 
+            multiMove.setAd(this.getDesc(RBTreeStepConstant.LEFT_ROTATE, replaceMap));
             animationTotal.addComponent(multiMove);
             animationTotal.addComponent(changeAttr);
 
@@ -751,6 +775,14 @@ public class RBTree<T extends Comparable<T>> {
             List<GraphComponent> list = new ArrayList<>();
 
             multiMove.setGcs(list);
+
+
+            replaceMap.put(RBTreeStepConstant.X_NODE , x.getKey().toString());
+            replaceMap.put(RBTreeStepConstant.Y_NODE , y.getKey().toString());
+
+            multiMove.setAd(this.getDesc(RBTreeStepConstant.RIGHT_ROTATE, replaceMap));
+//            multiMove.setAd("以x为支点进行右旋");
+
             animationTotal.addComponent(multiMove);
 
 
@@ -1181,6 +1213,9 @@ public class RBTree<T extends Comparable<T>> {
         ChangeAttr changeAttr = new ChangeAttr();
         List<ChangeAttrDetail> changeList = new ArrayList<>();
         if (animationFlag){
+
+            changeAttr.setDs(true);
+            replaceMap.put(RBTreeStepConstant.PLACEHOLDER_DEL_NODE , node.getKey().toString()) ;
             changeAttr.setList(changeList);
             animationTotal.addComponent(changeAttr);
 
@@ -1201,9 +1236,7 @@ public class RBTree<T extends Comparable<T>> {
             textCad.addValue("style" , "opacity:0.1");
             textCad.setCt(ChangeAttrEnum.ADD.getType());
             delNodeSignList.add(cad);
-            Map<String,String> replace=new HashMap<>();
-            replace.put(RBTreeStepConstant.PLACEHOLDER_DEL_NODE , node.getKey().toString()) ;
-            delNodeChangeAttr.setAd(this.getDesc(RBTreeStepConstant.FIND_DEL_NODE , replace));
+            delNodeChangeAttr.setAd(this.getDesc(RBTreeStepConstant.FIND_DEL_NODE , replaceMap));
             delNodeChangeAttr.setList(delNodeSignList);
             animationTotal.addComponent(delNodeChangeAttr);
 
@@ -1222,6 +1255,11 @@ public class RBTree<T extends Comparable<T>> {
                 replace = replace.left;
             }
 
+            //赋值map 替换节点
+            if(animationFlag){
+                replaceMap.put(RBTreeStepConstant.PLACEHOLDER_REPLACE_NODE , replace.getKey().toString()) ;
+            }
+
             delPid = replace.parent.getCid() ;
 
             //删除节点的右子节点 等于后继结点
@@ -1232,7 +1270,8 @@ public class RBTree<T extends Comparable<T>> {
             if (animationFlag){
                 //将后继结点设置为替换颜色
                 ChangeColor cc = new ChangeColor("green",replace.getCid());
-                cc.setAd(String.format("删除节点为%s,寻找删除节点的后继结点%s,将后继节点标志为绿色。" , node.getKey() , replace.getKey() ));
+
+                cc.setAd(this.getDesc(RBTreeStepConstant.FIND_REPLACE_NODE , replaceMap));
 
                 animationTotal.addComponent(cc);
 
@@ -1299,10 +1338,7 @@ public class RBTree<T extends Comparable<T>> {
                 MultiMove multiMove = new MultiMove();
                 multiMove.setGcs(list);
 
-//                String multiMoveText="";
-                Map<String,String> replaceMap = new HashMap();
-                replaceMap.put(RBTreeStepConstant.PLACEHOLDER_DEL_NODE , node.getKey().toString()) ;
-                replaceMap.put(RBTreeStepConstant.PLACEHOLDER_REPLACE_NODE , replace.getKey().toString()) ;
+
                 multiMove.setAd(this.getDesc(RBTreeStepConstant.SWITCH_DEL_REPLACE_NODE,replaceMap));
                 this.animationTotal.addComponent(multiMove);
 
@@ -1328,6 +1364,12 @@ public class RBTree<T extends Comparable<T>> {
             // child是"取代节点"的右孩子，也是需要"调整的节点"。
             // "取代节点"肯定不存在左孩子！因为它是一个后继节点。
             child = replace.right;
+            //赋值替换节点的右侧节点
+            if(animationFlag){
+                if(child!=null){
+                    replaceMap.put(RBTreeStepConstant.PLACEHOLDER_CHILD_NODE , child.getKey().toString());
+                }
+            }
             parent = parentOf(replace);//parent 为替换节点的父节点
             // 保存"取代节点"的颜色
             color = colorOf(replace);
@@ -1347,8 +1389,8 @@ public class RBTree<T extends Comparable<T>> {
                     MultiMove multiMove = new MultiMove();
                     multiMove.setGcs(listChild);
 
-                    String childText ="将删除节点 %s 和替换节点 %s 交换位置。";
-                    multiMove.setAd(String.format(childText , node.getKey() , child.getKey()));
+
+                    multiMove.setAd(this.getDesc(RBTreeStepConstant.SWITCH_DEL_CHILD_NODE , replaceMap));
                     this.animationTotal.addComponent(multiMove);
 
                     int nLevel = node.getLevel();
@@ -1384,13 +1426,9 @@ public class RBTree<T extends Comparable<T>> {
                 parent.left = child;//替换节点的右节点设置为 替换节点的父节点的左节点
                 replace.right = node.right;
                 setParent(node.right, replace);
-
-
             }
 
             replace.parent = node.parent;//将替换节点的父节点设置为删除节点的父节点
-
-
 
             replace.color = node.color;
             replace.left = node.left;
@@ -1398,8 +1436,18 @@ public class RBTree<T extends Comparable<T>> {
 
 
             if (animationFlag){
-                animationTotal.addComponent(new ChangeColor(replace.color == BLACK?"black":"red",replace.getCid()));
-                animationTotal.addComponent(new ChangeColor(node.color == BLACK?"black":"red",node.getCid()));
+                ChangeColor replaceColor = new ChangeColor(replace.color == BLACK?"black":"red",replace.getCid()) ;
+                Map<String,String> m = new HashMap<>();
+                m.put(RBTreeStepConstant.NODE , replace.getKey().toString());
+                replaceColor.setAd(this.getDesc(RBTreeStepConstant.REPLACE_NODE_COLOR, m));
+                animationTotal.addComponent(replaceColor);
+
+
+                ChangeColor nodeColor = new ChangeColor(node.color == BLACK?"black":"red",node.getCid());
+
+                m.put(RBTreeStepConstant.NODE , node.getKey().toString());
+                nodeColor.setAd(this.getDesc(RBTreeStepConstant.REPLACE_NODE_COLOR, m));
+                animationTotal.addComponent(nodeColor);
             }
 
 
@@ -1471,6 +1519,8 @@ public class RBTree<T extends Comparable<T>> {
                 this.addCircleAndTextAnimation(list,node.getCid(), node.getNodeTextId(),child.getWidth() , compute(child.getLevel()));
                 MultiMove multiMove = new MultiMove();
                 multiMove.setGcs(list);
+
+                multiMove.setAd(this.getDesc(  RBTreeStepConstant.SWITCH_DEL_AND_RIGHT_CHILD_NODE , replaceMap));
                 this.animationTotal.addComponent(multiMove);
 
                 addChangeLineId(changeList ,node.parent.getCid() , node.getCid() , node.parent.getCid() , child.getCid() );
@@ -1481,9 +1531,17 @@ public class RBTree<T extends Comparable<T>> {
                 refreshMap(child.getCid() , nLevel  , nWidth , nBuffer);
                 refreshMap(node.getCid() , cLevel , cWidth , cBuffer);
 
+                ChangeColor childNode = new ChangeColor(child.color == BLACK?"black":"red",child.getCid()) ;
+                Map<String,String> m = new HashMap<>();
+                m.put(RBTreeStepConstant.NODE , child.getKey().toString());
+                childNode.setAd(this.getDesc(RBTreeStepConstant.NODE , m));
+                animationTotal.addComponent(childNode);
 
-                animationTotal.addComponent(new ChangeColor(child.color == BLACK?"black":"red",child.getCid()));
-                animationTotal.addComponent(new ChangeColor(node.color == BLACK?"black":"red",node.getCid()));
+
+                ChangeColor n = new ChangeColor(node.color == BLACK?"black":"red",node.getCid());
+                m.put(RBTreeStepConstant.NODE , node.getKey().toString());
+                childNode.setAd(this.getDesc(RBTreeStepConstant.NODE , m));
+                animationTotal.addComponent(n);
             }
 
 
@@ -1678,28 +1736,12 @@ public class RBTree<T extends Comparable<T>> {
         destroy.add(cid);
 
         destroy.add(rbtNode.getNodeTextId());
-//        if(rbtNode.parent !=null){
-//            destroy.add(rbtNode.parent.getCid() + "-" + rbtNode.getCid());
-//        }
-//
-//        if (rbtNode.left != null){
-//            destroy.add(rbtNode.getCid() + "-" + rbtNode.left.getCid());
-//        }
-//
-//        if(rbtNode.right != null) {
-//            destroy.add(rbtNode.getCid() + "-" + rbtNode.right.getCid());
-//        }
-//
-//        if(nodeRightEqualReplace){
-//            destroy.add(rbtNode.right.getCid() + "-" + rbtNode.getCid());
-//        }
 
         //删除节点已经被放到最末端 ,所以只需要删除
         destroy.add(delPid + "-" + cid);
         String[] c = destroy.toArray(new String[destroy.size()]);
         Destroy d = new Destroy(c);
-        String delText = "删除节点%s";
-        d.setAd(String.format(delText , rbtNode.getKey()));
+        d.setAd( this.getDesc(RBTreeStepConstant.DEL_NODE , replaceMap));
         this.animationTotal.addComponent(d);
     }
 

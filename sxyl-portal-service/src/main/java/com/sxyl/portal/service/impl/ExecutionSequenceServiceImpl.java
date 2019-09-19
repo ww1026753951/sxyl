@@ -143,13 +143,41 @@ public class ExecutionSequenceServiceImpl implements ExecutionSequenceService {
         if (rbTreeSequence.size() ==0){
 
             //找寻删除节点步骤
-            rbTreeSequence.put( RBTreeStepConstant.FIND_DEL_NODE , "搜索到删除节点 {DEL-NODE},并将其标注为删除节点。{DEL-NODE}");
+            rbTreeSequence.put( RBTreeStepConstant.REPLACE_NODE_COLOR , "将节点{NODE}修改颜色");
+
+            //找寻删除节点步骤
+            rbTreeSequence.put( RBTreeStepConstant.FIND_DEL_NODE , "搜索到删除节点 {DEL-NODE},并将其标注为删除节点。");
 
 
             //交换删除和替换节点
             rbTreeSequence.put( RBTreeStepConstant.SWITCH_DEL_REPLACE_NODE , "将删除节点{DEL-NODE}和替换节点{REPLACE-NODE}交换位置。");
 
 
+
+            //交换删除和替换节点
+            rbTreeSequence.put( RBTreeStepConstant.SWITCH_DEL_CHILD_NODE , "将删除节点{DEL-NODE}和替换节点的子节点{CHILD-NODE}交换位置。");
+
+
+
+            //交换删除和替换节点
+            rbTreeSequence.put( RBTreeStepConstant.SWITCH_DEL_AND_RIGHT_CHILD_NODE , "将删除节点{DEL-NODE}和替换节点的右子节点{CHILD-NODE}交换位置。");
+
+
+            //交换删除和替换节点
+            rbTreeSequence.put( RBTreeStepConstant.DEL_NODE , "将删除节点{DEL-NODE}从红黑树中移出。");
+
+
+
+            //交换删除和替换节点
+            rbTreeSequence.put( RBTreeStepConstant.FIND_REPLACE_NODE , "删除节点为{DEL-NODE},寻找删除节点的后继结点{REPLACE-NODE},将后继节点标志为绿色。");
+
+
+            //右旋操作
+            rbTreeSequence.put( RBTreeStepConstant.RIGHT_ROTATE , "以{X-NODE}为x节点,以{Y-NODE}为y节点进行右旋操作。");
+
+
+            //左旋操作
+            rbTreeSequence.put( RBTreeStepConstant.LEFT_ROTATE , "以{X-NODE}为x节点,以{Y-NODE}为y节点进行左旋操作。");
         }
 
 

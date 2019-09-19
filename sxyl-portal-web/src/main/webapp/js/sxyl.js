@@ -281,7 +281,6 @@ SXYL.DOM.getDomXY = function (id) {
  */
 SXYL.DOM.moveElement = function(o){
 
-    debugger
     var sid = d3.select("#"+o.id ) ;
     var xyDom = getXY(o.tid);
 
@@ -677,7 +676,6 @@ SXYL.DOM.changeColor = function (o) {
  * @param o
  */
 SXYL.DOM.show = function (o) {
-    debugger
     var ids = o.ids ;
     for(var i =0; i< ids.length ; i++){
         var element = d3.select("#" + ids[i]);
@@ -778,7 +776,6 @@ SXYL.DOM.changeAttr = function (o) {
         //获取map
         var obMap = ob.map;
 
-        debugger
         if(obMap){
             sid.transition().duration(1000);
             Object.keys(obMap).forEach(function(key){

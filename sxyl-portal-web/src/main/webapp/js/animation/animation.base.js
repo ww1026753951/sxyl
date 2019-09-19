@@ -40,9 +40,8 @@ SXYL.ANIMATION={
      * @param o
      */
     initExecutionSequence:function(o){
-        if(!o){
-            debugger;
-        }
+        // if(!o){
+        // }
         for (var i=0;i<o.length;i++){
             SXYL.ANIMATION.SEQUENCE_STEP[o.stepCode]=o;
         }
@@ -119,8 +118,17 @@ SXYL.ANIMATION={
             if(SXYL.step_no == executeStep.length){
                 window.clearInterval(SXYL.execute_i);
             }
-            return;
+            //如果是不展示的逻辑，则直接跳到下一步
+            if(!stepObject.ad){
+                if (stepObject.ds ==true){
+                    continue;
+                }
+            }
+
+            return false;
         }
+
+        return true;
 
     }
 
