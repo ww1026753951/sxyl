@@ -266,6 +266,11 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         tree.setAnimationFlag(true);
         RBTNode delNode = tree.remove(node);
 
+        if(delNode == null){
+
+            return null;
+        }
+
 
 
         TreeConstruct treeConstruct = new TreeConstruct();

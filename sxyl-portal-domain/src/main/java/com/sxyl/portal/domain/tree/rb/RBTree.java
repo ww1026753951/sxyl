@@ -1768,7 +1768,9 @@ public class RBTree<T extends Comparable<T>> {
 
         for (Map.Entry<String, String> entry : replace.entrySet()) {
 
-            step = step.replace(entry.getKey() , entry.getValue());
+            if (StringUtils.isNotEmpty(step)){
+                step = step.replace(entry.getKey() , entry.getValue());
+            }
         }
         return step ;
     }
