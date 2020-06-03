@@ -79,7 +79,7 @@ public class RbController extends BaseController {
 //        arrays = new int[]{12 , 1,9 ,2  , 0 ,  11  , 7   ,19  , 4 ,  15 ,  18 ,  5  , 14  , 13 ,  10   ,16  , 6   ,3 ,  8  , 17};
 //        arrays = new int[]{12 , 1,9 ,2  , 0 ,  11  , 7   ,19  , 4 ,    18 ,  5  , 14  , 13 ,  10   ,16  , 6   ,3 ,  8  , 17};
 
-//        arrays=new int[]{27,12,12,19,1,18,2,5,23,24,1,10};
+//        arrays=new int[]{1,2,3,4,5,6,7,8};
 
         arrays = getArrays(arrays , arrayStr);
 

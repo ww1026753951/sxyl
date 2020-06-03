@@ -36,5 +36,5 @@ public interface ExecutionSequenceService {
      * @param type
      * @return
      */
-    Map<String , String> getExecutionSequenceByType(String type );
+    Map<String , String> getExecutionSequenceByType(int type );
 }

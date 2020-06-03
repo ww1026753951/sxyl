@@ -51,11 +51,9 @@ public class SortController extends BaseController{
      */
     @RequestMapping("/heapSortPortal")
     public String dnnPortal(ModelMap modelMap , HttpServletRequest request) throws Exception {
-
         DomainContent dc = super.getDomainByReferer(request);
         modelMap.put("dc", dc);
         return "/screen/algorithm/heap-sort-portal";
-
     }
 
     /***
@@ -93,8 +91,6 @@ public class SortController extends BaseController{
                 arrays[i] = (int)(1+Math.random()*30);
 //                random.add((int)(1+Math.random()*30));
             }
-
-
         }
         TreeConstruct treeConstruct = sortService.getHeapSortConstruct(arrays ,minHeap);
         return treeConstruct;

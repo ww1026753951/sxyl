@@ -41,10 +41,12 @@ public class MachineLearningController extends BaseController {
 //        }
         int[] hidden = new int[1];
         hidden[0] = 3;
+        int outputNum = 3 ;
+        int inputNum = 3 ;
         super.getDomainByReferer(request);
         // 获取结构
-        DnnConstructParam dnnConstructParam = nnParamService.createDnnParam(new DnnParam() , 3 ,hidden , 3);
-        DnnConstruct dnnConstruct = nnService.getDnnConstruct(3 ,hidden , 3,dnnConstructParam);
+        DnnConstructParam dnnConstructParam = nnParamService.createDnnParam(new DnnParam() , inputNum ,hidden , outputNum);
+        DnnConstruct dnnConstruct = nnService.getDnnConstruct(inputNum ,hidden , outputNum,dnnConstructParam);
         return dnnConstruct;
     }
 

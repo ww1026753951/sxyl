@@ -87,7 +87,7 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         /**
          * 设置执行步骤的文案
          */
-        tree.setStepExecute(executionSequenceService.getExecutionSequenceByType(RBTreeStepConstant.TYPE));
+        tree.setStepExecute(executionSequenceService.getExecutionSequenceByType(AlgorithmTypeEnum.RB_TREE.getType()));
 
         //构造树结构
         for(ArrayNode arrayNode : arrayNodeList) {
@@ -230,7 +230,7 @@ public class RBTreeServiceImpl extends CommonService implements RBTreeService {
         /**
          * 设置执行步骤的文案
          */
-        tree.setStepExecute(executionSequenceService.getExecutionSequenceByType(RBTreeStepConstant.TYPE));
+        tree.setStepExecute(executionSequenceService.getExecutionSequenceByType(AlgorithmTypeEnum.RB_TREE.getType()));
 
         //构造树结构
         for(ArrayNode arrayNode : arrayNodeList) {

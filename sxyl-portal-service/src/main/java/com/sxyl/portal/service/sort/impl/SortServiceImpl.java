@@ -12,6 +12,7 @@ import com.sxyl.portal.domain.tree.BinaryTreeNode;
 import com.sxyl.portal.domain.tree.TreeConstruct;
 import com.sxyl.portal.service.CommonService;
 import com.sxyl.portal.service.sort.SortService;
+import com.sxyl.portal.service.tree.TreeCommonService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayDeque;
@@ -20,11 +21,9 @@ import java.util.List;
 import java.util.Queue;
 
 @Service
-public class SortServiceImpl extends CommonService implements SortService {
+public class SortServiceImpl extends TreeCommonService implements SortService {
 
 
-    // 圆的半径
-    private final int r = 20;
 
     @Override
     public TreeConstruct getHeapSortConstruct(int[] arrays, boolean minHeap) {
@@ -41,7 +40,7 @@ public class SortServiceImpl extends CommonService implements SortService {
          * 层序遍历树生成结构
          */
         Group group = getArrayAndTreeConstruct(arrayNodes , binaryTree);
-        group = createLineConstruct(group , binaryTree);
+        group = createLineConstruct(group , binaryTree ,true);
 
         //dnn动画
         AnimationTotal animationTotal =this.getSortAnimation( arrayNodes ,minHeap);
@@ -158,7 +157,6 @@ public class SortServiceImpl extends CommonService implements SortService {
 
         all.addChild(array);
 
-
         int buffer = 500;
         int defaultML = 1100 ;
         double rate = 0.5;
@@ -188,7 +186,7 @@ public class SortServiceImpl extends CommonService implements SortService {
             }
 
 
-            Circle circle = create(group , temp , left);
+            Circle circle = create(group , temp , left ,true);
             if (temp.getLeftNode() != null) {
                 nodeQueue.add(temp.getLeftNode());
                 nextLevel++;
@@ -213,96 +211,11 @@ public class SortServiceImpl extends CommonService implements SortService {
         return all;
     }
 
-    /***
-     * 创建圆
-     * @param group
-     * @param root
-     */
-    public Circle create(Group group , BinaryTreeNode root , Integer x) {
-        Circle circle = new Circle(root.getCid(), r ,"blue");
-        circle.setH(DisplayEnum.NONE.getContent());
-        circle.setX(x);
-        Text text = new Text(root.getNodeTextId() , x,0,root.getNodeText() , ShowTextPositionEnum.MIDDLE.getCode());
-        text.setH(DisplayEnum.NONE.getContent());
-        circle.addCurrentComponent(text);
-        group.addChild(circle);
-        return circle ;
-    }
 
 
 
 
-    /***
-     * 根据数组构建列表
-     * @param arrays
-     * @return
-     */
-    private List<ArrayNode> createArrayNode(int[] arrays){
-        List<ArrayNode> arrayNodes = new ArrayList<>();
-        ArrayNode arrayNode ;
-        for (int i : arrays){
-            arrayNode = new ArrayNode(JUUID.getUUID() ,JUUID.getUUID() , JUUID.getUUID() , new Integer(i)) ;
-            arrayNodes.add(arrayNode);
-        }
-        return arrayNodes;
-    }
 
-    /***
-     * 根据数组创建满二叉数
-     * @param root
-     * @param nums
-     * @param index
-     * @return
-     */
-    public BinaryTreeNode buildTree(BinaryTreeNode root, List<ArrayNode> nums, int index) {
-        if (index >= nums.size()) {
-            return null;
-        }
-        //如果左子节点大于数组下标,则返回节点
-        if(2 * index + 1 >= nums.size()){
-            return root;
-        }
-        root.setLeftNode(buildTree(
-                new BinaryTreeNode( nums.get(2 * index + 1).getCid() , nums.get(2 * index + 1).getValueTextId() , nums.get(2 * index + 1).getValue().toString())
-                ,nums, 2 * index + 1));
-
-        //如果右子节点大于数组下标 ,则返回节点
-        if(2 * index + 2 >= nums.size()){
-            return root;
-        }
-        root.setRightNode(buildTree(new BinaryTreeNode( nums.get(2 * index + 2).getCid() , nums.get(2 * index + 2).getValueTextId() , nums.get(2 * index + 2).getValue().toString()),
-                nums, 2 * index + 2));
-        return root;
-    }
-
-
-    /***
-     * 创建线结构
-     * @param g
-     * @param root
-     * @return
-     */
-    private Group createLineConstruct(Group g , BinaryTreeNode root){
-
-        if(root == null){
-            return g;
-        }
-
-        if (root.getLeftNode() != null) {
-            //左节点的线
-            g.addChild(createLine(root.getCid() , root.getLeftNode().getCid() , true));
-        }
-        if (root.getRightNode() != null) {
-            //右节点的线
-            g.addChild(createLine(root.getCid() , root.getRightNode().getCid() , true));
-        }
-
-        createLineConstruct(g, root.getLeftNode());
-        createLineConstruct(g, root.getRightNode());
-
-
-        return g ;
-    }
 
 
     /***

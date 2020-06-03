@@ -1,8 +1,13 @@
 package com.sxyl.portal.service;
 
+import com.sxyl.portal.common.JUUID;
 import com.sxyl.portal.domain.constant.DisplayEnum;
 import com.sxyl.portal.domain.constant.LinePositionEnum;
 import com.sxyl.portal.domain.graph.Line;
+import com.sxyl.portal.domain.sort.ArrayNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: create by wei.wang
@@ -34,4 +39,6 @@ public class CommonService {
 
         return l ;
     }
+
+
 }
