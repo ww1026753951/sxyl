@@ -62,6 +62,13 @@ public interface BinaryTreeService {
     TreeConstruct delBinaryNode(RBExecuteVo rbExecuteVo);
 
 
+    /***
+     * 查找节点
+     * @return
+     */
+    TreeConstruct findBinaryNode(RBExecuteVo rbExecuteVo);
+
+
 
 
 }

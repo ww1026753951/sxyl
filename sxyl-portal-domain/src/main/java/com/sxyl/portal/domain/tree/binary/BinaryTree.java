@@ -49,17 +49,55 @@ public class BinaryTree extends BaseTree {
     //查找节点
     public BinaryTreeNode find(int key) {
         BinaryTreeNode current = root;
+
+        List<String> findIds = new ArrayList<>();
+        if(animationFlag){
+            findIds.add(root.getCid());
+            ChangeColor changeColor = new ChangeColor(ColorEnum.GRAY.getHtmlCode() , root.getCid()) ;
+            animationTotal.addComponent(changeColor);
+        }
         while(current != null){
             if(current.getData() > key){//当前值比查找值大，搜索左子树
                 current = current.getLeftNode();
+                if(current!=null && animationFlag){
+                    findIds.add(current.getCid());
+                    ChangeColor changeColor = new ChangeColor(ColorEnum.GRAY.getHtmlCode() , current.getCid()) ;
+                    animationTotal.addComponent(changeColor);
+                }
             }else if(current.getData() < key){//当前值比查找值小，搜索右子树
                 current = current.getRightNode();
+
+                if(current != null && animationFlag){
+                    findIds.add(current.getCid());
+                    ChangeColor changeColor = new ChangeColor(ColorEnum.GRAY.getHtmlCode() , current.getCid()) ;
+                    animationTotal.addComponent(changeColor);
+
+                }
             }else{
+                if(animationFlag){
+                    findIds.add(current.getCid());
+                    ChangeColor changeColor = new ChangeColor(ColorEnum.RED.getHtmlCode() , current.getCid()) ;
+                    animationTotal.addComponent(changeColor);
+                    resetColorByList(findIds);
+                }
                 return current;
             }
         }
+        resetColorByList(findIds);
         return null;//遍历完整个树没找到，返回null
     }
+
+    private void resetColorByList(List<String> aids ){
+
+        if (animationFlag){
+            ChangeColor changeColor = new ChangeColor() ;
+            changeColor.setTotalColor(ColorEnum.WHITE.getHtmlCode());
+            String[] aidsArray = aids.toArray(new String[aids.size()]);
+            changeColor.setIds(aidsArray);
+            animationTotal.addComponent(changeColor);
+        }
+    }
+
 
     //插入节点
     public boolean insert(int data, String valueTextId, String cid) {
@@ -116,14 +154,9 @@ public class BinaryTree extends BaseTree {
                     }
                 }
                 if(animationFlag && current != null){
-
-
                     Map<String , String> nodeMap= new HashMap<>();
-
                     nodeMap.put(CommonTreeConstant.NEW_NODE, new Integer(newNode.getData()).toString());
-
                     nodeMap.put(RBTreeStepConstant.NODE , new Integer(parentNode.getData()).toString());
-
                     findIds.add(current.getCid());
                     ChangeColor changeColor = new ChangeColor(ColorEnum.GRAY.getHtmlCode() , current.getCid()) ;
                     if(left){
@@ -132,10 +165,7 @@ public class BinaryTree extends BaseTree {
                     }else {
                         changeColor.setAd(super.getDesc(BinaryTreeStepConstant.REPLACE_FIND_RIGHT_NODE_COLOR, nodeMap ));
                     }
-
                     animationTotal.addComponent(changeColor);
-
-
                 }
 
             }
@@ -260,23 +290,44 @@ public class BinaryTree extends BaseTree {
     }
 
     public BinaryTreeNode delete(int key) {
+
+        List<String> findIds = new ArrayList<>();
+
         BinaryTreeNode current = root;
         BinaryTreeNode parent = root;
         boolean isLeftChild = false;
+
+        if(animationFlag){
+            findIds.add(root.getCid());
+            ChangeColor changeColor = new ChangeColor(ColorEnum.GRAY.getHtmlCode() , root.getCid()) ;
+            animationTotal.addComponent(changeColor);
+        }
+
         //查找删除值，找不到直接返回false
         while(current.getData() != key){
             parent = current;
             if(current.getData() > key){
                 isLeftChild = true;
                 current = current.getLeftNode();
+                if(current!=null && animationFlag){
+                    findIds.add(current.getCid());
+                    ChangeColor changeColor = new ChangeColor(ColorEnum.GRAY.getHtmlCode() , current.getCid()) ;
+                    animationTotal.addComponent(changeColor);
+                }
             }else{
                 isLeftChild = false;
                 current = current.getRightNode();
+                if(current!=null && animationFlag){
+                    findIds.add(current.getCid());
+                    ChangeColor changeColor = new ChangeColor(ColorEnum.GRAY.getHtmlCode() , current.getCid()) ;
+                    animationTotal.addComponent(changeColor);
+                }
             }
             if(current == null){
                 return null;
             }
         }
+
 
 
         if(animationFlag){
@@ -299,6 +350,10 @@ public class BinaryTree extends BaseTree {
             }
             //删除元素
             removeCircle(current , parent);
+
+            if (animationFlag){
+                resetColorByList(findIds);
+            }
             return current;
             //当前节点有一个子节点，右子节点
         }else if(current.getLeftNode() == null && current.getRightNode() != null){
@@ -345,6 +400,9 @@ public class BinaryTree extends BaseTree {
                 parent.setRightNode(current.getRightNode());
             }
 
+            if (animationFlag){
+                resetColorByList(findIds);
+            }
             return current;
             //当前节点有一个子节点，左子节点
         }else if(current.getLeftNode() != null && current.getRightNode() == null){
@@ -382,6 +440,9 @@ public class BinaryTree extends BaseTree {
             }else{
                 parent.setRightNode(current.getLeftNode());
             }
+            if (animationFlag){
+                resetColorByList(findIds);
+            }
             return current;
         }else{
 
@@ -407,6 +468,9 @@ public class BinaryTree extends BaseTree {
             }
             successor.setLeftNode(current.getLeftNode());
 
+            if (animationFlag){
+                resetColorByList(findIds);
+            }
             return current;
         }
 //        return null;

@@ -9,6 +9,7 @@ import com.sxyl.portal.domain.graph.Group;
 import com.sxyl.portal.domain.graph.Text;
 import com.sxyl.portal.domain.sort.ArrayNode;
 import com.sxyl.portal.domain.tree.BinaryTreeNode;
+import com.sxyl.portal.domain.tree.avl.AVLTreeNode;
 import com.sxyl.portal.domain.tree.binary.BinaryTree;
 import com.sxyl.portal.domain.tree.rb.RBTreeColor;
 import com.sxyl.portal.service.CommonService;
@@ -120,6 +121,30 @@ public class TreeCommonService extends CommonService {
     }
 
 
+    /***
+     * 创建圆
+     * @param group
+     * @param nodeTextId
+     * @param nodeText
+     */
+    protected Circle create(Group group , String cid, String nodeTextId, String nodeText, Integer x,  Integer y, boolean hidden) {
+        Circle circle = new Circle(cid, r ,"blue");
+        if (hidden){
+            circle.setH(DisplayEnum.NONE.getContent());
+        }
+        circle.setX(x);
+        circle.setY(y);
+        Text text = new Text(nodeTextId , x,y, nodeText , ShowTextPositionEnum.MIDDLE.getCode());
+        if (hidden){
+            text.setH(DisplayEnum.NONE.getContent());
+        }
+
+        circle.addCurrentComponent(text);
+        group.addChild(circle);
+        return circle ;
+    }
+
+
 
     /***
      * 创建圆
@@ -142,6 +167,7 @@ public class TreeCommonService extends CommonService {
         group.addChild(circle);
         return circle ;
     }
+
 
 
 
@@ -170,10 +196,37 @@ public class TreeCommonService extends CommonService {
         createLineConstruct(g, root.getLeftNode() , hidden);
         createLineConstruct(g, root.getRightNode() , hidden);
 
-
         return g ;
     }
 
+
+
+    /***
+     * 创建线结构
+     * @param g
+     * @param root
+     * @return
+     */
+    protected Group createLineConstruct(Group g , AVLTreeNode root, boolean hidden){
+
+        if(root == null){
+            return g;
+        }
+
+        if (root.getLeft() != null) {
+            //左节点的线
+            g.addChild(createLine(root.getCid() , root.getLeft().getCid() , hidden));
+        }
+        if (root.getRight() != null) {
+            //右节点的线
+            g.addChild(createLine(root.getCid() , root.getRight().getCid() , hidden));
+        }
+
+        createLineConstruct(g, root.getLeft() , hidden);
+        createLineConstruct(g, root.getRight() , hidden);
+
+        return g ;
+    }
 
 
     /***
@@ -184,5 +237,6 @@ public class TreeCommonService extends CommonService {
     protected ArrayNode createSingleArrayNode(int array){
         return new ArrayNode(JUUID.getUUID() ,"array-"+array +"-"+JUUID.getUUID() , JUUID.getUUID() , new Integer(array));
     }
+
 
 }

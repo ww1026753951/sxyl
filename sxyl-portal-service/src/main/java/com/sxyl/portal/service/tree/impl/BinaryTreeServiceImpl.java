@@ -284,6 +284,46 @@ public class BinaryTreeServiceImpl  extends TreeCommonService implements BinaryT
         return treeConstruct;
     }
 
+    @Override
+    public TreeConstruct findBinaryNode(RBExecuteVo rbExecuteVo) {
+
+
+        BinaryTree tree = new BinaryTree();
+
+
+        /**
+         * 设置执行步骤的文案
+         */
+//        tree.setStepExecute(executionSequenceService.getExecutionSequenceByType(RBTreeStepConstant.TYPE));
+
+        Map<String , BinaryTreeNode> binaryNodeMap = new HashMap<>();
+
+        List<NodeExecuteStep> nodeExecuteStepList = rbExecuteVo.getExecuteHistory();
+
+        //构造树结构
+        for(ArrayNode arrayNode : rbExecuteVo.getArrayNodeList()) {
+            tree.insert(arrayNode.getValue() , arrayNode.getValueTextId() , arrayNode.getCid());
+        }
+
+        tree.setAnimationFlag(true);
+
+
+        BinaryTreeNode binaryTreeNode = tree.find(rbExecuteVo.getNode());
+
+        if (binaryTreeNode == null) {
+
+        }
+
+        TreeConstruct treeConstruct = new TreeConstruct();
+        treeConstruct.setArrayLists(rbExecuteVo.getArrayNodeList());
+
+        //设置动画
+        treeConstruct.setAt(tree.getAnimationTotal());
+
+
+        return treeConstruct;
+    }
+
 
     /***
      * 层序遍历构建数组和树结构

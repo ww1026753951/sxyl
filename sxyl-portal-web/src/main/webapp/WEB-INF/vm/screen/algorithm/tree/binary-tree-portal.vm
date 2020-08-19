@@ -265,7 +265,7 @@
 
                 <div class="form-group">
                     <label>数字</label>
-                    <input type="text" id ="nodeValue" class="form-control" placeholder="新增节点">
+                    <input type="text" id ="findNodeValue" class="form-control" placeholder="查询节点">
                 </div>
                 <br><br>
             </div>
@@ -276,6 +276,8 @@
         </div>
     </div>
 </div>
+
+    #parse("screen/copy-right.vm")
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
@@ -492,6 +494,48 @@
     }
 
 
+
+
+    function findNode() {
+
+        var v = $("#findNodeValue").val();
+
+        if(!v){
+            alert('请选择节点删除!');
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            contentType:"application/json",
+            url: "/tree/binary/findBinaryTreeNode",
+            data : JSON.stringify({
+                arrayNodeList:rbArray["data"],
+                executeHistory:rbArray["es"],
+                node:v
+            }),
+            success: function (d) {
+                SXYL.SORT.changeToStart();
+
+                if(!d){
+                    alert("未找到数据节点");
+                    return
+                }
+
+                var parent = SXYL.GRAPH.getContext();
+                if(d.group){
+                    SXYL.GRAPH.drawByComponent(parent , d.group);
+                }
+                rbArray["data"] = d.arrayLists;
+                rbArray["es"] = d.executeSteps;
+                SXYL.step_no = 0 ;
+                SXYL.ANIMATION.ALL_STEP = d.at;
+                SXYL.SORT.run(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.SORT.getSpeed()));
+
+            }
+        });
+
+    }
 
 
 

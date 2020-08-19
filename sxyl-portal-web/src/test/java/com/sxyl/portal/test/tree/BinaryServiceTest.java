@@ -1,12 +1,5 @@
 package com.sxyl.portal.test.tree;
 
-import com.sun.source.tree.BinaryTree;
-import com.sun.source.tree.ExpressionTree;
-import com.sun.source.tree.Tree;
-import com.sun.source.tree.TreeVisitor;
-import com.sxyl.portal.common.JUUID;
-import com.sxyl.portal.domain.sort.ArrayNode;
-import com.sxyl.portal.domain.tree.BinaryTreeNode;
 import com.sxyl.portal.domain.tree.TreeConstruct;
 import com.sxyl.portal.service.tree.BinaryTreeService;
 import com.sxyl.portal.test.BaseTest;
@@ -16,8 +9,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author: create by wei.wang

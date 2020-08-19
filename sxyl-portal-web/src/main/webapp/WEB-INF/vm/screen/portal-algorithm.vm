@@ -110,6 +110,17 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-4 col-sm-6 portfolio-item">
+            <div class="card h-100">
+                <a href="/tree/avl/avlTreePortal" target="_blank"><img class="card-img-top" src="" alt=""></a>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a href="/tree/avl/avlTreePortal" target="_blank">平衡搜索二叉树</a>
+                    </h4>
+                    <p class="card-text">二叉树。</p>
+                </div>
+            </div>
+        </div>
 
         <div class="col-lg-4 col-sm-6 portfolio-item">
             <div class="card h-100">
@@ -160,7 +171,7 @@
 
 <footer class="py-5 bg-dark">
     <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; 2018-2019 $!{dc.domain} $!{dc.domainName} by <a href="mailto:ww1026753951@163.com">谷禾水</a> .All rights reserved</p>
+        <p class="m-0 text-center text-white">Copyright &copy; 2018-2020 $!{dc.domain} $!{dc.domainName} by <a href="mailto:ww1026753951@163.com">谷禾水</a> .All rights reserved</p>
         <p class="m-0 text-center text-white">版权声明：本站原创文章、作品，未经本人许可，任何人或机构不得以任何形式对本站内容进行复制作商业用途.</p>
     </div>
 </footer>

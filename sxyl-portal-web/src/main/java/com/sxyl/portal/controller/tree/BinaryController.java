@@ -54,7 +54,8 @@ public class BinaryController extends BaseController {
     public Object binaryTreeConstruct(int[] arrays,String arrayStr){
 
 //        arrayStr = "20,18,22,5,13,30,6,27,13,16,3,11";
-        arrayStr = "6,3,8,4,2,7,6,9,10,8,12";
+//        arrayStr = "6,3,8,4,2,7,6,9,10,8,12";
+//        arrayStr = "6,3,8,4,2,7,6,9,10,12";
         arrays = getArrays(arrays , arrayStr);
 
         TreeConstruct treeConstruct = binaryTreeService.getBinaryTreeService(arrays );
@@ -129,6 +130,19 @@ public class BinaryController extends BaseController {
     @ResponseBody
     public Object delBinaryTreeNode( @RequestBody RBExecuteVo rbExecuteVo){
         TreeConstruct treeConstruct = binaryTreeService.delBinaryNode(rbExecuteVo );
+        return treeConstruct;
+    }
+
+
+    /***
+     * 删除节点
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/findBinaryTreeNode")
+    @ResponseBody
+    public Object findBinaryTreeNode( @RequestBody RBExecuteVo rbExecuteVo){
+        TreeConstruct treeConstruct = binaryTreeService.findBinaryNode(rbExecuteVo );
         return treeConstruct;
     }
 }
