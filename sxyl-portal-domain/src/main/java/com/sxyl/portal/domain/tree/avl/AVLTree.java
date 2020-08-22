@@ -135,8 +135,15 @@ public class AVLTree extends BaseTree {
 
         // If this node becomes unbalanced, then there
         // are 4 cases Left Left Case
-        if (balance > 1 && key < node.getLeft().getKey())
+        if (balance > 1 && key < node.getLeft().getKey()){
+
+            //有旋转
+            rightAnimation(node);
+
             return rightRotate(node);
+
+        }
+
 
         // Right Right Case
         if (balance < -1 && key > node.getRight().getKey()){
@@ -463,15 +470,51 @@ public class AVLTree extends BaseTree {
 
 
     /***
+     *
      * 右旋
-     * @param x
+     *   AVLTreeNode x = y.getLeft();
+     AVLTreeNode T2 = x.getRight();
+
+     // Perform rotation
+     x.setRight(y);
+     y.setLeft(T2);
+
+     y.setParent(x);
+     if(T2!=null){
+     T2.setParent(y);
+
+     }
+
+     -----------------------
+
+     左旋
+     AVLTreeNode y = x.getRight();
+     AVLTreeNode T2 = y.getLeft();
+
+     // Perform rotation
+     y.setLeft(x);
+     x.setRight(T2);
+
+     //ww
+     x.setParent(y);
+     if (T2 != null){
+     T2.setParent(x);
+
+     }
+
+
+
+
+
+     * 右旋
+     * @param y
      */
-    private void rightAnimation(AVLTreeNode  x){
+    private void rightAnimation(AVLTreeNode y){
         if (animationFlag){
 
-            AVLTreeNode  y = x.getRight();
+            AVLTreeNode  x = y.getLeft();
 
-            AVLTreeNode T2 = y.getLeft();
+            AVLTreeNode T2 = x.getRight();
 
             ChangeAttr changeAttr = new ChangeAttr();
             MultiMove multiMove = new MultiMove();
@@ -490,6 +533,7 @@ public class AVLTree extends BaseTree {
             //x的基础属性
             int xWidth = x.getWidth();
             int xLevel = x.getLevel();
+            int xBuffer = x.getBuffer();
             int xY = compute(xLevel);
 
             int yWidth = y.getWidth();
@@ -498,14 +542,14 @@ public class AVLTree extends BaseTree {
             int yY =  compute(yLevel);
 
 
-            int xNewLevel = xLevel + 1;
-            int xNewWidth = xWidth - yBuffer;
+            int xNewLevel = xLevel - 1;
+            int xNewWidth = xWidth + xBuffer;
             int xNewBuffer = y.getBuffer();
             int xNewY = compute(xNewLevel);
 
 
-            int yNewLevel = yLevel -1;
-            int yNewWidth = xWidth ;
+            int yNewLevel = yLevel + 1;
+            int yNewWidth = yWidth + xBuffer;
             int yNewY = compute(yNewLevel);
 
 
@@ -520,103 +564,79 @@ public class AVLTree extends BaseTree {
 
 
             //增加y圆的动画
-            this.addCircleAndTextAnimation(list,y.getCid(), y.getNodeTextId(),xWidth , xY);
+            this.addCircleAndTextAnimation(list,y.getCid(), y.getNodeTextId(),yNewWidth , yNewY);
 
 
 
             //增加 x , y 线的动画
-            this.addLineAnimation(list  , xcid ,ycid,  ycid,xcid,
-                    xNewWidth,xNewY - r ,yNewWidth , yNewY + r );
+            this.addLineAnimation(list  ,ycid, xcid ,  xcid,ycid,
+                    yNewWidth,yNewY - r ,xNewWidth , xNewY + r );
 
-            /***
-             * 交换 x 的父级节点到x的线的属性值
-             */
+//            /***
+//             * 交换 x 的父级节点到x的线的属性值
+//             */
             if (x.getParent() !=null){
 
-                addChangeLineId(changeList , x.getParent().getCid() , x.getCid() , x.getParent().getCid(),y.getCid());
+                addChangeLineId(changeList , y.getParent().getCid() , y.getCid() , y.getParent().getCid(),x.getCid());
             }
 
-            // x 的右侧节点的左侧节点变成 x左侧节点的右侧节点
-            if (T2 !=null) {
-
-                int T2y = compute(T2.getLevel());
-                int T2Width = xNewWidth + T2.getBuffer() ;
-
-                //增加x圆的动画
-                this.addCircleAndTextAnimation(list,T2.getCid(), T2.getNodeTextId(),T2Width , T2y);
-
-                //增加 x , y 线的动画
-                this.addLineAnimation(list  , y.getCid() ,T2.getCid(),  x.getCid(), T2.getCid(),
-                        xNewWidth,xNewY + r ,T2Width , T2y - r );
-
-                //x的左节点下的双子节点
-                refreshLeftRotateLeftChild(list,T2 ,T2.getLevel() ,T2Width ,T2y ,new Double(T2.getBuffer()*rate).intValue() ) ;
-            }
-
+//
+//            // x 的右侧节点的左侧节点变成 x左侧节点的右侧节点
+//            if (T2 !=null) {
+//
+//                int T2y = compute(T2.getLevel());
+//                int T2Width = xNewWidth + T2.getBuffer() ;
+//
+//                //增加x圆的动画
+//                this.addCircleAndTextAnimation(list,T2.getCid(), T2.getNodeTextId(),T2Width , T2y);
+//
+//                //增加 x , y 线的动画
+//                this.addLineAnimation(list  , y.getCid() ,T2.getCid(),  x.getCid(), T2.getCid(),
+//                        xNewWidth,xNewY + r ,T2Width , T2y - r );
+//
+//                //x的左节点下的双子节点
+//                refreshLeftRotateLeftChild(list,T2 ,T2.getLevel() ,T2Width ,T2y ,new Double(T2.getBuffer()*rate).intValue() ) ;
+//            }
+//
             if (x.getLeft()!=null) {
 
-                AVLTreeNode avlLeftTreeNode = x.getLeft() ;
+                AVLTreeNode avlRightTreeNode = x.getLeft() ;
 
-                int xLeftNewBuffer = new Double(avlLeftTreeNode.getBuffer()*rate).intValue() ;
-                int xLeftNewLevel = avlLeftTreeNode.getLevel() + 1;
-                int xLeftNewWidth = avlLeftTreeNode.getWidth()-xLeftNewBuffer ;
+                int xLeftNewBuffer = x.getBuffer() ;
+                int xLeftNewLevel = x.getLevel();
+                int xLeftNewWidth = x.getWidth() ;
                 int xLeftNewY = compute(xLeftNewLevel);
 
                 //增加x圆的动画
-                this.addCircleAndTextAnimation(list,avlLeftTreeNode.getCid(), avlLeftTreeNode.getNodeTextId(),xLeftNewWidth , xLeftNewY);
+                this.addCircleAndTextAnimation(list,avlRightTreeNode.getCid(), avlRightTreeNode.getNodeTextId(),xLeftNewWidth , xLeftNewY);
 
 
                 //增加 x , y 线的动画
                 this.addLineAnimation(list  , x.getCid() ,x.getLeft().getCid(),  null, null,
-                        x.getLeft().getWidth(),compute(x.getLeft().getLevel()) + r ,xLeftNewWidth , xLeftNewY - r );
+                        xNewWidth,compute(xNewLevel) + r ,xLeftNewWidth , xLeftNewY - r );
 
                 //x的左节点下的双子节点
-                refreshLeftRotateLeftChild(list,x.getLeft() ,xLeftNewLevel ,xLeftNewWidth ,xLeftNewY ,new Double(xLeftNewBuffer*rate).intValue()) ;
+//                refreshLeftRotateLeftChild(list,x.getLeft() ,xLeftNewLevel ,xLeftNewWidth ,xLeftNewY ,new Double(xLeftNewBuffer*rate).intValue()) ;
             }
-
-            if (y.getRight()!=null){
-
-//                refreshLeftRotateRightNode(y , list);
-
-
-                AVLTreeNode domRY = y.getRight();
 //
-
-                //增加圆的动画
-                this.addCircleAndTextAnimation(list,domRY.getCid(), domRY.getNodeTextId(),yWidth , yY);
-                //增加线的动画
-                this.addLineAnimation(list ,ycid , domRY.getCid() ,null,null,
-                        yNewWidth , yNewY + r , yWidth,yY - r);
-
+//            if (y.getRight()!=null){
 //
-//                if(y.getRight().getLeft() != null){
-//                    y.getRight().getLeft().setBuffer( y.getBuffer());
-//                }
-//                if (y.getRight().getRight() != null ) {
-//                    y.getRight().getRight().setBuffer( y.getBuffer());
 //
-//                }
-
-                refreshLeftRotateLeftChild(list, y.getRight() , y.getLevel() , y.getWidth() , compute(y.getLevel()) ,new Double(y.getBuffer()*rate).intValue());
-
-//                refreshLeftRotateLeftChild(list, y.getRight());
-
-//                if (y.getRight().getRight() != null) {
 //
-//                    AVLTreeNode domRYRY = y.getRight().getRight();
+//                AVLTreeNode domRY = y.getRight();
+////
 //
-//                    int domRYRYNewY = compute(domRY.getLevel());
+//                //增加圆的动画
+//                this.addCircleAndTextAnimation(list,domRY.getCid(), domRY.getNodeTextId(),yWidth , yY);
+//                //增加线的动画
+//                this.addLineAnimation(list ,ycid , domRY.getCid() ,null,null,
+//                        yNewWidth , yNewY + r , yWidth,yY - r);
 //
-//                    //增加x圆的动画
-//                    this.addCircleAndTextAnimation(list,domRYRY.getCid(), domRYRY.getNodeTextId(),domRY.getWidth() , domRYRYNewY);
 //
-//                    //增加线的动画
-//                    this.addLineAnimation(list  , domRY.getCid() ,domRYRY.getCid() ,null,null,
-//                             yWidth,yY + r , domRY.getWidth() , domRYRYNewY  - r);
+//                refreshLeftRotateLeftChild(list, y.getRight() , y.getLevel() , y.getWidth() , compute(y.getLevel()) ,new Double(y.getBuffer()*rate).intValue());
 //
-//                }
-                domRY.getRight();
-            }
+//                domRY.getRight();
+//            }
         }
     }
 

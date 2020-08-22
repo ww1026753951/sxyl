@@ -69,7 +69,7 @@ public class AVLController extends BaseController {
 //        arrays = new int[]{10,20,30,40,50,25 };
 //        arrays = new int[]{10,20,30,40,50,25,51,52,53,54,55 };
 
-        arrays = new int[]{50,51,52,53,54,55 };
+        arrays = new int[]{50,51,52,53,54,55,49 };
 
 
         arrays = getArrays(arrays , arrayStr);
