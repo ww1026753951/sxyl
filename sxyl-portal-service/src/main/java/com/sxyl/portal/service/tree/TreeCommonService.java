@@ -50,7 +50,8 @@ public class TreeCommonService extends CommonService {
         List<ArrayNode> arrayNodes = new ArrayList<>();
         ArrayNode arrayNode ;
         for (int i : arrays){
-            arrayNode = new ArrayNode(JUUID.getUUID() ,JUUID.getUUID() , JUUID.getUUID() , new Integer(i)) ;
+            arrayNode = new ArrayNode("array"+new Integer(i).toString() +"-"+JUUID.getUUID() ,
+                    "array"+new Integer(i).toString() +"-"+ JUUID.getUUID() , "array"+new Integer(i).toString() +"-"+JUUID.getUUID() , new Integer(i)) ;
             arrayNodes.add(arrayNode);
         }
         return arrayNodes;

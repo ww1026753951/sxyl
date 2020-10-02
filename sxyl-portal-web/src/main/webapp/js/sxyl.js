@@ -282,19 +282,28 @@ SXYL.DOM.getDomXY = function (id) {
 SXYL.DOM.moveElement = function(o){
 
     var sid = d3.select("#"+o.id ) ;
-    var xyDom = getXY(o.tid);
+    var x,y;
 
+    if (o.x && o.y){
+        x = o.x;
+        y = o.y;
+    }else {
+        var xyDom = getXY(o.tid);
+        x = parseInt(xyDom.x) + parseInt(o.bx?o.bx:0);
+        y = parseInt(xyDom.y) + parseInt(o.by?o.by:0);
 
-    var x = parseInt(xyDom.x) + parseInt(o.bx?o.bx:0);
-    var y = parseInt(xyDom.y) + parseInt(o.by?o.by:0);
-
-    //公式的特殊处理
-    if(y==0){
-        x = parseInt(document.getElementById(o.tid).getBoundingClientRect().width/3);
-        y = y + 30;
+        //公式的特殊处理
+        if(y==0){
+            x = parseInt(document.getElementById(o.tid).getBoundingClientRect().width/3);
+            y = y + 30;
+        }
     }
 
 
+
+
+
+    debugger
     var tarName = $("#"+o.id)[0].tagName;
     if(tarName == "g"){
         SXYL.DOM.changeElementXYByObject(o.sid,{x:x,y:y,speed:SXYL.speed})

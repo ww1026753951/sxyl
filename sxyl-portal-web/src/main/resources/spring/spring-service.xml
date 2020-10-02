@@ -11,14 +11,14 @@
                     <bean class="com.sxyl.portal.domain.DomainContent">
                         <property name="domain" value="sixiangyaolan.com" />
                         <property name="domainName" value="思想摇篮" />
-                        <property name="title" value="sxyl 思想摇篮 动画算法" />
+                        <property name="title" value="算法 思想摇篮 动画算法 算法动画 " />
                     </bean>
                 </entry>
                 <entry key="www.donghuasuanfa.com">
                     <bean class="com.sxyl.portal.domain.DomainContent">
                         <property name="domain" value="donghuasuanfa.com" />
                         <property name="domainName" value="动画算法" />
-                        <property name="title" value="donghuasuanfa 动画算法" />
+                        <property name="title" value="算法 动画算法 算法动画" />
                     </bean>
                 </entry>
 
@@ -26,7 +26,7 @@
                     <bean class="com.sxyl.portal.domain.DomainContent">
                         <property name="domain" value="suanfadonghua.com" />
                         <property name="domainName" value="算法动画" />
-                        <property name="title" value="suanfadonghua 算法动画" />
+                        <property name="title" value="算法 算法动画 动画算法" />
                     </bean>
                 </entry>
             </map>

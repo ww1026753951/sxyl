@@ -4,10 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="思想摇篮 动画算法 算法动画 排序 堆排序">
+    <meta name="description" content="算法 思想摇篮 动画算法 算法动画 排序 堆排序">
     <meta name="author" content="谷禾水">
     <link rel="icon" href="/favicon.ico">
-    <title>动画算法,算法动画</title>
+    <title>算法,动画算法,算法动画</title>
     <title>$!{dc.title}</title>
     <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="/css/bootstrap/3-col-portfolio.css" rel="stylesheet">
@@ -38,7 +38,7 @@
 ##                    <a class="nav-link" href="#">Services</a>
 ##                </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="mailto:ww1026753951@163.com">Contact</a>
+                    <a class="nav-link" href="mailto:ww1026753951@163.com">Bug反馈</a>
                 </li>
             </ul>
         </div>
@@ -77,28 +77,8 @@
             </div>
         </div>
 
-        <div class="col-lg-4 col-sm-6 portfolio-item">
-            <div class="card h-100">
-                <a href="/ml/dnnPortal" target="_blank"><img class="card-img-top" src="/skin/nn/dnn.jpg" alt="深度学习" height="200px"></a>
-                <div class="card-body">
-                    <h4 class="card-title">
-                        <a href="/ml/dnnPortal" target="_blank">深度学习(dnn)</a>
-                    </h4>
-                    <p class="card-text">深度学习</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-6 portfolio-item">
-            <div class="card h-100">
-                <a href="/tree/rbTreePortal"  target="_blank"><img class="card-img-top" src="/skin/algorithms/rbtree.jpg"  style="width: 400 " height="200px"></a>
-                <div class="card-body">
-                    <h4 class="card-title">
-                        <a href="/tree/rbTreePortal"  target="_blank">红黑树</a>
-                    </h4>
-                    <p class="card-text">红黑树</p>
-                </div>
-            </div>
-        </div>
+
+
         <div class="col-lg-4 col-sm-6 portfolio-item">
             <div class="card h-100">
                 <a href="/tree/binary/binaryTreePortal" target="_blank"><img class="card-img-top" src="/skin/algorithms/binary_tree.png" alt=""></a>
@@ -112,22 +92,45 @@
         </div>
         <div class="col-lg-4 col-sm-6 portfolio-item">
             <div class="card h-100">
-                <a href="/tree/avl/avlTreePortal" target="_blank"><img class="card-img-top" src="" alt=""></a>
+                <a href="/tree/avl/avlTreePortal" target="_blank"><img class="card-img-top" src="/skin/algorithms/tree/avl/portal.gif" alt=""></a>
                 <div class="card-body">
                     <h4 class="card-title">
                         <a href="/tree/avl/avlTreePortal" target="_blank">平衡搜索二叉树</a>
                     </h4>
-                    <p class="card-text">二叉树。</p>
+                    <p class="card-text">平衡搜索二叉树。</p>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-4 col-sm-6 portfolio-item">
             <div class="card h-100">
-                <a href="#"><img class="card-img-top" src="/skin/jvm/JVM-Architecture.png" alt=""  style="width: 400 " height="200px"></a>
+                <a href="/tree/rbTreePortal"  target="_blank"><img class="card-img-top" src="/skin/algorithms/rbtree.jpg"  style="width: 400 " height="200px"></a>
                 <div class="card-body">
                     <h4 class="card-title">
-                        <a href="#">jvm(敬请期待)</a>
+                        <a href="/tree/rbTreePortal"  target="_blank">红黑树</a>
+                    </h4>
+                    <p class="card-text">红黑树</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6 portfolio-item">
+            <div class="card h-100">
+                <a href="/ml/dnnPortal" target="_blank"><img class="card-img-top" src="/skin/nn/dnn.jpg" alt="深度学习" height="200px"></a>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a href="/ml/dnnPortal" target="_blank">深度学习(dnn)</a>
+                    </h4>
+                    <p class="card-text">深度学习</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-sm-6 portfolio-item">
+            <div class="card h-100">
+                <a href="/jvm/threadPool/threadPoolPortal"><img class="card-img-top" src="/skin/jvm/JVM-Architecture.png" alt=""  style="width: 400 " height="200px"></a>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a href="/jvm/threadPool/threadPoolPortal">jvm(敬请期待)</a>
                     </h4>
                     <p class="card-text">JVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的.</p>
                 </div>

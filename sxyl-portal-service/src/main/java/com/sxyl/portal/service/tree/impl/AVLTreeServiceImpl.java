@@ -1,8 +1,12 @@
 package com.sxyl.portal.service.tree.impl;
 
+import com.sxyl.portal.domain.constant.AlgorithmTypeEnum;
+import com.sxyl.portal.domain.constant.ChangeAttrEnum;
 import com.sxyl.portal.domain.constant.ComponentCompositeEnum;
 import com.sxyl.portal.domain.constant.ExecuteEnum;
 import com.sxyl.portal.domain.d.AnimationTotal;
+import com.sxyl.portal.domain.d.ChangeAttr;
+import com.sxyl.portal.domain.d.ChangeAttrDetail;
 import com.sxyl.portal.domain.graph.Circle;
 import com.sxyl.portal.domain.graph.Group;
 import com.sxyl.portal.domain.graph.RectAndText;
@@ -75,7 +79,7 @@ public class AVLTreeServiceImpl extends TreeCommonService implements AVLTreeServ
         }else {
             for (NodeExecuteStep nodeExecuteStep : nodeExecuteStepList){
                 if(nodeExecuteStep.getType() == ExecuteEnum.DELETE.getType()){
-                    tree.deleteNode(tree.getRoot() , nodeExecuteStep.getValue());
+                    tree.setRoot(tree.deleteNode(tree.getRoot() , nodeExecuteStep.getValue()));
                 }else if(nodeExecuteStep.getType() == ExecuteEnum.INSERT.getType()){
                     ArrayNode arrayNode = new ArrayNode();
                     arrayNode.setCid(nodeExecuteStep.getCid());
@@ -228,7 +232,83 @@ public class AVLTreeServiceImpl extends TreeCommonService implements AVLTreeServ
 
     @Override
     public TreeConstruct delAVLNode(List<ArrayNode> arrayNodeList, int node, List<NodeExecuteStep> nodeExecuteStepList) {
-        return null;
+
+
+        AVLTree tree = new AVLTree();
+
+
+        //循环赋值对象
+        for(ArrayNode arrayNode : arrayNodeList) {
+            tree.setRoot(tree.insert(tree.getRoot() , arrayNode.getValue() , arrayNode));
+        }
+        /***
+         * 处理操作历史的逻辑，此处应该只有删除
+         */
+        if (CollectionUtils.isEmpty(nodeExecuteStepList)){
+            nodeExecuteStepList = new ArrayList<>();
+        }else {
+            for (NodeExecuteStep nodeExecuteStep : nodeExecuteStepList){
+                if(nodeExecuteStep.getType() == ExecuteEnum.DELETE.getType()){
+                    tree.setRoot(tree.deleteNode(tree.getRoot() , nodeExecuteStep.getValue()));
+                }else if(nodeExecuteStep.getType() == ExecuteEnum.INSERT.getType()){
+                    ArrayNode arrayNode = new ArrayNode();
+                    arrayNode.setCid(nodeExecuteStep.getCid());
+                    arrayNode.setValue(nodeExecuteStep.getValue());
+                    arrayNode.setValueTextId(nodeExecuteStep.getValueTextId());
+
+                    tree.setRoot(tree.insert(tree.getRoot() , nodeExecuteStep.getValue() ,arrayNode ));
+                }
+            }
+        }
+
+        //刷新树的宽和高
+        refreshTree(tree);
+
+        /***
+         * 层序遍历树生成结构 ,赋值宽和高
+         */
+//        getArrayAndTreeConstruct(arrayNodeList , tree);
+//
+//        //开启获取动画的功能
+
+//        tree.s
+        tree.setAnimationFlag(true);
+
+
+        AVLTreeNode delNode = tree.findDelParent(tree.getRoot() , node);
+
+
+
+
+        AVLTreeNode avlTreeNode = tree.deleteNode(tree.getRoot() , node);
+        tree.setRoot(avlTreeNode);
+//        RBTNode delNode = tree.remove(node);
+//
+//        if(delNode == null){
+//
+//            return null;
+//        }
+//
+//
+
+        TreeConstruct treeConstruct = new TreeConstruct();
+        treeConstruct.setArrayLists(arrayNodeList);
+
+        //设置动画
+        treeConstruct.setAt(tree.getAnimationTotal());
+
+        //增加删除节点
+        NodeExecuteStep nodeExecuteStep = new NodeExecuteStep();
+        nodeExecuteStep.setValue(node);
+        nodeExecuteStep.setCid(delNode.getCid());
+        nodeExecuteStep.setValueTextId(delNode.getNodeTextId());
+        nodeExecuteStep.setType(ExecuteEnum.DELETE.getType());
+        nodeExecuteStepList.add(nodeExecuteStep);
+        treeConstruct.setExecuteSteps(nodeExecuteStepList);
+//
+//
+        return treeConstruct;
+//
     }
 
 
@@ -324,6 +404,65 @@ public class AVLTreeServiceImpl extends TreeCommonService implements AVLTreeServ
             }
         }
         return all;
+    }
+
+    private void refreshTree(AVLTree tree){
+
+
+        AVLTreeNode temp ;
+        //层序遍历
+        Queue<AVLTreeNode> nodeQueue = new ArrayDeque<>();
+        //层序遍历，赋值buffer和宽度
+        int currentIndex = 0 ;//当前层节点的序号
+        int nextLevel = 0;//记录下一层需要打印的节点的数量
+        int currentLevel = 1;    //记录当前层需要打印的节点的数量
+
+        int level = 1;
+
+        tree.getRoot().setWidth(defaultML);
+        nodeQueue.add(tree.getRoot());
+        int buffer = defaultBuffer;
+        while ((temp = nodeQueue.poll()) != null) {
+            currentIndex = currentIndex + 1 ;
+            if (temp.getLeft() != null) {
+                //赋值左节点的宽度
+                temp.getLeft().setWidth( temp.getWidth() - buffer );
+                temp.getLeft().setBuffer(buffer);
+                temp.getLeft().setLevel(level + 1);
+                nodeQueue.add(temp.getLeft());
+                nextLevel++;
+            }
+            if (temp.getRight() != null) {
+                //赋值右节点 的宽度
+                temp.getRight().setWidth(temp.getWidth() + buffer);
+                temp.getRight().setBuffer(buffer);
+                temp.getRight().setLevel(level + 1);
+                nodeQueue.add(temp.getRight());
+                nextLevel++;
+            }
+            currentLevel--;
+            if(currentLevel == 0) {
+                level = level + 1;
+                currentIndex = 0;
+                buffer =  new Double(buffer*rate).intValue();
+                currentLevel = nextLevel;
+                nextLevel = 0;
+            }
+//            temp.setLevel(level );
+
+            if(temp.getBuffer()==null){
+                temp.setBuffer(defaultBuffer);
+            }
+            if(temp.getWidth()== null){
+                temp.setWidth(defaultML);
+            }
+            if(temp.getLevel() == null) {
+                temp.setLevel(1);
+            }
+
+        }
+
+
     }
 
 

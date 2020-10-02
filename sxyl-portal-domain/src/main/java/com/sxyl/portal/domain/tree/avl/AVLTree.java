@@ -2,15 +2,15 @@ package com.sxyl.portal.domain.tree.avl;
 
 
 import com.sxyl.portal.common.JUUID;
-import com.sxyl.portal.domain.d.AnimationTotal;
-import com.sxyl.portal.domain.d.ChangeAttr;
-import com.sxyl.portal.domain.d.ChangeAttrDetail;
-import com.sxyl.portal.domain.d.MultiMove;
+import com.sxyl.portal.domain.constant.ChangeAttrEnum;
+import com.sxyl.portal.domain.constant.RBTreeStepConstant;
+import com.sxyl.portal.domain.d.*;
 import com.sxyl.portal.domain.graph.Circle;
 import com.sxyl.portal.domain.graph.GraphComponent;
 import com.sxyl.portal.domain.graph.Text;
 import com.sxyl.portal.domain.sort.ArrayNode;
 import com.sxyl.portal.domain.tree.BaseTree;
+import com.sxyl.portal.domain.tree.rb.RBTNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +49,10 @@ public class AVLTree extends BaseTree {
     }
 
     public AVLTreeNode rightRotate(AVLTreeNode y) {
+
+        //右旋转
+        rightAnimation(y);
+
         AVLTreeNode x = y.getLeft();
         AVLTreeNode T2 = x.getRight();
 
@@ -71,6 +75,9 @@ public class AVLTree extends BaseTree {
     }
 
     public AVLTreeNode leftRotate(AVLTreeNode x) {
+        //左旋转
+        leftAnimation(x);
+
         AVLTreeNode y = x.getRight();
         AVLTreeNode T2 = y.getLeft();
 
@@ -137,8 +144,6 @@ public class AVLTree extends BaseTree {
         // are 4 cases Left Left Case
         if (balance > 1 && key < node.getLeft().getKey()){
 
-            //有旋转
-            rightAnimation(node);
 
             return rightRotate(node);
 
@@ -147,8 +152,7 @@ public class AVLTree extends BaseTree {
 
         // Right Right Case
         if (balance < -1 && key > node.getRight().getKey()){
-            //左旋转
-            leftAnimation(node);
+
 
             return leftRotate(node);
         }
@@ -191,6 +195,27 @@ public class AVLTree extends BaseTree {
 
     }
 
+    /***
+     * 查询插入节点的父级节点
+     * @param key
+     * @return
+     */
+    public AVLTreeNode findDelParent(AVLTreeNode node, int key){
+        if (node == null){
+            return null;
+        }
+        if (key < node.getKey()){
+            return findDelParent(node.getLeft(), key);
+        }else if (key > node.getKey()){
+            return findDelParent(node.getRight() ,   key);
+        }else if (key == node.getKey()){
+            return node;
+        }else {
+            return null ;
+        }
+
+    }
+
     public void preOrder(AVLTreeNode node) {
         if (node != null) {
             System.out.print(node.getKey() + " ");
@@ -217,24 +242,31 @@ public class AVLTree extends BaseTree {
 
 
     public AVLTreeNode deleteNode(AVLTreeNode root, int key){
+
+
+
         // STEP 1: PERFORM STANDARD BST DELETE
-        if (root == null)
+        if (root == null){
             return root;
+
+        }
 
         // If the key to be deleted is smaller than
         // the root's key, then it lies in left subtree
-        if (key < root.getKey())
+        if (key < root.getKey()){
             root.setLeft(deleteNode(root.getLeft(), key));
+
+        }
 
             // If the key to be deleted is greater than the
             // root's key, then it lies in right subtree
-        else if (key > root.getKey())
+        else if (key > root.getKey()){
             root.setRight(deleteNode(root.getRight(), key));
+        }
 
             // if key is same as root's key, then this is the node
             // to be deleted
         else {
-
             // node with only one child or no child
             if ((root.getLeft() == null) || (root.getRight() == null)){
                 AVLTreeNode temp = null;
@@ -244,33 +276,241 @@ public class AVLTree extends BaseTree {
                     temp = root.getLeft();
 
                 // No child case
-                if (temp == null)
-                {
+                if (temp == null) {
                     temp = root;
                     root = null;
                 }
-                else // One child case
+                else{// One child case
                     root = temp; // Copy the contents of
+                }
                 // the non-empty child
+
+
+
+                //属性变更
+                ChangeAttr changeAttr = new ChangeAttr();
+                List<ChangeAttrDetail> changeList = new ArrayList<>();
+                if (animationFlag){
+
+
+
+                    changeAttr.setDs(true);
+//            replaceMap.put(RBTreeStepConstant.PLACEHOLDER_DEL_NODE , node.getKey().toString()) ;
+                    changeAttr.setList(changeList);
+                    animationTotal.addComponent(changeAttr);
+
+
+                    //删除标记虚化
+                    ChangeAttr delNodeChangeAttr = new ChangeAttr();
+                    List<ChangeAttrDetail> delNodeSignList = new ArrayList<>();
+//            String delNodeText = "搜索到删除节点%s,并将其标注为删除节点。";
+                    //虚化 删除样式
+                    ChangeAttrDetail cad = new ChangeAttrDetail(temp.getCid());
+                    cad.addValue("style" , "opacity:0.1");
+                    cad.setCt(ChangeAttrEnum.ADD.getType());
+                    delNodeSignList.add(cad);
+                    //虚化 删除样式
+                    ChangeAttrDetail textCad = new ChangeAttrDetail(temp.getNodeTextId());
+                    textCad.addValue("style" , "opacity:0.1");
+                    textCad.setCt(ChangeAttrEnum.ADD.getType());
+                    delNodeSignList.add(cad);
+//            delNodeChangeAttr.setAd(this.getDesc(RBTreeStepConstant.FIND_DEL_NODE , replaceMap));
+                    delNodeChangeAttr.setList(delNodeSignList);
+                    animationTotal.addComponent(delNodeChangeAttr);
+                    //删除元素
+                    removeCircle(temp.getCid() , temp.getParent().getCid() , temp.getNodeTextId());
+
+                }
+
             }
             else
             {
+
+
 
                 // node with two children: Get the inorder
                 // successor (smallest in the right subtree)
                 AVLTreeNode temp = minValueNode(root.getRight());
 
+                List<ChangeAttrDetail> changeList = new ArrayList<>();
+                ChangeAttr changeAttr = new ChangeAttr();
+                if (animationFlag){
+                    changeAttr.setList(changeList);
+                    //删除标记虚化
+                    ChangeAttr delNodeChangeAttr = new ChangeAttr();
+                    List<ChangeAttrDetail> delNodeSignList = new ArrayList<>();
+                    //虚化 删除样式
+                    ChangeAttrDetail cad = new ChangeAttrDetail(root.getCid());
+                    cad.addValue("style" , "opacity:0.1");
+                    cad.setCt(ChangeAttrEnum.ADD.getType());
+                    delNodeSignList.add(cad);
+                    //虚化 删除样式
+                    ChangeAttrDetail textCad = new ChangeAttrDetail(root.getNodeTextId());
+                    textCad.addValue("style" , "opacity:0.1");
+                    textCad.setCt(ChangeAttrEnum.ADD.getType());
+                    delNodeSignList.add(cad);
+//                    delNodeChangeAttr.setAd(this.getDesc(RBTreeStepConstant.FIND_DEL_NODE , replaceMap));
+                    delNodeChangeAttr.setList(delNodeSignList);
+                    animationTotal.addComponent(delNodeChangeAttr);
+
+
+
+                    //将后继结点设置为替换颜色
+                    ChangeColor cc = new ChangeColor("green",temp.getCid());
+
+                    animationTotal.addComponent(cc);
+
+
+                    //修改 赋值对象
+                    if(root.parent != null){
+                        //修改线的id start
+                        addChangeLineId(changeList ,root.parent.getCid() , root.getCid() , root.parent.getCid() , temp.getCid() );
+                    }
+
+                    if (root.left != null){
+                        addChangeLineId(changeList ,root.getCid() , root.left.getCid() , temp.getCid() , root.left.getCid() );
+                    }
+
+                    if(root.right != null) {
+                        addChangeLineId(changeList ,root.getCid() , root.right.getCid() , temp.getCid() , root.right.getCid() );
+                    }
+
+
+                    //如果删除节点  等于 替换节点(右继节点) ,
+//                    if(nodeRightEqualReplace){
+//                        addChangeLineId(changeList ,node.getCid() , node.right.getCid() , node.right.getCid() , node.getCid() );
+//                    }else {
+//                        if(node.right != null) {
+//                            addChangeLineId(changeList ,node.getCid() , node.right.getCid() , replace.getCid() , node.right.getCid() );
+//                        }
+//                        addChangeLineId(changeList ,replace.parent.getCid() , replace.getCid() , replace.parent.getCid() , node.getCid() );
+//
+//                    }
+
+
+                    if(temp.parent != null) {
+                        //修改线的id start
+                        addChangeLineId(changeList ,temp.parent.getCid() , temp.getCid() , temp.parent.getCid() , root.getCid() );
+
+                    }
+
+                    if(temp.left != null ){
+                        addChangeLineId(changeList ,temp.getCid() , temp.left.getCid() , root.getCid() , temp.left.getCid() );
+                    }
+                    if(temp.right != null){
+                        addChangeLineId(changeList ,temp.getCid() , temp.right.getCid() , root.getCid() , temp.right.getCid() );
+                    }
+
+                    List<GraphComponent> list = new ArrayList<>();
+                    //增加圆的动画,将后继结点替换到删除节点上,  动画部分
+                    this.addCircleAndTextAnimation(list,root.getCid(), root.getNodeTextId(),temp.getWidth() , compute(temp.getLevel()));
+                    //将删除节点与替换节点互换位置
+                    this.addCircleAndTextAnimation(list,temp.getCid(), temp.getNodeTextId(),root.getWidth() , compute(root.getLevel()));
+                    MultiMove multiMove = new MultiMove();
+                    multiMove.setGcs(list);
+
+
+//                    multiMove.setAd(this.getDesc(RBTreeStepConstant.SWITCH_DEL_REPLACE_NODE,replaceMap));
+                    this.animationTotal.addComponent(multiMove);
+                    this.animationTotal.addComponent(changeAttr);
+
+                }
+
+
+//                if (animationFlag){
+//
+//                    List<GraphComponent> list = new ArrayList<>();
+//                    //增加圆的动画,将后继结点替换到删除节点上,  动画部分
+//                    this.addCircleAndTextAnimation(list,root.getCid(), root.getNodeTextId(),temp.getWidth() , compute(temp.getLevel()));
+//                    //将删除节点与替换节点互换位置
+//                    this.addCircleAndTextAnimation(list,temp.getCid(), temp.getNodeTextId(),root.getWidth() , compute(root.getLevel()));
+//                    MultiMove multiMove = new MultiMove();
+//                    multiMove.setGcs(list);
+//
+//
+////                    multiMove.setAd(this.getDesc(RBTreeStepConstant.SWITCH_DEL_REPLACE_NODE,replaceMap));
+//                    this.animationTotal.addComponent(multiMove);
+//
+//                    int tLevel = targetNode.getLevel();
+//                    int tWidth = targetNode.getWidth();
+//                    int tBuffer = targetNode.getBuffer();
+//
+//                    int rLevel = replace.getLevel();
+//                    int rWidth = replace.getWidth();
+//                    int rBuffer = replace.getBuffer();
+//
+//
+//
+//                    //刷新map
+//                    refreshMap(replace.getCid() , tLevel , tWidth , tBuffer);
+//                    refreshMap(node.getCid() , rLevel , rWidth , rBuffer);
+//                }
+
+                //modify by ww
+                if(root.getLeft() != null) {
+                    root.getLeft().setParent(temp);
+                }
+                if (root.getRight() != null) {
+                    root.getRight().setParent(temp);
+                }
+                if (root.getParent() !=null){
+                    if(root.getParent().getLeft() != null && root.getParent().getLeft().getKey() == root.getKey() ) {
+                        root.getParent().setLeft(temp);
+                    }else if(root.getParent().getRight() != null && root.getParent().getRight().getKey() == root.getKey()) {
+                        root.getParent().setRight(temp);
+                    }
+                }
+
+                if (temp.getParent() != null) {
+
+                    if(temp.getParent().getLeft() != null && temp.getParent().getLeft().getKey() == temp.getKey()){
+
+                        temp.getParent().setLeft(root);
+                    }else if (temp.getParent().getRight() != null && temp.getParent().getRight().getKey() == temp.getKey()){
+
+                        temp.getParent().setRight(root);
+                    }
+
+
+                }
+
+                AVLTreeNode tempRoot = temp.parent;
+
+
+                temp.setParent(root.getParent());
+                root.setParent(tempRoot);
+
+                temp.setLeft(root.getLeft());
+                temp.setRight(root.getRight());
+                root.setLeft(null);
+                root.setRight(null);
+
+
                 // Copy the inorder successor's data to this node
-                root.setKey(temp.getKey());
+//                root.setKey(temp.getKey());  //dddddddd
+
+                temp.getKey();
+
+
+
+//                root.setWidth(temp.getWidth());
+//                root.setBuffer(temp.getBuffer());
+//                root.setl
 
                 // Delete the inorder successor
-                root.setRight(deleteNode(root.getRight(), temp.getKey()));
+                root.setRight(deleteNode(temp.getRight(), root.getKey()));
+                root = temp;
             }
         }
 
         // If the tree had only one node then return
-        if (root == null)
+        if (root == null){
             return root;
+        }
+
+
+
+
 
         // STEP 2: UPDATE HEIGHT OF THE CURRENT NODE
         root.setHeight(max(height(root.getLeft()), height(root.getRight())) + 1);
@@ -305,6 +545,25 @@ public class AVLTree extends BaseTree {
         return root;
     }
 
+
+    /***
+     * 删除元素
+     */
+    private void removeCircle(String cid , String delPid ,String textId){
+
+
+        List<String> destroy = new ArrayList<>();
+        destroy.add(cid);
+
+        destroy.add(textId);
+
+        //删除节点已经被放到最末端 ,所以只需要删除
+        destroy.add(delPid + "-" + cid);
+        String[] c = destroy.toArray(new String[destroy.size()]);
+        Destroy d = new Destroy(c);
+//        d.setAd( this.getDesc(RBTreeStepConstant.DEL_NODE , replaceMap));
+        this.animationTotal.addComponent(d);
+    }
 
     /****
      *
@@ -575,9 +834,27 @@ public class AVLTree extends BaseTree {
 //            /***
 //             * 交换 x 的父级节点到x的线的属性值
 //             */
-            if (x.getParent() !=null){
+            if (x.getParent() !=null && y.getParent() != null){
 
                 addChangeLineId(changeList , y.getParent().getCid() , y.getCid() , y.getParent().getCid(),x.getCid());
+//                addChangeLineId(changeList , x.getParent().getCid() , x.getCid() , y.getParent().getCid(),x.getCid());
+            }
+
+            // x 的右侧节点的左侧节点变成 x左侧节点的右侧节点
+            if (T2 !=null) {
+
+                int T2y = compute(T2.getLevel());
+                int T2Width = yNewWidth  - T2.getBuffer() ;
+
+                //增加x圆的动画
+                this.addCircleAndTextAnimation(list,T2.getCid(), T2.getNodeTextId(),T2Width , T2y);
+
+                //增加 x , y 线的动画
+                this.addLineAnimation(list  , x.getCid() ,T2.getCid(),   y.getCid(), T2.getCid(),
+                        yNewWidth,yNewY + r ,T2Width , T2y - r );
+
+                //x的左节点下的双子节点
+                refreshLeftRotateLeftChild(list,T2 ,T2.getLevel() ,T2Width ,T2y ,new Double(T2.getBuffer()*rate).intValue() ) ;
             }
 
 //
@@ -616,27 +893,39 @@ public class AVLTree extends BaseTree {
                         xNewWidth,compute(xNewLevel) + r ,xLeftNewWidth , xLeftNewY - r );
 
                 //x的左节点下的双子节点
-//                refreshLeftRotateLeftChild(list,x.getLeft() ,xLeftNewLevel ,xLeftNewWidth ,xLeftNewY ,new Double(xLeftNewBuffer*rate).intValue()) ;
+                refreshLeftRotateLeftChild(list,x.getLeft() ,xLeftNewLevel ,xLeftNewWidth ,xLeftNewY ,new Double(xLeftNewBuffer*rate).intValue()) ;
             }
+
+            if (y.getRight()!=null){
+
+
+
+                AVLTreeNode domRY = y.getRight();
+
+
+                int yRightNewLevel = y.getRight().getLevel() + 1 ;
+
+                int yRightNewY = compute(yRightNewLevel);
+
+                int xRightNewBuffer = new Double(y.getRight().getBuffer()*rate).intValue();
+                int xRightNewWidth = y.getRight().getWidth() + xRightNewBuffer ;
+
+//                int yNewRightWidth =
 //
-//            if (y.getRight()!=null){
-//
-//
-//
-//                AVLTreeNode domRY = y.getRight();
-////
-//
-//                //增加圆的动画
-//                this.addCircleAndTextAnimation(list,domRY.getCid(), domRY.getNodeTextId(),yWidth , yY);
-//                //增加线的动画
-//                this.addLineAnimation(list ,ycid , domRY.getCid() ,null,null,
-//                        yNewWidth , yNewY + r , yWidth,yY - r);
-//
-//
-//                refreshLeftRotateLeftChild(list, y.getRight() , y.getLevel() , y.getWidth() , compute(y.getLevel()) ,new Double(y.getBuffer()*rate).intValue());
-//
-//                domRY.getRight();
-//            }
+
+                //增加圆的动画
+                this.addCircleAndTextAnimation(list,domRY.getCid(), domRY.getNodeTextId(),xRightNewWidth , yRightNewY);
+                //增加线的动画
+                this.addLineAnimation(list ,ycid , domRY.getCid() ,null,null,
+                        yNewWidth , yNewY + r , xRightNewWidth,yRightNewY - r);
+
+
+
+                refreshLeftRotateLeftChild(list, y.getRight() , yRightNewLevel , xRightNewWidth , yRightNewY ,new Double(xRightNewBuffer*rate).intValue());
+
+            }
+
+
         }
     }
 
@@ -712,7 +1001,7 @@ public class AVLTree extends BaseTree {
                     xNewWidth , compute(xNewLevel) ,new Double(newBuffer*rate).intValue() );
         }
 
-        if (parentNode.right != null) {
+        if (parentNode.getRight() != null) {
 
             AVLTreeNode avlTreeNode = parentNode.getRight();
 

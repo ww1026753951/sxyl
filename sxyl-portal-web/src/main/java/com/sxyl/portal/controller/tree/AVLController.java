@@ -69,7 +69,10 @@ public class AVLController extends BaseController {
 //        arrays = new int[]{10,20,30,40,50,25 };
 //        arrays = new int[]{10,20,30,40,50,25,51,52,53,54,55 };
 
-        arrays = new int[]{50,51,52,53,54,55,49 };
+//        arrays = new int[]{50,51,52,53,54,55,49,48  ,47   };
+//        arrays = new int[]{50,51,52,53,54,55,49,48  ,47   };
+//        arrays = new int[]{53,48,54,47,55 };
+//        arrays = new int[]{53,48,54,47,55,46,45,44,43,42 };
 
 
         arrays = getArrays(arrays , arrayStr);
@@ -99,7 +102,7 @@ public class AVLController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/delRbNode")
+    @RequestMapping(value = "/delAvlNode")
     @ResponseBody
     public Object delRbNode( @RequestBody RBExecuteVo rbExecuteVo) throws Exception{
         TreeConstruct treeConstruct = avlTreeService.delAVLNode(rbExecuteVo.getArrayNodeList() ,rbExecuteVo.getNode() ,rbExecuteVo.getExecuteHistory() );

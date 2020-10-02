@@ -106,6 +106,62 @@ SXYL.GRAPH = {
         return {left:left}
     },
 
+
+    /****
+     * 画矩形
+     * {
+     *     marginLeft:居左间距
+     *     id:domId
+     *     value:矩形的值
+     * }
+     */
+    R:function (parent,o) {
+        var pContent = parent ;
+        //兼容老版本，老版本没有传parent ,值传了o ,所以当 o为undefined 时
+        if(o == undefined){
+            o = parent;
+            pContent = SXYL.GRAPH.getContext();
+        }
+        var fill = "red";
+        if(o.fill){
+            fill = o.fill;
+        }
+        var height = 0 ;
+        //矩形的值
+        if(o.height){
+            height = o.height;
+        }else{
+            height = (parseInt(o.value))*5;
+        }
+        var x = 0 ;
+        if(o.x){
+            x = o.x;
+        }else{
+            x = 50;
+        }
+        var y = 0 ;
+        if(o.y){
+            y = o.y;
+        }else{
+            y = 50;
+        }
+        var width = 40;
+        if (o.width){
+            width = o.width;
+        }
+
+        var tarG = pContent.append("rect")
+            .attr("id", o.id)
+            .attr("width", width)
+            .attr("height", height)
+            .attr("x", x)
+            .attr("y", y)
+            .style("fill",fill)
+            .style("stroke","black");
+        // return {left:o.c.x, top:o.c.y, right:o.c.x + o.c.r, bottom:o.c.y + o.c.r}
+        // debugger
+        return { ob:tarG};
+    },
     /****
      * 画圆
      * @param o
@@ -507,6 +563,7 @@ SXYL.GRAPH.GRAPH_TYPE = {
 SXYL.GRAPH.GRAPH_MAP = {
     1:{f:SXYL.GRAPH.G},
     2:{f:SXYL.GRAPH.T},
+    3:{f:SXYL.GRAPH.R},
     4:{f:SXYL.GRAPH.C},
     5:{f:SXYL.GRAPH.L},
     6:{f:SXYL.GRAPH.TS},

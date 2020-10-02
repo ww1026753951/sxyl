@@ -30,6 +30,16 @@ public class Move extends AnimationComponent implements Serializable {
      */
     private Integer by;
 
+    /***
+     * 位移的目标 x
+     */
+    private Integer x;
+
+    /***
+     * 位移的目标y
+     */
+    private Integer y;
+
     public Move() {
     }
 
@@ -74,6 +84,22 @@ public class Move extends AnimationComponent implements Serializable {
 
     public void setBy(Integer by) {
         this.by = by;
+    }
+
+    public Integer getX() {
+        return x;
+    }
+
+    public void setX(Integer x) {
+        this.x = x;
+    }
+
+    public Integer getY() {
+        return y;
+    }
+
+    public void setY(Integer y) {
+        this.y = y;
     }
 
     @Override

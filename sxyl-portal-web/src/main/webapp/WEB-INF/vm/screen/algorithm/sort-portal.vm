@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="动画算法,算法动画,排序,冒泡排序,鸡尾酒排序,选择排序,插入排序,快速排序,归并排序">
+    <meta name="description" content="算法,动画算法,算法动画,排序,冒泡排序,鸡尾酒排序,选择排序,插入排序,快速排序,归并排序">
     <meta name="author" content="">
     <link rel="icon" href="/favicon.ico">
-    <title>动画算法,算法动画,排序</title>
+    <title>算法,动画算法,算法动画,排序</title>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" >
     <link rel="stylesheet" href="/css/bootstrap/dashboard.css" >

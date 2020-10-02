@@ -6,7 +6,7 @@
     <meta name="description" content="算法 思想摇篮 动画算法 算法动画">
     <meta name="author" content="谷禾水">
     <link rel="icon" href="/favicon.ico">
-    <title>算法,动画算法,算法动画,avlTree,平衡二叉查找树</title>
+    <title>算法,动画算法,算法动画,jvm,java虚拟机,线程池</title>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" >
 ##    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
@@ -17,7 +17,7 @@
     <script src="/js/sxyl.js"></script>
 
 
-    <script src="/js/sxyl.graph.js"></script>
+    <script src="/js/sxyl.graph.js?a=2"></script>
     <script src="/js/sort/sort-common.js"></script>
     <script src="/js/animation/animation.base.js"></script>
 
@@ -97,37 +97,8 @@
 
                     <div class="btn-group mr-2">
 
-                    ##                        <div class="dropdown">
-                    ##                            <button type="button" class="btn" data-toggle="dropdown">
-                    ##                                Dropdown button
-                    ##                            </button>
-                    ##                            <div class="dropdown-menu">
-                    ##                                <a class="dropdown-item" href="#">Link 1</a>
-                    ##                                <a class="dropdown-item" href="#">Link 2</a>
-                    ##                                <a class="dropdown-item" href="#">Link 3</a>
-                    ##                            </div>
-                    ##                        </div>
-
-                    ##                        <select class="custom-select d-block w-100" >
-                    ##                            <option value >新增</option>
-                    ##                            <option>删除</option>
-                    ##                            <option>查询</option>
-                    ##                        </select>
-
-
-
-                    ##                        <button id="run" class="btn btn-sm btn-outline-secondary">
-                    ##                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
-                    ##                                <path id="play-path" d="M0 0v6l6-3-6-3z" transform="translate(1 1)" />
-                    ##                            </svg>
-                    ##                            <span id="run-pause" run-type="0">播放</span>
-                    ##                        </button>
-                    ##                        &nbsp;&nbsp;
-
-
-
-                        <button id="insertButton" type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" data-target="#insertModal">
-                            <span id="insertTreeNode">新增</span>
+                        <button id="insertButton" type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" >
+                            <span id="insertTreeNode">新增任务</span>
                         </button>
 
                         &nbsp;&nbsp;
@@ -149,29 +120,8 @@
                             自定义树
                         </button>
                         &nbsp;&nbsp;
-
-
-
                     </div>
                 </div>
-
-            ##                <div class="btn-toolbar mb-3 mb-md-0  col-md-3">
-            ##                    <div class="btn-group mr-2">
-            ##                        <p class="m-2"><b>速度:</b></p>
-            ##                        <input type="number" value="3" min="1" max="5" step="1"/>
-            ##                    </div>
-            ##                </div>
-
-
-                <!-- 红黑树简介 -->
-            ##                <div class="btn-toolbar mb-4 mb-md-0  col-md-6">
-            ##                    <div><b>红黑树简介：</b></div>
-            ##                    <div>
-            ##                        红黑树(Red Black Tree)是一种自平衡二叉查找树。红黑树和AVL树类似，都是在进行插入和删除操作时通过特定操作保持二叉查找树的平衡，从而获得较高的查找性能。
-            ##                        它虽然是复杂的，但它的最坏情况运行时间也是非常良好的，并且在实践中是高效的： 它可以在O(log n)时间内做查找，插入和删除，这里的n 是树中元素的数目。
-            ##                    </div>
-            ##                </div>
-
 
             </div>
 
@@ -205,78 +155,78 @@
         </main>
     </div>
 </div>
-
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="width: 800px">
-            <div class="modal-header">
-
-            </div>
-            <div class="modal-body"style="width: 800px;height: 300px">
-
-                <div class="form-group">
-                    <label>自定义数组</label>
-                    <input type="text" id ="arrayStr" class="form-control" placeholder="自定义数组,逗号分隔">
-                </div>
-                <br><br>
-
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="changeBySelf(false)">提交更改</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="width: 800px">
-            <div class="modal-header">
-
-            </div>
-            <div class="modal-body"style="width: 800px;height: 300px">
-
-                <div class="form-group">
-                    <label>删除节点</label>
-                    <input type="text" id ="delNodeValue" class="form-control" placeholder="删除节点">
-                </div>
-                <br><br>
+##
+##<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+##    <div class="modal-dialog modal-dialog-centered">
+##        <div class="modal-content" style="width: 800px">
+##            <div class="modal-header">
+##
+##            </div>
+##            <div class="modal-body"style="width: 800px;height: 300px">
+##
+##                <div class="form-group">
+##                    <label>自定义数组</label>
+##                    <input type="text" id ="arrayStr" class="form-control" placeholder="自定义数组,逗号分隔">
+##                </div>
+##                <br><br>
+##
+##
+##            </div>
+##            <div class="modal-footer">
+##                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+##                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="changeBySelf(false)">提交更改</button>
+##            </div>
+##        </div>
+##    </div>
+##</div>
 
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="del()">删除节点</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="width: 800px">
-            <div class="modal-header">
-            </div>
-            <div class="modal-body"style="width: 800px;height: 300px">
-
-                <div class="form-group">
-                    <label>数字</label>
-                    <input type="text" id ="nodeValue" class="form-control" placeholder="新增节点">
-                </div>
-                <br><br>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="insert()">新增节点</button>
-            </div>
-        </div>
-    </div>
-</div>
+##
+##<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+##    <div class="modal-dialog modal-dialog-centered">
+##        <div class="modal-content" style="width: 800px">
+##            <div class="modal-header">
+##
+##            </div>
+##            <div class="modal-body"style="width: 800px;height: 300px">
+##
+##                <div class="form-group">
+##                    <label>删除节点</label>
+##                    <input type="text" id ="delNodeValue" class="form-control" placeholder="删除节点">
+##                </div>
+##                <br><br>
+##
+##
+##            </div>
+##            <div class="modal-footer">
+##                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+##                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="del()">删除节点</button>
+##            </div>
+##        </div>
+##    </div>
+##</div>
+##
+##
+##<div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+##    <div class="modal-dialog modal-dialog-centered">
+##        <div class="modal-content" style="width: 800px">
+##            <div class="modal-header">
+##            </div>
+##            <div class="modal-body"style="width: 800px;height: 300px">
+##
+##                <div class="form-group">
+##                    <label>数字</label>
+##                    <input type="text" id ="nodeValue" class="form-control" placeholder="新增节点">
+##                </div>
+##                <br><br>
+##            </div>
+##            <div class="modal-footer">
+##                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+##                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="insert()">新增节点</button>
+##            </div>
+##        </div>
+##    </div>
+##</div>
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
@@ -300,6 +250,12 @@
     $('input[type=radio][name=speedRadioOptions]').change(function() {
         SXYL.SORT.changeSpeed(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed());
     });
+
+
+    $('#insertButton').bind('click', function () {
+        insert();
+    });
+
 
     $('#run').bind('click',function () {
 
@@ -360,7 +316,7 @@
 
         $.ajax({
             type: 'POST',
-            url: "/tree/avl/avlTreeConstruct",
+            url: "/jvm/threadPool/threadPoolConstruct",
             data : {
                 arrayStr:arrayStr
             },
@@ -370,7 +326,7 @@
                 SXYL.GRAPH.drawByComponent(parent , d.group);
 //                SXYL.ANIMATION.ALL_STEP = d.at;
 
-                rbArray["data"] = d.arrayLists;
+                rbArray["data"] = d.pcd;
                 SXYL.GRAPH.initPosition();
 
             }
@@ -378,45 +334,38 @@
     }
 
     function insert() {
-        var v = $("#nodeValue").val();
-        if(!v){
-            v = randomVal(0,100);
-            alert(v);
-        }
-
-
+//        var v = $("#nodeValue").val();
+//        if(!v){
+//            v = randomVal(0,100);
+//            alert(v);
+//        }
 
 
 //        disableButton();
         $.ajax({
             type: 'POST',
             contentType:"application/json",
-            url: "/tree/avl/insertAvlNode",
+            url: "/jvm/threadPool/addNewThread",
             data : JSON.stringify({
-                arrayNodeList:rbArray["data"],
-                executeHistory:rbArray["es"],
-                node:v
+                pcd:rbArray["data"],
+                executeHistory:rbArray["es"]
             }),
             success: function (d) {
                 var parent = SXYL.GRAPH.getContext();
                 SXYL.GRAPH.drawByComponent(parent , d.group);
-                rbArray["data"] = d.arrayLists;
+                rbArray["data"] = d.pcd;
                 rbArray["es"] = d.executeSteps;
                 SXYL.step_no = 0 ;
 
-                debugger
 
-                if(d.at && d.at.acs){
-                    SXYL.ANIMATION.ALL_STEP = d.at;
-                    SXYL.SORT.start(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.SORT.getSpeed()));
+                SXYL.ANIMATION.ALL_STEP = d.at;
+                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.SORT.getSpeed()));
 
-//                debugger
-                    //执行第一步骤
+
+                //执行第一步骤
 //                SXYL.ANIMATION.executeAnimation() ;
-                    $("#run").removeAttr("disabled");
-                    $("#run-next").html("请点我");
-
-                }
+//                $("#run").removeAttr("disabled");
+//                $("#run-next").html("请点我");
             }
         });
 
@@ -439,7 +388,7 @@
         $.ajax({
             type: 'POST',
             contentType:"application/json",
-            url: "/tree/avl/delAvlNode",
+            url: "/tree/delRbNode",
             data : JSON.stringify({
                 arrayNodeList:rbArray["data"],
                 executeHistory:rbArray["es"],
