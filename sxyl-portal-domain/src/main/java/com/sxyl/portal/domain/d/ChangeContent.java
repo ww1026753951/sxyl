@@ -18,6 +18,11 @@ public class ChangeContent extends AnimationComponent implements Serializable {
      */
     private String tid;
 
+    /***
+     * 文本
+     */
+    private String text ;
+
 
     public ChangeContent() {
     }
@@ -25,6 +30,12 @@ public class ChangeContent extends AnimationComponent implements Serializable {
     public ChangeContent(String sid, String tid) {
         this.sid = sid;
         this.tid = tid;
+    }
+
+    public ChangeContent(String sid, String tid, String text) {
+        this.sid = sid;
+        this.tid = tid;
+        this.text = text;
     }
 
     public String getSid() {
@@ -41,6 +52,14 @@ public class ChangeContent extends AnimationComponent implements Serializable {
 
     public void setTid(String tid) {
         this.tid = tid;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override

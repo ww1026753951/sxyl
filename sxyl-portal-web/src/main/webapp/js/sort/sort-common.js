@@ -67,7 +67,6 @@ SXYL.SORT = {
     },
     //runType  0:开始  1:暂停  2:继续
     start:function (f,speed) {
-
             $("#run-pause").attr("run-type" , 1) ;
             $("#run-pause").text("暂停") ;
             $("#play-path").attr("d","M0 0v6h2v-6h-2zm4 0v6h2v-6h-2z");

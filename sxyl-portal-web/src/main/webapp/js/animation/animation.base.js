@@ -66,6 +66,7 @@ SXYL.ANIMATION={
         7:{f:SXYL.DOM.changeColor},
 
         8:{f:SXYL.DOM.show},
+        9:{f:SXYL.DOM.hide},
 
         //赋值对象内容
         10:{f:SXYL.DOM.changeElement},
@@ -77,6 +78,8 @@ SXYL.ANIMATION={
         13:{f:SXYL.DOM.multiMove},
         //批量移动
         14:{f:SXYL.DOM.changeAttr},
+        //批量移动
+        15:{f:SXYL.DOM.top},
         //累计乘积方法
         51:{f:SXYL.DOM.multiplyElement},
         //求和方法
@@ -117,6 +120,10 @@ SXYL.ANIMATION={
             SXYL.step_no++;
             if(SXYL.step_no == executeStep.length){
                 window.clearInterval(SXYL.execute_i);
+
+                if (SXYL.after_fun){
+                    SXYL.after_fun();
+                }
             }
             //如果是不展示的逻辑，则直接跳到下一步
             if(!stepObject.ad){
@@ -127,7 +134,6 @@ SXYL.ANIMATION={
 
             return false;
         }
-
         return true;
 
     }

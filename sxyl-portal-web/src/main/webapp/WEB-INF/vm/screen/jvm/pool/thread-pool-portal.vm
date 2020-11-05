@@ -14,12 +14,12 @@
     <link rel="stylesheet" href="/css/bootstrap/bootstrap-reboot.min.css" >
     <script src="/js/d3/d3.min.js"></script>
     <script src="/js/jquery/jquery-3.2.1.min.js" ></script>
-    <script src="/js/sxyl.js"></script>
+    <script src="/js/sxyl.js?a=8"></script>
 
 
-    <script src="/js/sxyl.graph.js?a=2"></script>
+    <script src="/js/sxyl.graph.js?a=3"></script>
     <script src="/js/sort/sort-common.js"></script>
-    <script src="/js/animation/animation.base.js"></script>
+    <script src="/js/animation/animation.base.js?a=7"></script>
 
     <script src="/js/math/MathJax.js?config=TeX-MML-AM_SVG"></script>
 ##    <script src="/js/math/latest.js?config=TeX-MML-AM_SVG1" ></script>
@@ -102,24 +102,23 @@
                         </button>
 
                         &nbsp;&nbsp;
-                        <button id="delButton" type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" data-target="#delModal">
-                            <span id="delTreeNode">删除</span>
+                        <button id="delButton" type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" data-target="#delModal" disabled>
+                            <span id="delTreeNode">任务执行</span>
                         </button>
                         &nbsp;&nbsp;
-                        <button id="run" class="btn btn-sm  btn-outline-secondary " disabled>
+##                        <button id="run" class="btn btn-sm  btn-outline-secondary " disabled>
+##                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
+##                                <path id="play-next" d="M0 0v6l6-3-6-3z" transform="translate(1 1)" />
+##                            </svg>
+##                            <span id="run-next" run-type="0">播放</span>
+##                        </button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-sm btn-outline-secondary" id="run" disabled>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
-                                <path id="play-next" d="M0 0v6l6-3-6-3z" transform="translate(1 1)" />
+                                <path id="play-path" d="M0 0v6l6-3-6-3z" transform="translate(1 1)" />
                             </svg>
-                            <span id="run-next" run-type="0">播放</span>
+                            <span id="run-pause" run-type="0">播放</span>
                         </button>
-                        &nbsp;&nbsp;
-                        <button class="btn btn-sm btn-outline-secondary" id="reset"   data-toggle="modal" data-target="#myModal" >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 8 8">
-                                <path d="M4 0c-2.2 0-4 1.8-4 4s1.8 4 4 4c1.1 0 2.12-.43 2.84-1.16l-.72-.72c-.54.54-1.29.88-2.13.88-1.66 0-3-1.34-3-3s1.34-3 3-3c.83 0 1.55.36 2.09.91l-1.09 1.09h3v-3l-1.19 1.19c-.72-.72-1.71-1.19-2.81-1.19z" />
-                            </svg>
-                            自定义树
-                        </button>
-                        &nbsp;&nbsp;
                     </div>
                 </div>
 
@@ -182,29 +181,31 @@
 
 
 ##
-##<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-##    <div class="modal-dialog modal-dialog-centered">
-##        <div class="modal-content" style="width: 800px">
-##            <div class="modal-header">
-##
-##            </div>
-##            <div class="modal-body"style="width: 800px;height: 300px">
-##
-##                <div class="form-group">
-##                    <label>删除节点</label>
-##                    <input type="text" id ="delNodeValue" class="form-control" placeholder="删除节点">
-##                </div>
-##                <br><br>
-##
-##
-##            </div>
-##            <div class="modal-footer">
-##                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-##                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="del()">删除节点</button>
-##            </div>
-##        </div>
-##    </div>
-##</div>
+<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="width: 800px">
+            <div class="modal-header">
+
+            </div>
+            <div class="modal-body"style="width: 800px;height: 300px">
+
+                <div class="form-group">
+                    <label>输入任务编号执行任务。执行后任务将被执行完毕，任务所占用的线程将处于空闲。其中核心线程不会自动销毁，非核心线程池中的线程将会根据 keepAliveTime 的设置自动销毁</label>
+
+                    <input type="text" id ="delNodeValue" class="form-control" placeholder="任务执行">
+                    <label style="color: red">注:核心线程中的线程默认为不可自动销毁，但是可通过参数设置为自动销毁，参数为 allowCoreThreadTimeOut。 </label>
+                </div>
+                <br><br>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="del()">任务执行</button>
+            </div>
+        </div>
+    </div>
+</div>
 ##
 ##
 ##<div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -339,9 +340,20 @@
 //            v = randomVal(0,100);
 //            alert(v);
 //        }
+        debugger
+
+        //线程的特殊处理，当新增时,需要将当前线程的颜色传回到后台
+        var threadArray = rbArray["data"]["threadMap"];
+        for(var i=0; i<threadArray.length; i++) {
+            var threadObj = $("#"+ threadArray[i][0]);
+            if(threadObj.css("display") =='none'){
+                rbArray["data"]["threadMap"][i][2]=true;
+            }
+            rbArray["data"]["threadMap"][i][1]=threadObj.css("fill");
+        }
 
 
-//        disableButton();
+        disableButton();
         $.ajax({
             type: 'POST',
             contentType:"application/json",
@@ -359,8 +371,14 @@
 
 
                 SXYL.ANIMATION.ALL_STEP = d.at;
-                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.SORT.getSpeed()));
 
+                SXYL.after_fun = enableButton;
+
+//                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation,  SXYL.SORT.getSpeed());
+                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation,  600);
+
+
+//                enableButton();
 
                 //执行第一步骤
 //                SXYL.ANIMATION.executeAnimation() ;
@@ -378,47 +396,61 @@
 
         var v = $("#delNodeValue").val();
 
+
+        SXYL.SORT.changeToStart();
+
         if(!v){
-            alert('请选择节点删除!');
+            alert('请输入任务编号进行任务执行!');
             return;
         }
 
-        disableButton();
+        debugger;
+
+
+        var threadArray = rbArray["data"]["threadMap"];
+        for(var i=0; i<threadArray.length; i++) {
+            var threadObj = $("#"+ threadArray[i][0]);
+            if(threadObj.css("display") =='none'){
+                rbArray["data"]["threadMap"][i][2]=true;
+            }
+            rbArray["data"]["threadMap"][i][1]=threadObj.css("fill");
+        }
+
+
+//        disableButton();
 
         $.ajax({
             type: 'POST',
             contentType:"application/json",
-            url: "/tree/delRbNode",
+            url: "/jvm/threadPool/executeTask?taskNo="+parseInt(v,10),
             data : JSON.stringify({
-                arrayNodeList:rbArray["data"],
-                executeHistory:rbArray["es"],
-                node:v
+                pcd:rbArray["data"]//,
+//                taskNo:parseInt(v,10)
             }),
             success: function (d) {
-
-                debugger
-                if(!d){
-                    enableButton();
-                    alert("未找到数据节点");
-                    return
+                if(d.errorMsg){
+                    alert(d.errorMsg);
+                    return;
                 }
+
+
+
 
                 var parent = SXYL.GRAPH.getContext();
-                if(d.group){
-                    SXYL.GRAPH.drawByComponent(parent , d.group);
-                }
-                rbArray["data"] = d.arrayLists;
+//                SXYL.GRAPH.drawByComponent(parent , d.group);
+                rbArray["data"] = d.pcd;
                 rbArray["es"] = d.executeSteps;
-
                 SXYL.step_no = 0 ;
 
-                SXYL.ANIMATION.ALL_STEP = d.at;
-//                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.SORT.getSpeed()));
 
-                //执行第一步骤
-                SXYL.ANIMATION.executeAnimation() ;
-                $("#run").removeAttr("disabled");
-                $("#run-next").html("请点我");
+                SXYL.ANIMATION.ALL_STEP = d.at;
+
+                SXYL.after_fun = enableButton;
+
+//                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation,  SXYL.SORT.getSpeed());
+                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation,  600);
+
+
             }
         });
 
@@ -438,12 +470,14 @@
     function disableButton() {
         $("#insertButton").attr("disabled","disable");
         $("#delButton").attr("disabled","disable");
-        $("#run").addClass("btn-link");
+//        $("#run").addClass("btn-link");
+        $("#run").removeAttr("disabled");
     }
 
     function enableButton() {
         $("#insertButton").removeAttr("disabled");
         $("#delButton").removeAttr("disabled");
+        $("#run").attr("disabled","disable");
     }
 
 </script>

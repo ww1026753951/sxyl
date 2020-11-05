@@ -157,7 +157,8 @@ SXYL.GRAPH = {
             .attr("x", x)
             .attr("y", y)
             .style("fill",fill)
-            .style("stroke","black");
+            .style("stroke","black")
+            .style("display",o.h?o.h:"inline"); //o.st;
         // return {left:o.c.x, top:o.c.y, right:o.c.x + o.c.r, bottom:o.c.y + o.c.r}
         // debugger
         return { ob:tarG};
@@ -553,6 +554,7 @@ SXYL.GRAPH = {
 SXYL.GRAPH.GRAPH_TYPE = {
     GROUP:1,
     TEXT:2,
+    RECT:3,
     CIRCLE:4,
     LINE:5
 }

@@ -25,6 +25,8 @@ SXYL={
     speed:200,
     //执行的顺序号
     step_no:0,
+    //执行后动画后的处理
+    after_fun:undefined,
     //全局执行次数,  SXYL.execute_i = setInterval(f, speed);
     execute_i: undefined ,
     //全局执行的函数
@@ -303,7 +305,6 @@ SXYL.DOM.moveElement = function(o){
 
 
 
-    debugger
     var tarName = $("#"+o.id)[0].tagName;
     if(tarName == "g"){
         SXYL.DOM.changeElementXYByObject(o.sid,{x:x,y:y,speed:SXYL.speed})
@@ -656,6 +657,10 @@ SXYL.DOM.copyFormulaResult = function(o){
  */
 SXYL.DOM.changeElement = function (o) {
     $("#"+o.sid).text($("#"+o.tid).text());
+
+    if(o.text){
+        $("#"+o.sid).text(o.text);
+    }
 }
 
 
@@ -681,7 +686,7 @@ SXYL.DOM.changeColor = function (o) {
 
 
 /*****
- * 批量变色
+ * 批量展示
  * @param o
  */
 SXYL.DOM.show = function (o) {
@@ -689,6 +694,20 @@ SXYL.DOM.show = function (o) {
     for(var i =0; i< ids.length ; i++){
         var element = d3.select("#" + ids[i]);
         element.style("display","inline");
+    }
+}
+
+
+/*****
+ * 批量隐藏
+ * @param o
+ */
+SXYL.DOM.hide = function (o) {
+    var ids = o.ids ;
+
+    for(var i =0; i< ids.length ; i++){
+        var element = d3.select("#" + ids[i]);
+        element.style("display","none");
     }
 }
 
@@ -741,29 +760,45 @@ SXYL.DOM.clearFormula = function (o) {
  */
 SXYL.DOM.multiMove = function (o) {
     var gcs = o.gcs;
-    for (var i=0;i<gcs.length ; i++){
-        var ob = gcs[i];
-        //如果是圆的图形
-        if(ob.ct == SXYL.GRAPH.GRAPH_TYPE.CIRCLE){
+    var details = o.details;
+    if(o.gcs){
+        for (var i=0;i<gcs.length ; i++){
+            var ob = gcs[i];
+            //如果是圆的图形
+            if(ob.ct == SXYL.GRAPH.GRAPH_TYPE.CIRCLE){
 
-            var sid = d3.select("#"+ob.id ) ;
-            sid.transition().duration(1000).attr("cx",ob.x).attr("cy",ob.y);
+                var sid = d3.select("#"+ob.id ) ;
+                sid.transition().duration(1000).attr("cx",ob.x).attr("cy",ob.y);
 
-        }
-        if(ob.ct == SXYL.GRAPH.GRAPH_TYPE.TEXT){
-            var sid = d3.select("#"+ob.id ) ;
-            sid.transition().duration(1000).attr("x",ob.x).attr("y",ob.y);
-        }
+            }
+            if(ob.ct == SXYL.GRAPH.GRAPH_TYPE.TEXT){
+                var sid = d3.select("#"+ob.id ) ;
+                sid.transition().duration(1000).attr("x",ob.x).attr("y",ob.y);
+            }
+            if(ob.ct == SXYL.GRAPH.GRAPH_TYPE.RECT){
+                var sid = d3.select("#"+ob.id ) ;
+                sid.transition().duration(1000).attr("x",ob.x).attr("y",ob.y);
+            }
 
-        if(ob.ct == SXYL.GRAPH.GRAPH_TYPE.LINE){
-            var sid = d3.select("#"+ob.id ) ;
-            sid.transition().duration(1000).attr("x1",ob.x1).attr("y1",ob.y1).attr("x2",ob.x2).attr("y2",ob.y2);
+            if(ob.ct == SXYL.GRAPH.GRAPH_TYPE.LINE){
+                var sid = d3.select("#"+ob.id ) ;
+                sid.transition().duration(1000).attr("x1",ob.x1).attr("y1",ob.y1).attr("x2",ob.x2).attr("y2",ob.y2);
 
-            if(ob.tid){
-                sid.attr("id",ob.tid);
+                if(ob.tid){
+                    sid.attr("id",ob.tid);
+                }
             }
         }
     }
+
+    if (details) {
+        for (var i=0;i<details.length ; i++){
+            var ob = details[i];
+            var sid = d3.select("#"+ob.id ) ;
+            sid.transition().duration(1000).attr("x",ob.x).attr("y",ob.y);
+        }
+    }
+
 }
 
 /***
@@ -799,5 +834,19 @@ SXYL.DOM.changeAttr = function (o) {
         }
 
 
+    }
+}
+
+
+/***
+ * 变化属性
+ */
+SXYL.DOM.top = function (o) {
+    for (var i=0;i<o.ids.length;i++){
+        var tt =$("#" + o.ids[i]);
+        var newObj = tt.clone();
+        tt.remove();
+        //将元素重新赋值
+        $("#sortAlg").append(newObj);
     }
 }

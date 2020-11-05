@@ -87,4 +87,23 @@ public class ThreadPoolController extends BaseController {
         return poolConstruct;
     }
 
+    /***
+     * 增加新线程
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/executeTask")
+    @ResponseBody
+    public Object executeTask(HttpServletRequest request ,@RequestBody PoolConstruct pc , Integer taskNo) throws Exception{
+
+        super.getDomainByReferer(request);
+
+
+        PoolConstruct poolConstruct = threadPoolService.executeNewTask(pc , taskNo);
+
+
+        // 获取结构
+        return poolConstruct;
+    }
+
 }

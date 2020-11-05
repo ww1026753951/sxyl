@@ -130,7 +130,7 @@
                 <a href="/jvm/threadPool/threadPoolPortal"><img class="card-img-top" src="/skin/jvm/JVM-Architecture.png" alt=""  style="width: 400 " height="200px"></a>
                 <div class="card-body">
                     <h4 class="card-title">
-                        <a href="/jvm/threadPool/threadPoolPortal">jvm(敬请期待)</a>
+                        <a href="/jvm/threadPool/threadPoolPortal">jvm(线程池)</a>
                     </h4>
                     <p class="card-text">JVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的.</p>
                 </div>

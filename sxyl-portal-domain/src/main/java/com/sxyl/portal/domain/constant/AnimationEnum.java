@@ -38,6 +38,8 @@ public enum AnimationEnum {
     MULTI_MOVE(13,"批量移动"),
     //批量变更
     CHANGE_ATTR(14,"批量变更属性"),
+    //置顶
+    TOP(15,"将元素置顶"),
 
     //乘法
     MULTIPLY(51,"乘法"),

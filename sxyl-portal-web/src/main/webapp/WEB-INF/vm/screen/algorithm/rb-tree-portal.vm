@@ -450,6 +450,7 @@
 
                 var parent = SXYL.GRAPH.getContext();
                 if(d.group){
+                    //绘制图形
                     SXYL.GRAPH.drawByComponent(parent , d.group);
                 }
                 rbArray["data"] = d.arrayLists;

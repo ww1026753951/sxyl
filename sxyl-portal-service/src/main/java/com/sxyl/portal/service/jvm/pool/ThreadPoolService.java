@@ -19,10 +19,18 @@ public interface ThreadPoolService {
 
 
     /***
-     * 创建新线程
+     * 创建新任务
      * @return
      */
     PoolConstruct createNewThread(PoolConstruct poolConstruct);
+
+
+    /****
+     * 销毁新任务
+     * @param poolConstruct
+     * @return
+     */
+    PoolConstruct executeNewTask(PoolConstruct poolConstruct , Integer taskNo);
 
 
 }

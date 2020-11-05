@@ -18,7 +18,7 @@ public class Rect  extends GraphComponent implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /***
-     * 方框的值
+     * 方框的宽度
      */
     private Integer width;
 

@@ -23,4 +23,16 @@ public class PoolConstruct extends CommonConstruct {
      * 线程池的数据
      */
     private PoolConstructData pcd ;
+
+
+    /***
+     * 错误原因
+     */
+    private String errorMsg;
+
+//
+//    /***
+//     * 线程池编号
+//     */
+//    private Integer taskNo;
 }
