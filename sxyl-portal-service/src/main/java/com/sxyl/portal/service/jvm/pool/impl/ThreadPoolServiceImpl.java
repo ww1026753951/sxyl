@@ -339,7 +339,21 @@ public class ThreadPoolServiceImpl implements ThreadPoolService {
         if( (!poolConstruct.getPcd().getMaxTaskNo().contains(taskNo))
                 && (!poolConstruct.getPcd().getCoreTaskNo().contains(taskNo))
                 ){
-            poolConstruct.setErrorMsg("此任务编号不在线程中，请输入任务编号为的任务");
+            String taskNoStr="";
+            if (poolConstruct.getPcd().getCoreTaskNo() !=null){
+                for (Integer n : poolConstruct.getPcd().getCoreTaskNo() ) {
+                    taskNoStr = taskNoStr+ n +",";
+                }
+            }
+            if(poolConstruct.getPcd().getMaxTaskNo() !=null){
+                for (Integer n : poolConstruct.getPcd().getMaxTaskNo() ) {
+                    taskNoStr = taskNoStr + n +",";
+                }
+            }
+            if (StringUtils.isNotEmpty(taskNoStr) && taskNoStr.length()>1 ){
+                taskNoStr = taskNoStr.substring(0,taskNoStr.length() -1);
+            }
+            poolConstruct.setErrorMsg("此任务编号不在线程中，请输入任务编号为"+taskNoStr+"的任务");
             return poolConstruct;
         }
 
