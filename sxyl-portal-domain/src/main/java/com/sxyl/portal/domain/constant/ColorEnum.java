@@ -15,8 +15,10 @@ public enum  ColorEnum {
     BLACK(2,"black"),
     //灰色
     GRAY(3,"gray"),
-    //灰色
-    RED(4,"red");
+    //红色
+    RED(4,"red"),
+    //绿色
+    GREEN(4,"green");
 
     private final int type;
     private final String htmlCode;

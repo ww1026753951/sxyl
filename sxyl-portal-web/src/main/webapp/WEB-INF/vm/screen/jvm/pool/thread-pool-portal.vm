@@ -105,6 +105,13 @@
                         <button id="delButton" type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" data-target="#delModal" disabled>
                             <span id="delTreeNode">任务执行</span>
                         </button>
+
+
+                        &nbsp;&nbsp;
+                        <button id="configButton" type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" data-target="#configModal" >
+                            <span id="configButton">参数设置</span>
+                        </button>
+
                         &nbsp;&nbsp;
 ##                        <button id="run" class="btn btn-sm  btn-outline-secondary " disabled>
 ##                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
@@ -192,7 +199,7 @@
                 <div class="form-group">
                     <label>输入任务编号执行任务。执行后任务将被执行完毕，任务所占用的线程将处于空闲。其中核心线程不会自动销毁，非核心线程池中的线程将会根据 keepAliveTime 的设置自动销毁</label>
 
-                    <input type="text" id ="delNodeValue" class="form-control" placeholder="任务执行">
+                    <input type="text" id ="delNodeValue" class="form-control" placeholder="请输入任务编号,例如：1">
                     <label style="color: red">注:核心线程中的线程默认为不可自动销毁，但是可通过参数设置为自动销毁，参数为 allowCoreThreadTimeOut。 </label>
                 </div>
                 <br><br>
@@ -206,6 +213,56 @@
         </div>
     </div>
 </div>
+
+
+
+<div class="modal fade" id="configModal" tabindex="-1" role="dialog" aria-labelledby="configModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="width: 800px">
+            <div class="modal-header">
+
+            </div>
+            <div class="modal-body"style="width: 800px;height: 300px">
+
+                <div class="form-group">
+                    <label>核心线程池数量:</label>
+                    <input type="text" id ="corePoolSize" class="form-control" placeholder="核心线程池数量:1-3,默认2">
+
+                    <label>最大线程池数量:</label>
+                    <input type="text" id ="maxPoolSize" class="form-control" placeholder="最大线程池数量:1-6,默认6">
+
+                    <p class="m-2"><b>队列数量:</b></p>
+                    <input type="text" id ="queueSize" class="form-control" placeholder="队列数量:1-6,默认6" >
+                </div>
+                <div class="btn-group mr-2">
+                    <p class="m-2"><b>拒绝策略:</b></p>
+                    <label class="radio-inline m-2" >
+                        <input type="radio" name="speedRadioOptions" id="abortPolicy" value="1" checked="checked" > AbortPolicy
+                    </label>
+                    <label class="radio-inline m-2" >
+                        <input type="radio" name="speedRadioOptions" id="discardPolicy" value="2" > DiscardPolicy
+                    </label>
+                    <label class="radio-inline m-2" >
+                        <input type="radio" name="speedRadioOptions" id="discardOldestPolicy" value="3"> DiscardOldestPolicy
+                    </label>
+                    <label class="radio-inline  m-2">
+                        <input type="radio" name="speedRadioOptions" id="callerRunsPolicy" value="4"> CallerRunsPolicy
+                    </label>
+                </div>
+
+
+                <br><br>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="config()">初始化线程池</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 ##
 ##
 ##<div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -314,13 +371,54 @@
         var arrayStr = $("#arrayStr").val();
 
 
+//        /***
+//         * 最大线程数 4
+//         */
+//        private int corePoolSize = 2;
+//
+//        /***
+//         * 队列数量 6
+//         */
+//        private int queueSize = 6;
+//
+//        /****
+//         * 最大线程数量 8
+//         */
+//        private int maxPoolSize = 6 ;
+
+
+        if(!rbArray["data"]){
+            rbArray["data"]={};
+        }
+        if($("#corePoolSize").val()){
+            rbArray["data"]["corePoolSize"]=$("#corePoolSize").val();
+        }
+        if($("#queueSize").val()) {
+            rbArray["data"]["queueSize"]=$("#queueSize").val();
+        }
+
+        if($("#maxPoolSize").val()){
+            rbArray["data"]["maxPoolSize"]=$("#maxPoolSize").val();
+        }
+
+
+
+        rbArray["data"]["newConfig"]=true;
+
+
+        var a = $("input[name='speedRadioOptions']:checked").val();
+
+        rbArray["data"]["policyType"]=a;
+
 
         $.ajax({
             type: 'POST',
             url: "/jvm/threadPool/threadPoolConstruct",
-            data : {
-                arrayStr:arrayStr
-            },
+            contentType:"application/json",
+            data : JSON.stringify({
+                pcd:rbArray["data"],
+                executeHistory:{}
+            }),
             success: function (d) {
                 var parent = SXYL.GRAPH.getContext();
                 //初始化dom结构
@@ -340,7 +438,6 @@
 //            v = randomVal(0,100);
 //            alert(v);
 //        }
-        debugger
 
         //线程的特殊处理，当新增时,需要将当前线程的颜色传回到后台
         var threadArray = rbArray["data"]["threadMap"];
@@ -391,6 +488,74 @@
             return Math.floor(Math.random() * (max - min)) + min
         }
     }
+
+    function config() {
+
+        debugger
+        //清楚元素
+        d3.select("#sortAlg").selectAll("*").remove();
+//        d3.select("#sortAlg").selectAll("").remove();
+        //按钮变为初始化
+        SXYL.SORT.changeToStart();
+        SXYL.GRAPH.initPosition();
+        SXYL.step_no = 0;
+
+        loadData();
+
+
+//        SXYL.SORT.changeToStart();
+
+
+
+
+//        var threadArray = rbArray["data"]["threadMap"];
+//        for(var i=0; i<threadArray.length; i++) {
+//            var threadObj = $("#"+ threadArray[i][0]);
+//            if(threadObj.css("display") =='none'){
+//                rbArray["data"]["threadMap"][i][2]=true;
+//            }
+//            rbArray["data"]["threadMap"][i][1]=threadObj.css("fill");
+//        }
+
+
+
+//        $.ajax({
+//            type: 'POST',
+//            contentType:"application/json",
+//            url: "/jvm/threadPool/executeTask?taskNo="+parseInt(v,10),
+//            data : JSON.stringify({
+//                pcd:rbArray["data"]//,
+////                taskNo:parseInt(v,10)
+//            }),
+//            success: function (d) {
+//                if(d.errorMsg){
+//                    alert(d.errorMsg);
+//                    return;
+//                }
+//
+//
+//
+//
+//                var parent = SXYL.GRAPH.getContext();
+////                SXYL.GRAPH.drawByComponent(parent , d.group);
+//                rbArray["data"] = d.pcd;
+//                rbArray["es"] = d.executeSteps;
+//                SXYL.step_no = 0 ;
+//
+//
+//                SXYL.ANIMATION.ALL_STEP = d.at;
+//
+//                SXYL.after_fun = enableButton;
+//
+////                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation,  SXYL.SORT.getSpeed());
+//                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation,  600);
+//
+//
+//            }
+//        });
+
+    }
+
 
     function del() {
 

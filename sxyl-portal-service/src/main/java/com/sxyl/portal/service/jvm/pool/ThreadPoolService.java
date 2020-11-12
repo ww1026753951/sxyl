@@ -15,7 +15,7 @@ public interface ThreadPoolService {
      * 获取线程池的结构
      * @return
      */
-    PoolConstruct getPoolConstruct();
+    PoolConstruct getPoolConstruct(PoolConstruct poolConstruct);
 
 
     /***

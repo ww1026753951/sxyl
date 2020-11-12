@@ -150,4 +150,12 @@ public class PoolConstructData implements Serializable {
      */
     private List<Object[]> threadMap = new ArrayList<>();
 
+
+    /****
+     * 拒绝策略
+     */
+    private int policyType = 1;
+
+    private boolean newConfig = false;
+
 }

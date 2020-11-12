@@ -54,11 +54,12 @@ public class ThreadPoolController extends BaseController {
      */
     @RequestMapping("/threadPoolConstruct")
     @ResponseBody
-    public Object threadPoolConstruct(HttpServletRequest request) throws Exception{
+    public Object threadPoolConstruct(HttpServletRequest request, @RequestBody PoolConstruct pc) throws Exception{
  ;
         super.getDomainByReferer(request);
 
-        PoolConstruct poolConstruct = threadPoolService.getPoolConstruct();
+        PoolConstruct poolConstruct = threadPoolService.getPoolConstruct(pc);
+
 
 
         // 获取结构

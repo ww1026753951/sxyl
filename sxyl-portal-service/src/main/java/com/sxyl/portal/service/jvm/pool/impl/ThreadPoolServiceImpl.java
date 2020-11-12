@@ -4,6 +4,7 @@ import com.sxyl.portal.domain.CommonMove;
 import com.sxyl.portal.domain.constant.ColorEnum;
 import com.sxyl.portal.domain.constant.ComponentCompositeEnum;
 import com.sxyl.portal.domain.constant.DisplayEnum;
+import com.sxyl.portal.domain.constant.jvm.PolicyEnum;
 import com.sxyl.portal.domain.d.*;
 import com.sxyl.portal.domain.graph.*;
 import com.sxyl.portal.domain.jvm.*;
@@ -118,12 +119,48 @@ public class ThreadPoolServiceImpl implements ThreadPoolService {
     private final String[] colorArray = new String[]{"rgb(0,0,0)","rgb(90,90,90)","rgb(100,100,100)","rgb(110,110,110)","rgb(120,120,120)","rgb(130,130,130)","rgb(140,140,140)","rgb(150,150,150)","rgb(160,160,160)","rgb(170,170,170)","rgb(180,180,180)","rgb(190,190,190)","rgb(200,200,200)","rgb(210,210,210)","rgb(220,220,220)","rgb(255,255,255)"};
 
     @Override
-    public PoolConstruct getPoolConstruct() {
+    public PoolConstruct getPoolConstruct(PoolConstruct poolConstruct) {
 
-        PoolConstruct poolConstruct = new PoolConstruct();
+        if(poolConstruct ==null){
+
+            poolConstruct = new PoolConstruct();
+        }
+
+        PoolConstructData poolConstructData  ;
+
+        if (poolConstruct.getPcd()!=null){
+            poolConstructData =poolConstruct.getPcd();
+            if (poolConstruct.getPcd().isNewConfig()){
+                int corePoolSize = poolConstructData.getCorePoolSize();
 
 
-        PoolConstructData poolConstructData = new PoolConstructData();
+                int queueSize = poolConstructData.getQueueSize();
+                int maxPoolSize = poolConstructData.getMaxPoolSize();
+
+                int policyType = poolConstructData.getPolicyType();
+                poolConstructData =  new PoolConstructData();
+                if (corePoolSize <4 &&  corePoolSize>0){
+                    poolConstructData.setCorePoolSize(corePoolSize);
+                }
+                if(queueSize < 7 && queueSize>0) {
+                    poolConstructData.setQueueSize(queueSize);
+                }
+                if (maxPoolSize <7 && maxPoolSize >0){
+                    poolConstructData.setMaxPoolSize(maxPoolSize);
+                }
+                PolicyEnum policyEnum = PolicyEnum.codeOf(policyType);
+                if(policyEnum != null){
+
+                    poolConstructData.setPolicyType(policyType);
+                }
+
+
+            }
+
+        }else {
+            poolConstructData = new PoolConstructData();
+        }
+
 
         //设置核心线程数对象
         poolConstructData.setCoreThreadPool(createCoreThreadPool());
@@ -133,6 +170,9 @@ public class ThreadPoolServiceImpl implements ThreadPoolService {
         poolConstructData.setQueuePool(createQueuePool());
         //设置拒绝策略的方框
         poolConstructData.setReject(createReject());
+
+        //将设置标记false 。为了后序动画不重新创建
+        poolConstructData.setNewConfig(false);
 
         poolConstruct.setPcd(poolConstructData);
 
@@ -342,18 +382,18 @@ public class ThreadPoolServiceImpl implements ThreadPoolService {
             String taskNoStr="";
             if (poolConstruct.getPcd().getCoreTaskNo() !=null){
                 for (Integer n : poolConstruct.getPcd().getCoreTaskNo() ) {
-                    taskNoStr = taskNoStr+ n +",";
+                    taskNoStr = taskNoStr+ n +"或";
                 }
             }
             if(poolConstruct.getPcd().getMaxTaskNo() !=null){
                 for (Integer n : poolConstruct.getPcd().getMaxTaskNo() ) {
-                    taskNoStr = taskNoStr + n +",";
+                    taskNoStr = taskNoStr + n +"或";
                 }
             }
             if (StringUtils.isNotEmpty(taskNoStr) && taskNoStr.length()>1 ){
                 taskNoStr = taskNoStr.substring(0,taskNoStr.length() -1);
             }
-            poolConstruct.setErrorMsg("此任务编号不在线程中，请输入任务编号为"+taskNoStr+"的任务");
+            poolConstruct.setErrorMsg("此任务编号不在线程中，请输入任务编号，当前可输入内容为"+taskNoStr);
             return poolConstruct;
         }
 
@@ -832,18 +872,164 @@ public class ThreadPoolServiceImpl implements ThreadPoolService {
 
 
         if (rejectFlag) {
-            ChangeContent changeContent = new ChangeContent(taskText.getId(), null,"抛异常");
-            changeContent.setAd("由于队列和线程池都已满，所以执行拒绝策略。");
-            animationTotal.addComponent(changeContent);
 
-            Destroy destroy = new Destroy();
-            String[] ids = new String[2];
-            ids[0] = circle.getId();
-            ids[1] = taskText.getId();
-            destroy.setIds(ids);
+            PolicyEnum policyEnum = PolicyEnum.codeOf(poolConstructData.getPolicyType());
+            //todo
+            if (policyEnum==null) {
+                policyEnum = PolicyEnum.ABORT_POLICY;
+            }
 
-            destroy.setAd("执行拒绝策略，抛出异常，任务结束。");
-            animationTotal.addComponent(destroy);
+            //如果是第一种拒绝策略,则执行抛异常
+            if (policyEnum.getType() ==PolicyEnum.ABORT_POLICY.getType() ){
+
+                String[] idd = new String[]{circle.getId()};
+                ChangeColor cc = new ChangeColor();
+                cc.setIds(idd);
+                cc.setTotalColor(ColorEnum.RED.getHtmlCode());
+                cc.setAd("执行拒绝策略，抛出异常，任务结束。");
+                animationTotal.addComponent(cc);
+
+                ChangeContent changeContent = new ChangeContent(taskText.getId(), null,"抛异常");
+                changeContent.setAd("由于队列和线程池都已满，所以执行拒绝策略。");
+                animationTotal.addComponent(changeContent);
+                Destroy destroy = new Destroy();
+                String[] ids = new String[2];
+                ids[0] = circle.getId();
+                ids[1] = taskText.getId();
+                destroy.setIds(ids);
+
+
+                destroy.setAd("执行拒绝策略，抛出异常，任务结束。");
+                animationTotal.addComponent(destroy);
+            }
+
+            // 丢弃任务的拒绝策略
+            if (policyEnum.getType() ==PolicyEnum.DISCARD_OLDEST_POLICY.getType() ) {
+                List<Integer> queueList = poolConstructData.getQueueList();
+                Integer queueCid = queueList.get(0);
+                //置顶
+                Top top = new Top();
+                String[] topIds  = new String[]{circle.getId() ,taskText.getId()};
+                top.setIds(topIds);
+                top.setAd("拒绝策略为DiscardOldestPolicy,队列中最老的任务需要丢弃。");
+                animationTotal.addComponent(top);
+
+                //隐藏任务
+                //任务ids
+                String[] ids = new String[]{"task-" + queueCid ,"task-text-" +queueCid};
+                Hide hide = new Hide();
+                hide.setIds(ids);
+                hide.setAd("拒绝策略为DiscardOldestPolicy,队列中最老的任务需要丢弃。");
+                animationTotal.addComponent(hide);
+
+                if(! CollectionUtils.isEmpty(poolConstructData.getQueueList())  ){
+                    for ( int i = 1 ; i <  poolConstructData.getQueueList().size() ; i++){
+                        Integer s= poolConstructData.getQueueList().get(i);
+
+                        Swap swapList = new Swap();
+                        String[] sidList  = new String[]{"task-" + queueCid ,"task-text-" +queueCid};
+                        String[] tidList  = new String[]{"task-" + s,"task-text-" +s};
+                        swapList.setSid(sidList);
+                        swapList.setTid(tidList);
+                        swapList.setAd("执行DiscardOldestPolicy拒绝策略，将队列终最老的任务删除，然后将新任务放入到队列中");
+                        animationTotal.addComponent(swapList);
+                    }
+                }
+
+                Swap swapList = new Swap();
+                String[] sidList  = new String[]{"task-" + queueCid ,"task-text-" +queueCid};
+                String[] tidList  = new String[]{circle.getId(), taskText.getId()};
+                swapList.setSid(sidList);
+                swapList.setTid(tidList);
+                swapList.setAd("执行DiscardOldestPolicy拒绝策略，将队列终最老的任务删除，然后将新任务放入到队列中");
+                animationTotal.addComponent(swapList);
+
+
+//                
+
+//                String[] idd = new String[]{circle.getId()};
+//                ChangeColor cc = new ChangeColor();
+//                cc.setIds(idd);
+//                cc.setTotalColor(ColorEnum.GRAY.getHtmlCode());
+//                cc.setAd("执行拒绝策略，丢弃当前任务，任务结束。");
+//                animationTotal.addComponent(cc);
+
+
+//                ChangeContent changeContent = new ChangeContent(taskText.getId(), null,"丢任务");
+//                changeContent.setAd("由于队列和线程池都已满，所以执行拒绝策略。");
+//                animationTotal.addComponent(changeContent);
+                Destroy destroy = new Destroy();
+                String[] destroyIds = new String[2];
+                destroyIds[0] = "task-" + queueCid;
+                destroyIds[1] = "task-text-" +queueCid;
+                destroy.setIds(destroyIds);
+                destroy.setAd("执行DiscardOldestPolicy拒绝策略，将队列终最老的任务删除，然后将新任务放入到队列中");
+                animationTotal.addComponent(destroy);
+
+                poolConstructData.getQueueList().remove(0);
+                //维护队列的list
+                poolConstructData.getQueueList().add(poolConstructData.getTaskCount());
+            }
+
+
+            if (policyEnum.getType() ==PolicyEnum.DISCARD_POLICY.getType() ) {
+                String[] idd = new String[]{circle.getId()};
+                ChangeColor cc = new ChangeColor();
+                cc.setIds(idd);
+                cc.setTotalColor(ColorEnum.GRAY.getHtmlCode());
+                cc.setAd("执行拒绝策略，丢弃当前任务，任务结束。");
+                animationTotal.addComponent(cc);
+
+
+                ChangeContent changeContent = new ChangeContent(taskText.getId(), null,"丢任务");
+                changeContent.setAd("由于队列和线程池都已满，所以执行拒绝策略。");
+                animationTotal.addComponent(changeContent);
+                Destroy destroy = new Destroy();
+                String[] ids = new String[2];
+                ids[0] = circle.getId();
+                ids[1] = taskText.getId();
+                destroy.setIds(ids);
+                destroy.setAd("执行拒绝策略，丢弃当前任务，任务结束。");
+                animationTotal.addComponent(destroy);
+            }
+
+            if (policyEnum.getType() ==PolicyEnum.CALLER_RUNS_POLICY.getType()){
+
+
+                ChangeContent changeContent = new ChangeContent(taskText.getId(), null,"原线程");
+                changeContent.setAd("由于队列和线程池都已满，所以执行拒绝策略。");
+                animationTotal.addComponent(changeContent);
+
+                String[] idd = new String[]{circle.getId()};
+                ChangeColor cc = new ChangeColor();
+                cc.setIds(idd);
+                cc.setTotalColor(ColorEnum.GREEN.getHtmlCode());
+                cc.setAd("执行拒绝策略，将当前任务放回原线程执行任务，任务结束。");
+                animationTotal.addComponent(cc);
+
+                //移动模块,将任务放回到原线程
+                MultiMove multiMoveBack = new MultiMove();
+                List<GraphComponent> multiMoveListBack = new ArrayList<>();
+                Circle moveCircleBack = new Circle(circle.getId() , threadInitY  + taskBufferX, threadInitY + taskBufferY);
+                Text moveTextBack = new Text(taskText.getId() , threadInitY +  TASK_TEXT_X_BUFFER + taskBufferX, threadInitY +TASK_TEXT_Y_BUFFER + taskBufferY);
+                multiMoveListBack.add(moveCircleBack);
+                multiMoveListBack.add(moveTextBack);
+                multiMoveBack.setGcs(multiMoveListBack);
+                multiMoveBack.setAd(ad);
+                animationTotal.addComponent(multiMoveBack);
+
+
+
+                Destroy destroy = new Destroy();
+                String[] ids = new String[2];
+                ids[0] = circle.getId();
+                ids[1] = taskText.getId();
+                destroy.setIds(ids);
+                destroy.setAd("执行拒绝策略，将当前任务放回原线程执行任务，任务结束。");
+                animationTotal.addComponent(destroy);
+            }
+
+
         }
 
 
@@ -943,7 +1129,7 @@ public class ThreadPoolServiceImpl implements ThreadPoolService {
         Rect rectMax = new Rect(UUID.randomUUID().toString(), maxThreadPool.getWidth(), maxThreadPool.getHeight(),maxThreadPool.getX() ,maxThreadPool.getY(),MAX_COLOR);
         max.addChild(rectMax);
 
-        Text text = new Text(UUID.randomUUID().toString() , maxThreadPool.getX(),maxThreadPool.getY()  + TEXT_BUFFER,"线程池——容量为" + (poolConstruct.getPcd().getMaxPoolSize()+ poolConstruct.getPcd().getCorePoolSize() ) );
+        Text text = new Text(UUID.randomUUID().toString() , maxThreadPool.getX(),maxThreadPool.getY()  + TEXT_BUFFER,"最大线程池——容量为" + (poolConstruct.getPcd().getMaxPoolSize()+ poolConstruct.getPcd().getCorePoolSize() )+"。其中包含核心线程池数量" );
         max.addChild(text);
 
 
@@ -976,7 +1162,14 @@ public class ThreadPoolServiceImpl implements ThreadPoolService {
         Rect rejectRect = new Rect(UUID.randomUUID().toString(), poolCommonAttribute.getWidth(), poolCommonAttribute.getHeight(),poolCommonAttribute.getX() ,poolCommonAttribute.getY(),REJECT_COLOR);
         reject.addChild(rejectRect);
 
-        reject.addChild(new Text(UUID.randomUUID().toString() , poolCommonAttribute.getX(),poolCommonAttribute.getY() + TEXT_BUFFER,"拒绝策略(AbortPolicy)"));
+
+        PolicyEnum policyEnum = PolicyEnum.codeOf(poolConstruct.getPcd().getPolicyType());
+        //todo
+        if (policyEnum==null) {
+            policyEnum = PolicyEnum.ABORT_POLICY;
+        }
+
+        reject.addChild(new Text(UUID.randomUUID().toString() , poolCommonAttribute.getX(),poolCommonAttribute.getY() + TEXT_BUFFER,"拒绝策略("+policyEnum.getDesc()+")"));
 
         all.addChild(reject);
 
