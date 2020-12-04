@@ -1,18 +1,12 @@
 package com.sxyl.portal.service;
 
-import com.sun.xml.internal.rngom.parse.host.Base;
-import com.sxyl.portal.common.JUUID;
 import com.sxyl.portal.domain.BaseMove;
-import com.sxyl.portal.domain.CommonMove;
 import com.sxyl.portal.domain.constant.DisplayEnum;
 import com.sxyl.portal.domain.constant.LeftEnum;
 import com.sxyl.portal.domain.constant.LinePositionEnum;
 import com.sxyl.portal.domain.constant.TopEnum;
 import com.sxyl.portal.domain.graph.Line;
-import com.sxyl.portal.domain.sort.ArrayNode;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author: create by wei.wang
