@@ -32,5 +32,10 @@ public class CommonConstruct  implements Serializable {
      */
     private AnimationTotal at ;
 
+    /***
+     * 错误原因
+     */
+    private String errorMsg;
+
 
 }

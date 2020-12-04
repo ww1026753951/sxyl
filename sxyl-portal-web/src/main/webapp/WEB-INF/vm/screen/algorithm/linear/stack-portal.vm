@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="算法 思想摇篮 动画算法 算法动画 线性结构 栈">
+    <meta name="author" content="谷禾水">
+    <link rel="icon" href="/favicon.ico">
+    <title>算法,动画算法,算法动画,栈</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" >
+##    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap/dashboard.css" >
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap-reboot.min.css" >
+    <script src="/js/d3/d3.min.js"></script>
+    <script src="/js/jquery/jquery-3.2.1.min.js" ></script>
+    <script src="/js/sxyl.js"></script>
+
+
+    <script src="/js/sxyl.graph.js?v=1"></script>
+    <script src="/js/sort/sort-common.js"></script>
+    <script src="/js/animation/animation.base.js"></script>
+
+    <script src="/js/math/MathJax.js?config=TeX-MML-AM_SVG"></script>
+##    <script src="/js/math/latest.js?config=TeX-MML-AM_SVG1" ></script>
+
+
+    <script src="/js/vendor/popper.min.js" ></script>
+    <!-- Bootstrap JS -->
+    <script src="/js/bootstrap/bootstrap.min.js" ></script>
+
+    <script src="/js/bootstrap/jquery-bootstrap-modal-steps.js" ></script>
+
+
+    <script src="/js/bg.js" ></script>
+
+##    <script src="/js/bootstrap/bootstrap-input-spinner.js"></script>
+
+
+    <style>
+        body{
+            font-size: 90%;
+        }
+        text{
+            font-size: 95%;
+        }
+        tspan{
+            font-size: 80%;
+        }
+
+        .sidebar-sticky a:hover{
+            background: #C0C0C0;
+        }
+        .modal {
+            top: -50px;
+            left: -600px;
+        }
+        sub, sup {
+            font-size: 30%;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline;
+        }
+        sub {  bottom: -0.5em; }
+        sup {
+            left: -0.5em;
+            /*top: 0.5em;*/
+        }
+
+
+
+    </style>
+</head>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <main role="main" class="col-md-12" style="padding-top:10px">
+            <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+                <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                    <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+                </div>
+                <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                    <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+                </div>
+            </div>
+
+        ##            <div id ="arrayHtml"></div>
+        ##操作面板的vm模块
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-0 pb-2 mb-1 border-bottom">
+
+
+                <div class="btn-toolbar mb-3 mb-md-0  col-md-3">
+
+
+
+                    <div class="btn-group mr-2">
+
+                        <button id="pushButton" type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" >
+                            <span onclick="insert()"  id="push">压栈(push)</span>
+                        </button>
+
+                        &nbsp;&nbsp;
+                        <button id="popButton" type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" >
+                            <span onclick="del()"  id="pop">出栈(pop)</span>
+                        </button>
+                        &nbsp;&nbsp;
+##                        <button id="run" class="btn btn-sm  btn-outline-secondary " disabled>
+##                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
+##                                <path id="play-next" d="M0 0v6l6-3-6-3z" transform="translate(1 1)" />
+##                            </svg>
+##                            <span id="run-next" run-type="0">播放</span>
+##                        </button>
+##                        &nbsp;&nbsp;
+##                        <button class="btn btn-sm btn-outline-secondary" id="reset"   data-toggle="modal" data-target="#myModal" >
+##                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 8 8">
+##                                <path d="M4 0c-2.2 0-4 1.8-4 4s1.8 4 4 4c1.1 0 2.12-.43 2.84-1.16l-.72-.72c-.54.54-1.29.88-2.13.88-1.66 0-3-1.34-3-3s1.34-3 3-3c.83 0 1.55.36 2.09.91l-1.09 1.09h3v-3l-1.19 1.19c-.72-.72-1.71-1.19-2.81-1.19z" />
+##                            </svg>
+##                            自定义树
+##                        </button>
+##                        &nbsp;&nbsp;
+
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+            <div id="algorithm-content" class="row">
+                <div id="graph-content" class="col-lg-9 col-sm-9 ">
+                    <svg id="sortAlg" width="1200" height="600">
+                    </svg>
+                </div>
+                <div class="col-lg-3 col-sm-3">
+                    <div>
+
+                    </div>
+                    <div id="step-content">
+                    </div>
+
+                </div>
+            </div>
+
+
+        ##
+            <footer class="py-0 bg-white">
+                <div class="container">
+                    <p class="m-0 text-center text-black-50">Copyright &copy; 2018-2020 $!{dc.domain} $!{dc.domainName} by <a href="mailto:ww1026753951@163.com">谷禾水</a> .All rights reserved</p>
+                    <p class="m-0 text-center text-black-50">版权声明：本站原创文章、作品，未经本人许可，任何人或机构不得以任何形式对本站内容进行复制作商业用途.</p>
+                </div>
+            </footer>
+
+        </main>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+##<script src="/js/vendor/jquery-slim.min.js" ></script>
+<!-- Popper.JS -->
+
+
+<script>
+    var rbArray = {} ;
+    //播放的事件
+    $('#run').bind('click', function () {
+        SXYL.SORT.run(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed(SXYL.SORT.getSpeed()));
+    });
+    //重置的事件
+    $('#reset').bind('click', function () {
+        changeBySelf(true);
+    });
+
+    //速度变化的事件
+    $('input[type=radio][name=speedRadioOptions]').change(function() {
+        SXYL.SORT.changeSpeed(SXYL.ANIMATION.executeAnimation, SXYL.SORT.getSpeed());
+    });
+
+    $('#run').bind('click',function () {
+
+        //执行第一步骤
+        var resultEnd = SXYL.ANIMATION.executeAnimation() ;
+        if(resultEnd){
+            $("#step-content").html("动画步骤结束!");
+            $("#run").attr("disabled","disable");
+            $("#run-next").html("播放");
+            enableButton();
+
+        }else{
+            $("#run").removeAttr("disabled");
+            $("#run-next").html("请点我");
+        }
+    })
+
+
+    $('#mode-type').bind('change' , function (a,b,c,d,e) {
+
+        var modelVal = parseInt($('#mode-type').val());
+        var showText=''
+        if(modelVal == 1){
+            showText='新增';
+        }else if(modelVal == 2){
+            showText='删除';
+        }else if(modelVal == 3){
+            showText='查询';
+        }
+
+        $('#insertOrDel').html(showText);
+
+
+    })
+
+
+
+    $('#myModal').modalSteps();
+    loadData(true);
+
+    function changeBySelf(random) {
+        //清楚元素
+        d3.select("#sortAlg").selectAll("g").remove();
+        //按钮变为初始化
+        SXYL.SORT.changeToStart();
+        SXYL.GRAPH.initPosition();
+        SXYL.step_no = 0;
+        loadData();
+
+    }
+    function loadData() {
+
+        $.ajax({
+            type: 'POST',
+            url: "/linear/stack/stackConstruct",
+//            data : {
+//                arrayStr:arrayStr
+//            },
+            success: function (d) {
+                var parent = SXYL.GRAPH.getContext();
+                //初始化dom结构
+                SXYL.GRAPH.drawByComponent(parent , d.group);
+//                SXYL.ANIMATION.ALL_STEP = d.at;
+
+                rbArray["data"] = d.stringStack;
+                SXYL.GRAPH.initPosition();
+
+            }
+        });
+    }
+
+    function insert() {
+//        var v = $("#nodeValue").val();
+//        if(!v){
+//            v = randomVal(0,100);
+//            alert(v);
+//        }
+
+
+        disableButton();
+        $.ajax({
+            type: 'POST',
+            contentType:"application/json",
+            url: "/linear/stack/push",
+            data : JSON.stringify({
+                stringStack:rbArray["data"],
+                executeHistory:rbArray["es"]//,
+//                node:v
+            }),
+            success: function (d) {
+                var parent = SXYL.GRAPH.getContext();
+                SXYL.GRAPH.drawByComponent(parent , d.group);
+                rbArray["data"] = d.stringStack;
+                rbArray["es"] = d.executeSteps;
+                SXYL.step_no = 0 ;
+
+                SXYL.after_fun = enableButton;
+
+                SXYL.ANIMATION.ALL_STEP = d.at;
+                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation, 1000 );
+
+
+
+                //执行第一步骤
+//                SXYL.ANIMATION.executeAnimation() ;
+            }
+        });
+
+        function randomVal(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min
+        }
+    }
+
+    function del() {
+
+//        var v = $("#delNodeValue").val();
+//
+//        if(!v){
+//            alert('请选择节点删除!');
+//            return;
+//        }
+
+        disableButton();
+
+        $.ajax({
+            type: 'POST',
+            contentType:"application/json",
+            url: "/linear/stack/pop",
+            data : JSON.stringify({
+                stringStack:rbArray["data"],
+                executeHistory:rbArray["es"]//,
+//                node:v
+            }),
+            success: function (d) {
+
+                if(d.errorMsg){
+                    alert(d.errorMsg);
+                    enableButton();
+                    return;
+                }
+
+//                debugger
+//                if(!d){
+//                    enableButton();
+//                    alert("未找到数据节点");
+//                    return
+//                }
+
+                var parent = SXYL.GRAPH.getContext();
+                if(d.group){
+                    //绘制图形
+                    SXYL.GRAPH.drawByComponent(parent , d.group);
+                }
+                rbArray["data"] = d.stringStack;
+                rbArray["es"] = d.executeSteps;
+
+                SXYL.step_no = 0 ;
+
+                SXYL.ANIMATION.ALL_STEP = d.at;
+                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation,1000);
+
+                //执行第一步骤
+//                SXYL.ANIMATION.executeAnimation() ;
+                $("#run").removeAttr("disabled");
+                $("#run-next").html("请点我");
+            }
+        });
+
+    }
+
+
+    watermark({watermark_txt0:'动画算法',watermark_txt1:"谷禾水",watermark_txt2:" "});
+
+
+    //        alert($(window).width());
+    //        alert();
+    var contentHeight = ($(window).height()) - 150;
+    $("#sortAlg").attr("height",contentHeight)
+
+
+
+    function disableButton() {
+        $("#pushButton").attr("disabled","disable");
+        $("#popButton").attr("disabled","disable");
+//        $("#run").addClass("btn-link");
+    }
+
+    function enableButton() {
+        $("#pushButton").removeAttr("disabled");
+        $("#popButton").removeAttr("disabled");
+    }
+
+</script>
+</body>
+
+</html>

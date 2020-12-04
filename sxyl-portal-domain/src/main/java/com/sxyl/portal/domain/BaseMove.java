@@ -7,21 +7,17 @@ import java.io.Serializable;
 /**
  * @author: create by wei.wang
  * @version: v1.0
- * @description: com.sxyl.portal.domain
- * @date:2020/10/2
+ * @description: com.sxyl.portal.domain .通用的移动对象的方法
+ * @date:2020/11/24
  */
 @Data
-@Deprecated
-public class CommonMove  implements Serializable {
+public class BaseMove implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
 
-    private int x1;
+    private int x;
 
-    private int y1;
+    private int y;
 
-    private int x2;
-
-    private int y2;
 }

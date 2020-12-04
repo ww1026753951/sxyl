@@ -25,10 +25,6 @@ public class PoolConstruct extends CommonConstruct {
     private PoolConstructData pcd ;
 
 
-    /***
-     * 错误原因
-     */
-    private String errorMsg;
 
 //
 //    /***

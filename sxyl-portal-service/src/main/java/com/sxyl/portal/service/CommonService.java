@@ -1,8 +1,13 @@
 package com.sxyl.portal.service;
 
+import com.sun.xml.internal.rngom.parse.host.Base;
 import com.sxyl.portal.common.JUUID;
+import com.sxyl.portal.domain.BaseMove;
+import com.sxyl.portal.domain.CommonMove;
 import com.sxyl.portal.domain.constant.DisplayEnum;
+import com.sxyl.portal.domain.constant.LeftEnum;
 import com.sxyl.portal.domain.constant.LinePositionEnum;
+import com.sxyl.portal.domain.constant.TopEnum;
 import com.sxyl.portal.domain.graph.Line;
 import com.sxyl.portal.domain.sort.ArrayNode;
 
@@ -17,6 +22,9 @@ import java.util.List;
  */
 public class CommonService {
 
+
+    //元素和元素之间的 buffer
+    protected final int ACTIVE_COLUMN_BUFFER = 10;
 
     /***
      * 根据起始和截止， 创建线
@@ -38,6 +46,63 @@ public class CommonService {
                 LinePositionEnum.RADIUS.getCode()});
 
         return l ;
+    }
+
+    //创建方框的移动
+
+    /****
+     *
+     * @param topEnum 顶部的枚举,表示元素放置底部所在矩形 上部还是底部
+     * @param leftEnum 左侧的枚举,表示元素放置左侧所在矩形 左侧还是右侧
+     * @param backX 底部矩形的x
+     * @param backY 底部矩形的y
+     * @param backWidth 底部矩形的 宽
+     * @param backHeight 底部矩形的 高
+     * @param rowIndex 行的下标
+     * @param columnIndex 列的下标
+     * @param elementWidth 底部元素的宽
+     * @param elementHeight 底部元素的高
+     * @return
+     */
+    private BaseMove createBaseMove ( TopEnum topEnum , LeftEnum leftEnum ,
+                                             int backX , int backY , int backWidth , int backHeight,
+                                             int rowIndex , int columnIndex,
+                                             int elementWidth , int elementHeight){
+
+
+        //核心线程的方框 +  核心线程的高度
+
+        BaseMove move = new BaseMove();
+
+        int x = backX ;
+        int y =  backY ;
+
+        if (leftEnum.getType() == LeftEnum.RIGHT.getType()) {
+            x = x + backWidth;
+        }
+        //如果是右侧,则
+        if (leftEnum.getType() == LeftEnum.RIGHT.getType()) {
+            x = x -  (columnIndex * elementWidth) - elementWidth - ( (columnIndex+1) *ACTIVE_COLUMN_BUFFER);
+        }else {
+            x = x +  (columnIndex * elementWidth) + elementWidth + ((columnIndex+1) *ACTIVE_COLUMN_BUFFER);
+        }
+        //如果底部,则将高度加上 底部矩形的
+        if (TopEnum.BOTTOM.getType() == topEnum.getType()) {
+            y = y +  backHeight;
+        }
+
+        if (TopEnum.BOTTOM.getType() == topEnum.getType()) {
+            y =  backY  + ( rowIndex * elementHeight)  + ( rowIndex * elementHeight )  ;
+        }else {
+            y =  backY  - ( rowIndex * elementHeight)   -  ( rowIndex * elementHeight )  ;
+        }
+
+        move.setX(x);
+        move.setY(y);
+
+
+        return move;
+
     }
 
 

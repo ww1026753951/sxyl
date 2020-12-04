@@ -70,6 +70,10 @@ SXYL.GRAPH = {
         if(o.fill){
             fill = o.fill;
         }
+        var stroke = "black";
+        if (o.stroke){
+            stroke = o.stroke;
+        }
         //初始化左间距,默认为100
         var left = o.ml;
         if(!left){
@@ -90,7 +94,6 @@ SXYL.GRAPH = {
         }else{
             top = (300 - height);
         }
-
         var tarG = pContent.append("g")
             .attr("id", o.id)
             .attr("transform", "translate("+left+","+ top+")");
@@ -98,7 +101,7 @@ SXYL.GRAPH = {
             .attr("width", 40)
             .attr("height", height)
             .style("fill",fill)
-            .style("stroke","black");
+            .style("stroke",stroke);
         tarG.append("text")
             .attr("x", 13)
             .attr("y", height-5)
@@ -125,6 +128,10 @@ SXYL.GRAPH = {
         var fill = "red";
         if(o.fill){
             fill = o.fill;
+        }
+        var stroke = "black";
+        if (o.stroke){
+            stroke = o.stroke;
         }
         var height = 0 ;
         //矩形的值
@@ -157,7 +164,7 @@ SXYL.GRAPH = {
             .attr("x", x)
             .attr("y", y)
             .style("fill",fill)
-            .style("stroke","black")
+            .style("stroke",stroke)
             .style("display",o.h?o.h:"inline"); //o.st;
         // return {left:o.c.x, top:o.c.y, right:o.c.x + o.c.r, bottom:o.c.y + o.c.r}
         // debugger

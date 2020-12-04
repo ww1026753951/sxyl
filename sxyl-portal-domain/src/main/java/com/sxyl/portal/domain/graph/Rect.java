@@ -32,6 +32,11 @@ public class Rect  extends GraphComponent implements Serializable {
      */
     private String fill ;
 
+    /***
+     * 边框的颜色
+     */
+    private String stroke;
+
 //    /***
 //     * 高度
 //     */
@@ -92,6 +97,14 @@ public class Rect  extends GraphComponent implements Serializable {
 
     public void setY(Integer y) {
         this.y = y;
+    }
+
+    public String getStroke() {
+        return stroke;
+    }
+
+    public void setStroke(String stroke) {
+        this.stroke = stroke;
     }
 
     @Override
