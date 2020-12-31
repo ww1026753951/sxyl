@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="算法 思想摇篮 动画算法 算法动画 线性结构 栈">
+    <meta name="description" content="算法 思想摇篮 动画算法 算法动画 线性结构 队列">
     <meta name="author" content="谷禾水">
     <link rel="icon" href="/favicon.ico">
-    <title>算法,动画算法,算法动画,栈</title>
+    <title>算法,动画算法,算法动画,队列</title>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" >
 ##    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="/css/bootstrap/bootstrap-reboot.min.css" >
     <script src="/js/d3/d3.min.js"></script>
     <script src="/js/jquery/jquery-3.2.1.min.js" ></script>
-    <script src="/js/sxyl.js"></script>
+    <script src="/js/sxyl.js?a=1"></script>
 
 
     <script src="/js/sxyl.graph.js?v=1"></script>
@@ -32,7 +32,7 @@
     <script src="/js/bootstrap/jquery-bootstrap-modal-steps.js" ></script>
 
 
-    <script src="/js/bg.js?v=1" ></script>
+    <script src="/js/bg.js" ></script>
 
 ##    <script src="/js/bootstrap/bootstrap-input-spinner.js"></script>
 
@@ -98,12 +98,12 @@
                     <div class="btn-group mr-2">
 
                         <button id="pushButton" type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" >
-                            <span onclick="insert()"  id="push">压栈(push)</span>
+                            <span onclick="insert()"  id="push">插入(add)</span>
                         </button>
 
                         &nbsp;&nbsp;
                         <button id="popButton" type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" >
-                            <span onclick="del()"  id="pop">出栈(pop)</span>
+                            <span onclick="del()"  id="pop">弹出(poll)</span>
                         </button>
                         &nbsp;&nbsp;
 ##                        <button id="run" class="btn btn-sm  btn-outline-secondary " disabled>
@@ -171,19 +171,6 @@
 
 
 <script>
-
-
-    //获取页面最大宽度
-    var page_width = window.innerWidth;
-    //获取页面最大高度
-    var page_height = window.innerHeight ;
-
-
-    $('#sortAlg').attr('height', page_height) ;
-    $('#sortAlg').attr('width', page_width) ;
-
-
-
     var rbArray = {} ;
     //播放的事件
     $('#run').bind('click', function () {
@@ -252,22 +239,18 @@
 
         $.ajax({
             type: 'POST',
-            url: "/linear/stack/stackConstruct",
-            contentType:"application/json",
-            data : JSON.stringify({
-                width:page_width,
-                height:page_height
+            url: "/linear/queue/queueConstruct",
+//            data : {
 //                arrayStr:arrayStr
-            }),
+//            },
             success: function (d) {
                 var parent = SXYL.GRAPH.getContext();
                 //初始化dom结构
                 SXYL.GRAPH.drawByComponent(parent , d.group);
 //                SXYL.ANIMATION.ALL_STEP = d.at;
 
-                rbArray["data"] = d.stringStack;
-                rbArray["size"] = d.stackSize;
-                rbArray["stack"] = d.stack;
+                rbArray["data"] = d.stringQueue;
+                rbArray["size"] = d.queueSize;
                 SXYL.GRAPH.initPosition();
 
             }
@@ -286,11 +269,10 @@
         $.ajax({
             type: 'POST',
             contentType:"application/json",
-            url: "/linear/stack/push",
+            url: "/linear/queue/push",
             data : JSON.stringify({
-                stringStack:rbArray["data"],
-                stackSize:rbArray["size"],
-                stack:rbArray["stack"],
+                stringQueue:rbArray["data"],
+                queueSize:rbArray["size"],
                 executeHistory:rbArray["es"]//,
 //                node:v
             }),
@@ -300,11 +282,9 @@
                     enableButton();
                     return;
                 }
-
                 var parent = SXYL.GRAPH.getContext();
                 SXYL.GRAPH.drawByComponent(parent , d.group);
-                rbArray["data"] = d.stringStack;
-                rbArray["size"] = d.stackSize;
+                rbArray["data"] = d.stringQueue;
                 rbArray["es"] = d.executeSteps;
                 SXYL.step_no = 0 ;
 
@@ -339,11 +319,10 @@
         $.ajax({
             type: 'POST',
             contentType:"application/json",
-            url: "/linear/stack/pop",
+            url: "/linear/queue/pop",
             data : JSON.stringify({
-                stringStack:rbArray["data"],
-                stackSize:rbArray["size"],
-                stack:rbArray["stack"],
+                stringQueue:rbArray["data"],
+                queueSize:rbArray["size"],
                 executeHistory:rbArray["es"]//,
 //                node:v
             }),
@@ -367,13 +346,13 @@
                     //绘制图形
                     SXYL.GRAPH.drawByComponent(parent , d.group);
                 }
-                rbArray["data"] = d.stringStack;
+                rbArray["data"] = d.stringQueue;
                 rbArray["es"] = d.executeSteps;
 
                 SXYL.step_no = 0 ;
 
                 SXYL.ANIMATION.ALL_STEP = d.at;
-                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation,1000);
+                SXYL.SORT.start(SXYL.ANIMATION.executeAnimation,500);
 
                 //执行第一步骤
 //                SXYL.ANIMATION.executeAnimation() ;
@@ -385,7 +364,6 @@
     }
 
 
-//    watermark({watermark_txt0:'动画算法',watermark_txt1:"谷禾水",watermark_txt2:" " });
     watermark({watermark_txt0:'动画算法',watermark_txt1:"谷禾水",watermark_txt2:" "});
 
 

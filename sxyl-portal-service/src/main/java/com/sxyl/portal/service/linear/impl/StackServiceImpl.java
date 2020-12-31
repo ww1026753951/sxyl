@@ -1,5 +1,6 @@
 package com.sxyl.portal.service.linear.impl;
 
+import com.sxyl.portal.domain.common.CommonAdapterScreen;
 import com.sxyl.portal.domain.constant.ColorEnum;
 import com.sxyl.portal.domain.constant.CommonConstant;
 import com.sxyl.portal.domain.constant.LineTypeEnum;
@@ -49,7 +50,7 @@ public class StackServiceImpl extends CommonService implements StackService {
 
 
     //栈背景初始的 x
-    private final int x = 160;
+//    private final int x = 160;
 
     //栈背景初始的 y
     private final int y = 100;
@@ -61,11 +62,16 @@ public class StackServiceImpl extends CommonService implements StackService {
             stackConstruct = new StackConstruct();
         }
 
-        PoolCommonAttribute poolCommonAttribute = createCoreThreadPool();
+        CommonAdapterScreen screen = super.computeXY(stackConstruct.getWidth() , stackConstruct.getHeight() ,STACK_WIDTH, STACK_HEIGHT );
+
+        PoolCommonAttribute poolCommonAttribute = createCoreThreadPool(  stackConstruct ,   screen );
 
         stackConstruct.setStack(poolCommonAttribute);
 
+        int stackSize = STACK_HEIGHT/(STACK_DATA_HEIGHT + STACK_DATA_WIDTH_BUFFER);
+        stackConstruct.setStackSize(stackSize);
         Group group = getPoolGroup(stackConstruct);
+
 
         stackConstruct.setGroup(group);
 
@@ -102,19 +108,24 @@ public class StackServiceImpl extends CommonService implements StackService {
     }
 
 
-    private PoolCommonAttribute createCoreThreadPool(){
+    private PoolCommonAttribute createCoreThreadPool(StackConstruct stackConstruct ,CommonAdapterScreen screen ){
         //核心线程对象
         PoolCommonAttribute stack = new PoolCommonAttribute();
         stack.setWidth(STACK_WIDTH );
         stack.setHeight(STACK_HEIGHT );
         stack.setY(y );
-        stack.setX(x );
+        stack.setX(screen.getX() );
         return stack;
     }
 
 
     @Override
     public StackConstruct pushStack(StackConstruct stackConstruct) {
+        if (stackConstruct.getStringStack().size() >= stackConstruct.getStackSize()){
+            stackConstruct.setErrorMsg("当前栈最大数量为"+stackConstruct.getStackSize()+"。已超过最大值。");
+            return stackConstruct;
+        }
+
         AnimationTotal animationTotal = new AnimationTotal();
         Group group = new Group();
         String uuid ="task-" + UUID.randomUUID().toString();
@@ -131,7 +142,7 @@ public class StackServiceImpl extends CommonService implements StackService {
         //移动模块1
         MultiMove multiMoveThread1 = new MultiMove();
         List<MultiMoveDetail> details = new ArrayList<>();
-        details.add(new MultiMoveDetail(uuid , x + STACK_DATA_WIDTH_BUFFER,y));
+        details.add(new MultiMoveDetail(uuid , stackConstruct.getStack().getX() + STACK_DATA_WIDTH_BUFFER,y));
 //        details.add(new MultiMoveDetail(threadText.getId() , initX1,initY1+ TEXT_BUFFER +  ACTIVE_CORE_BUFFER ));
         multiMoveThread1.setDetails(details);
         multiMoveThread1.setAd("将新创建的数据放入栈底。");
@@ -140,7 +151,7 @@ public class StackServiceImpl extends CommonService implements StackService {
 //        //移动模块2
         MultiMove multiMoveThread2 = new MultiMove();
         List<MultiMoveDetail> details2 = new ArrayList<>();
-        details2.add(new MultiMoveDetail(uuid, x + STACK_DATA_WIDTH_BUFFER ,STACK_HEIGHT + y  -  (stackConstruct.getStringStack().size()) *(STACK_DATA_HEIGHT+STACK_DATA_WIDTH_BUFFER)  ));
+        details2.add(new MultiMoveDetail(uuid, stackConstruct.getStack().getX() + STACK_DATA_WIDTH_BUFFER ,STACK_HEIGHT + y  -  (stackConstruct.getStringStack().size()) *(STACK_DATA_HEIGHT+STACK_DATA_WIDTH_BUFFER)  ));
 //        details2.add(new MultiMoveDetail(threadText.getId() , initX2  ,initY2 +TEXT_BUFFER+  ACTIVE_CORE_BUFFER ));
         multiMoveThread2.setDetails(details2);
         multiMoveThread2.setAd("将新创建的数据放入栈底。");
@@ -174,7 +185,7 @@ public class StackServiceImpl extends CommonService implements StackService {
         //移动模块1
         MultiMove multiMoveThread1 = new MultiMove();
         List<MultiMoveDetail> details = new ArrayList<>();
-        details.add(new MultiMoveDetail(uuid , x + STACK_DATA_WIDTH_BUFFER,y));
+        details.add(new MultiMoveDetail(uuid , stackConstruct.getStack().getX() + STACK_DATA_WIDTH_BUFFER,y));
 //        details.add(new MultiMoveDetail(threadText.getId() , initX1,initY1+ TEXT_BUFFER +  ACTIVE_CORE_BUFFER ));
         multiMoveThread1.setDetails(details);
         multiMoveThread1.setAd("将栈顶的数据移出栈。");
@@ -185,7 +196,7 @@ public class StackServiceImpl extends CommonService implements StackService {
 //        //移动模块2
         MultiMove multiMoveThread2 = new MultiMove();
         List<MultiMoveDetail> details2 = new ArrayList<>();
-        details2.add(new MultiMoveDetail(uuid, x * 10 ,y));
+        details2.add(new MultiMoveDetail(uuid, stackConstruct.getStack().getX() * 10 ,y));
 //        details2.add(new MultiMoveDetail(threadText.getId() , initX2  ,initY2 +TEXT_BUFFER+  ACTIVE_CORE_BUFFER ));
         multiMoveThread2.setDetails(details2);
         multiMoveThread2.setAd("将栈顶的数据移出栈。");

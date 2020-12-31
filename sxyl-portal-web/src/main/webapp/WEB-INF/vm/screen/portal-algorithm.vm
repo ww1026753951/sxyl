@@ -150,6 +150,18 @@
         </div>
 
 
+        <div class="col-lg-4 col-sm-6 portfolio-item">
+            <div class="card h-100">
+                <a href="/linear/queue/queuePortal" target="_blank"><img class="card-img-top" src="/skin/algorithms/linear/queue/queue.png" alt="" style="width: 100% " height="200px"></a>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a href="/linear/queue/queuePortal" target="_blank">队列</a>
+                    </h4>
+                    <p class="card-text">队列是一种特殊的线性表，特殊之处在于它只允许在表的前端（front）进行删除操作，而在表的后端（rear）进行插入操作，和栈一样，队列是一种操作受限制的线性表。进行插入操作的端称为队尾，进行删除操作的端称为队头。</p>
+                </div>
+            </div>
+        </div>
+
     </div>
     <!-- /.row -->
 
@@ -186,7 +198,7 @@
 
 <footer class="py-5 bg-dark">
     <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; 2018-2020 $!{dc.domain} $!{dc.domainName} by <a href="mailto:ww1026753951@163.com">谷禾水</a> .All rights reserved</p>
+        <p class="m-0 text-center text-white">Copyright &copy; 2018-2021 $!{dc.domain} $!{dc.domainName} by <a href="mailto:ww1026753951@163.com">谷禾水</a> .All rights reserved</p>
         <p class="m-0 text-center text-white">版权声明：本站原创文章、作品，未经本人许可，任何人或机构不得以任何形式对本站内容进行复制作商业用途.</p>
     </div>
 </footer>

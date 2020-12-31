@@ -2,7 +2,13 @@
 //改编摘自：http://www.cnblogs.com/daixinyu/p/6715398.html
 //hjl 2017年6月19日19:25:43
 ////////////////////////////////////////////////////
-function watermark(settings) {
+function watermark(setting) {
+    if (!setting.width){
+        setting.width = 210;
+    }
+    if(!setting.height) {
+        setting.height = 80;
+    }
     //默认设置
     var defaultSettings={
         watermark_txt0:"text",
@@ -18,8 +24,8 @@ function watermark(settings) {
         watermark_alpha:0.3,//水印透明度
         watermark_fontsize:'15px',//水印字体大小
         watermark_font:'微软雅黑',//水印字体
-        watermark_width:210,//水印宽度
-        watermark_height:80,//水印长度
+        watermark_width:setting.width,//水印宽度
+        watermark_height:setting.height,//水印长度
         watermark_angle:15//水印倾斜度数
     };
     //采用配置项替换默认值，作用类似jquery.extend

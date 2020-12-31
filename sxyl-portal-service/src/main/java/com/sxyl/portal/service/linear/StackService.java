@@ -12,7 +12,7 @@ public interface StackService {
 
 
     /****
-     * 获取线程池的结构
+     * 获取的结构
      * @return
      */
     StackConstruct getPoolConstruct(StackConstruct stackConstruct);

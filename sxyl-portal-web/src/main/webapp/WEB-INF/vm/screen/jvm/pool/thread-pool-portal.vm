@@ -14,10 +14,10 @@
     <link rel="stylesheet" href="/css/bootstrap/bootstrap-reboot.min.css" >
     <script src="/js/d3/d3.min.js"></script>
     <script src="/js/jquery/jquery-3.2.1.min.js" ></script>
-    <script src="/js/sxyl.js?a=8"></script>
+    <script src="/js/sxyl.js?a=9"></script>
 
 
-    <script src="/js/sxyl.graph.js?a=3"></script>
+    <script src="/js/sxyl.graph.js?a=4"></script>
     <script src="/js/sort/sort-common.js"></script>
     <script src="/js/animation/animation.base.js?a=7"></script>
 
@@ -153,7 +153,7 @@
         ##
             <footer class="py-0 bg-white">
                 <div class="container">
-                    <p class="m-0 text-center text-black-50">Copyright &copy; 2018-2020 $!{dc.domain} $!{dc.domainName} by <a href="mailto:ww1026753951@163.com">谷禾水</a> .All rights reserved</p>
+                    <p class="m-0 text-center text-black-50">Copyright &copy; 2018-2021 $!{dc.domain} $!{dc.domainName} by <a href="mailto:ww1026753951@163.com">谷禾水</a> .All rights reserved</p>
                     <p class="m-0 text-center text-black-50">版权声明：本站原创文章、作品，未经本人许可，任何人或机构不得以任何形式对本站内容进行复制作商业用途.</p>
                 </div>
             </footer>

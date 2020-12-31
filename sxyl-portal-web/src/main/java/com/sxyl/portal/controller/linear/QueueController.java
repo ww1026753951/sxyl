@@ -2,11 +2,11 @@ package com.sxyl.portal.controller.linear;
 
 import com.sxyl.portal.controller.BaseController;
 import com.sxyl.portal.domain.DomainContent;
-import com.sxyl.portal.domain.jvm.pool.PoolConstruct;
+import com.sxyl.portal.domain.linear.QueueConstruct;
 import com.sxyl.portal.domain.linear.StackConstruct;
+import com.sxyl.portal.service.linear.QueueService;
 import com.sxyl.portal.service.linear.StackService;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,24 +22,24 @@ import javax.servlet.http.HttpServletRequest;
  * @date:2020/11/22
  */
 @Controller
-@RequestMapping("/linear/stack")
-public class StackController extends BaseController {
+@RequestMapping("/linear/queue")
+public class QueueController extends BaseController {
 
 
     @Resource
-    private StackService stackService;
+    private QueueService queueService;
 
     /***
      *
      * @return
      * @throws Exception
      */
-    @RequestMapping("/stackPortal")
+    @RequestMapping("/queuePortal")
     public String avlTreePortal(ModelMap modelMap , HttpServletRequest request) throws Exception {
 
         DomainContent dc = super.getDomainByReferer(request);
         modelMap.put("dc", dc);
-        return "/screen/algorithm/linear/stack-portal";
+        return "/screen/algorithm/linear/queue-portal";
 
     }
 
@@ -48,15 +48,15 @@ public class StackController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/stackConstruct")
+    @RequestMapping("/queueConstruct")
     @ResponseBody
-    public Object threadPoolConstruct(HttpServletRequest request,@RequestBody StackConstruct sc) throws Exception{
+    public Object threadPoolConstruct(HttpServletRequest request) throws Exception{
         super.getDomainByReferer(request);
 
-        StackConstruct stackConstruct = stackService.getPoolConstruct(sc);
+        QueueConstruct queueConstruct = queueService.getConstruct(null);
 
 
-        return stackConstruct;
+        return queueConstruct;
     }
 
 
@@ -68,15 +68,15 @@ public class StackController extends BaseController {
      */
     @RequestMapping("/push")
     @ResponseBody
-    public Object push(HttpServletRequest request ,@RequestBody StackConstruct sc) throws Exception{
+    public Object push(HttpServletRequest request ,@RequestBody QueueConstruct qc) throws Exception{
 
         super.getDomainByReferer(request);
 
 
-        StackConstruct stackConstruct = stackService.pushStack(sc);
+        QueueConstruct queueConstruct = queueService.push(qc);
 
 
-        return stackConstruct;
+        return queueConstruct;
     }
 
 
@@ -87,12 +87,12 @@ public class StackController extends BaseController {
      */
     @RequestMapping("/pop")
     @ResponseBody
-    public Object pop(HttpServletRequest request ,@RequestBody StackConstruct sc) throws Exception{
+    public Object pop(HttpServletRequest request ,@RequestBody QueueConstruct qc) throws Exception{
 
         super.getDomainByReferer(request);
 
-        StackConstruct stackConstruct = stackService.popStack(sc);
+        QueueConstruct queueConstruct = queueService.pop(qc);
 
-        return stackConstruct;
+        return queueConstruct;
     }
 }

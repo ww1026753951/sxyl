@@ -18,6 +18,9 @@ public class CommonConstruct  implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
+    private Integer width;
+
+    private Integer height;
 
 
 

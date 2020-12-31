@@ -1,10 +1,8 @@
 package com.sxyl.portal.service;
 
 import com.sxyl.portal.domain.BaseMove;
-import com.sxyl.portal.domain.constant.DisplayEnum;
-import com.sxyl.portal.domain.constant.LeftEnum;
-import com.sxyl.portal.domain.constant.LinePositionEnum;
-import com.sxyl.portal.domain.constant.TopEnum;
+import com.sxyl.portal.domain.common.CommonAdapterScreen;
+import com.sxyl.portal.domain.constant.*;
 import com.sxyl.portal.domain.graph.Line;
 
 
@@ -96,6 +94,50 @@ public class CommonService {
 
 
         return move;
+
+    }
+
+
+    /****
+     * 计算 xy
+     * @param screenX 屏幕的x
+     * @param screenY 屏幕的y
+     * @return
+     */
+    protected CommonAdapterScreen computeXY( int screenX, int screenY,int componentX , int componentY){
+        CommonAdapterScreen commonAdapterScreen = new CommonAdapterScreen();
+
+        int adapterScreenEnumCode= computeHorizontalOrVertical(screenX , screenY);
+        int x=0;int y = 0 ;
+        //竖屏幕  宽大于高
+        if (adapterScreenEnumCode == AdapterScreenEnum.VERTICAL.getCode()){
+            x = screenX/2 - componentX;
+            y = screenX/5;
+        }
+        //横屏  宽小于高
+        if (adapterScreenEnumCode == AdapterScreenEnum.HORIZONTAL.getCode()){
+
+        }
+
+
+        commonAdapterScreen.setX(x);
+        commonAdapterScreen.setY(y);
+
+        return commonAdapterScreen;
+
+    }
+
+    private int computeHorizontalOrVertical(int screenX, int screenY){
+
+        if (screenX >= screenY){
+            return AdapterScreenEnum.VERTICAL.getCode();
+        }
+        if(screenX < screenY){
+
+            return AdapterScreenEnum.HORIZONTAL.getCode();
+        }
+        return 0;
+
 
     }
 

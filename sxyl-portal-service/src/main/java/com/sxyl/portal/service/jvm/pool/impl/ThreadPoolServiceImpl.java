@@ -4,6 +4,7 @@ import com.sxyl.portal.domain.CommonMove;
 import com.sxyl.portal.domain.constant.ColorEnum;
 import com.sxyl.portal.domain.constant.ComponentCompositeEnum;
 import com.sxyl.portal.domain.constant.DisplayEnum;
+import com.sxyl.portal.domain.constant.LineTypeEnum;
 import com.sxyl.portal.domain.constant.jvm.PolicyEnum;
 import com.sxyl.portal.domain.d.*;
 import com.sxyl.portal.domain.graph.*;
@@ -30,7 +31,7 @@ public class ThreadPoolServiceImpl implements ThreadPoolService {
 
     private final String CORE_COLOR= "gray";
 
-    private final String QUEUE_COLOR= "green";
+//    private final String QUEUE_COLOR= "green";
 
     private final String MAX_COLOR= "AliceBlue";
 
@@ -1147,13 +1148,21 @@ public class ThreadPoolServiceImpl implements ThreadPoolService {
 
 
         Group queue = new Group();
-        Rect queueRect = new Rect(UUID.randomUUID().toString(), queuePool.getWidth(), queuePool.getHeight(),queuePool.getX() ,queuePool.getY(),QUEUE_COLOR);
+        Rect queueRect = new Rect(UUID.randomUUID().toString(), queuePool.getWidth(), queuePool.getHeight(),queuePool.getX() ,queuePool.getY(),ColorEnum.WHITE.getHtmlCode());
+        queueRect.setStroke(ColorEnum.WHITE.getHtmlCode());
         queue.addChild(queueRect);
 
         queue.addChild(new Text(UUID.randomUUID().toString() , queuePool.getX(),queuePool.getY() + TEXT_BUFFER,"工作队列——队列容量为" + poolConstruct.getPcd().getQueueSize()));
 
         all.addChild(queue);
 
+
+        Line bottomLine =new Line(LineTypeEnum.POSITION.getCode(),queuePool.getX(),queuePool.getY() + queuePool.getHeight(),queuePool.getX() + queuePool.getWidth(),queuePool.getY()+ queuePool.getHeight() );
+        all.addChild(bottomLine);
+
+
+        Line topLine =new Line(LineTypeEnum.POSITION.getCode(),queuePool.getX(),queuePool.getY() ,queuePool.getX() + queuePool.getWidth(),queuePool.getY());
+        all.addChild(topLine);
 
 
 

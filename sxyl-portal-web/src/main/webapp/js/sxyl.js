@@ -73,6 +73,7 @@ SXYL={
         tagName:{
             "text":{x:"x",y:"y"},
             "circle":{x:"cx",y:"cy"},
+            "rect":{x:"x",y:"y"}
         },
         getXY:function (id,xyOb) {
             var x = 0 ;
